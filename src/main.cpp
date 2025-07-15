@@ -1,5 +1,17 @@
 #include <SDL2/SDL.h>
+#include <cmath>
 #include <iostream>
+
+struct Point {
+    float x;
+    float y;
+};
+
+// Helper for drawing a line between two Points
+void drawLine(SDL_Renderer* renderer, const Point& a, const Point& b) {
+    SDL_RenderDrawLine(renderer, static_cast<int>(a.x), static_cast<int>(a.y),
+                       static_cast<int>(b.x), static_cast<int>(b.y));
+}
 
 int main(int argc, char* argv[]) {
     // Initialize SDL2
@@ -38,6 +50,7 @@ int main(int argc, char* argv[]) {
     // Main loop
     bool running = true;
     SDL_Event event;
+    float time = 0.0f; // Used for simple animation
     while (running) {
         while (SDL_PollEvent(&event)) {
             if (event.type == SDL_QUIT) {
@@ -48,6 +61,47 @@ int main(int argc, char* argv[]) {
         // Clear screen
         SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
         SDL_RenderClear(renderer);
+
+        // Update time for animation
+        time += 0.016f; // ~60 FPS step
+
+        // Basic parameters for the stick figure
+        Point hip{400.0f, 400.0f};
+        float bodyLength = 80.0f;
+        float limbLength = 60.0f;
+
+        // Oscillate limbs using sine wave
+        float legSwing = std::sin(time) * 0.5f;   // radians
+        float armSwing = std::sin(time + M_PI) * 0.5f;
+
+        // Torso and head
+        Point shoulder{hip.x, hip.y - bodyLength};
+        Point head{shoulder.x, shoulder.y - 20.0f};
+
+        // Legs
+        Point leftFoot{hip.x - limbLength * std::sin(legSwing),
+                       hip.y + limbLength * std::cos(legSwing)};
+        Point rightFoot{hip.x + limbLength * std::sin(legSwing),
+                        hip.y + limbLength * std::cos(legSwing)};
+
+        // Arms
+        Point leftHand{shoulder.x - limbLength * std::sin(armSwing),
+                       shoulder.y + limbLength * std::cos(armSwing)};
+        Point rightHand{shoulder.x + limbLength * std::sin(armSwing),
+                        shoulder.y + limbLength * std::cos(armSwing)};
+
+        SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+        // Torso and head line
+        drawLine(renderer, hip, shoulder);
+        drawLine(renderer, shoulder, head);
+
+        // Legs
+        drawLine(renderer, hip, leftFoot);
+        drawLine(renderer, hip, rightFoot);
+
+        // Arms
+        drawLine(renderer, shoulder, leftHand);
+        drawLine(renderer, shoulder, rightHand);
 
         // Present
         SDL_RenderPresent(renderer);
