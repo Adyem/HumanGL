@@ -60,29 +60,33 @@ void AnimationManager::stopAnimation() {
 
 void AnimationManager::updateWalkingAnimation() {
     // Realistic walking animation with natural front-to-back arm movement
-    float legSwing = 30.0f * sinf(animationTime * 2.0f);
-    float lowerLegBend = fmaxf(0.0f, -40.0f * sinf(animationTime * 2.0f));
+    float legSwing = 25.0f * sinf(animationTime * 2.0f);
+    float lowerLegBend = fmaxf(0.0f, -30.0f * sinf(animationTime * 2.0f));
 
     // Left leg leads, right leg follows
     drawPerson.setLeftLegRotation(legSwing, lowerLegBend);
-    drawPerson.setRightLegRotation(-legSwing, fmaxf(0.0f, 40.0f * sinf(animationTime * 2.0f)));
+    drawPerson.setRightLegRotation(-legSwing, fmaxf(0.0f, 30.0f * sinf(animationTime * 2.0f)));
 
     // Natural front-to-back arm swinging (opposite to legs)
     // Upper arm swings forward and back (X-axis rotation) - more forward range
-    float upperArmSwing = -35.0f * sinf(animationTime * 2.0f); // Increased forward swing
+    float upperArmSwing = -30.0f * sinf(animationTime * 2.0f);
 
     // Lower arm (forearm) moves MORE than upper arm - much more forward movement
-    float forearmBend = -45.0f * sinf(animationTime * 2.0f + static_cast<float>(M_PI) * 0.3f); // Negative for forward, offset timing
+    float forearmBend = -40.0f * sinf(animationTime * 2.0f + static_cast<float>(M_PI) * 0.3f);
+    float armSwayZ = 10.0f * sinf(animationTime * 2.0f);
 
     // Left arm swings forward when right leg is forward (opposite coordination)
     // Parameters: (upperX=front-to-back, upperZ=side-to-side, forearmX=forearm bend)
-    drawPerson.setLeftArmRotation(upperArmSwing, 0.0f, forearmBend);
-    drawPerson.setRightArmRotation(-upperArmSwing, 0.0f, forearmBend);
+    drawPerson.setLeftArmRotation(upperArmSwing, armSwayZ, forearmBend);
+    drawPerson.setRightArmRotation(-upperArmSwing, -armSwayZ, forearmBend);
 
     // Slight torso sway and head bob for realism - ADD to base rotation
-    float animationSway = 3.0f * sinf(animationTime * 2.0f);
+    float animationSway = 2.0f * sinf(animationTime * 2.0f);
     drawPerson.setTorsoRotation(baseTorsoRotation + animationSway);
-    drawPerson.setHeadRotation(2.0f * sinf(animationTime * 2.0f), 0.0f);
+    drawPerson.setHeadRotation(1.5f * sinf(animationTime * 2.0f), 0.0f);
+
+    float verticalBob = 0.1f * fabsf(sinf(animationTime * 2.0f));
+    drawPerson.setJumpHeight(verticalBob);
 }
 
 void AnimationManager::updateJumpingAnimation() {
@@ -178,120 +182,131 @@ void AnimationManager::updateJumpingAnimation() {
 }
 
 void AnimationManager::updateDancingAnimation() {
-    // Macarena dance animation - realistic sequence
-    float cycleTime = fmodf(animationTime, 8.0f); // 8-second cycle
+    // Breakdance routine with smoother transitions
+    float cycleTime = fmodf(animationTime, 6.0f); // 6-second cycle
 
     if (cycleTime < 1.0f) {
-        // Step 1: Right hand to left shoulder
-        drawPerson.setRightArmRotation(-45.0f, -60.0f, 45.0f);
-        drawPerson.setLeftArmRotation(0.0f, 0.0f, 0.0f);
-    } else if (cycleTime < 2.0f) {
-        // Step 2: Left hand to right shoulder
-        drawPerson.setRightArmRotation(-45.0f, -60.0f, 45.0f);
-        drawPerson.setLeftArmRotation(-45.0f, 60.0f, -45.0f);
+        // Drop into a crouch while planting hands
+        float t = cycleTime;
+        drawPerson.setLeftLegRotation(-25.0f * t, 50.0f * t);
+        drawPerson.setRightLegRotation(25.0f * t, 50.0f * t);
+        drawPerson.setLeftArmRotation(-90.0f * t, 0.0f, -60.0f * t);
+        drawPerson.setRightArmRotation(-90.0f * t, 0.0f, -60.0f * t);
+        drawPerson.setTorsoRotation(-10.0f * t);
     } else if (cycleTime < 3.0f) {
-        // Step 3: Right hand to back of head
-        drawPerson.setRightArmRotation(-120.0f, -30.0f, 0.0f);
-        drawPerson.setLeftArmRotation(-45.0f, 60.0f, -45.0f);
+        // Spin supported by arms with legs extended
+        float t = (cycleTime - 1.0f) / 2.0f; // 0..1
+        drawPerson.setLeftArmRotation(-90.0f, 0.0f, -60.0f);
+        drawPerson.setRightArmRotation(-90.0f, 0.0f, -60.0f);
+        float spinAngle = 360.0f * t;
+        drawPerson.setTorsoRotation(spinAngle);
+        float legKick = 60.0f * sinf(t * static_cast<float>(M_PI));
+        drawPerson.setLeftLegRotation(-40.0f + legKick, 0.0f);
+        drawPerson.setRightLegRotation(40.0f - legKick, 0.0f);
     } else if (cycleTime < 4.0f) {
-        // Step 4: Left hand to back of head
-        drawPerson.setRightArmRotation(-120.0f, -30.0f, 0.0f);
-        drawPerson.setLeftArmRotation(-120.0f, 30.0f, 0.0f);
+        // Freeze pose after the spin
+        drawPerson.setLeftArmRotation(-80.0f, -20.0f, -40.0f);
+        drawPerson.setRightArmRotation(-100.0f, 20.0f, -40.0f);
+        drawPerson.setLeftLegRotation(20.0f, 10.0f);
+        drawPerson.setRightLegRotation(-20.0f, 10.0f);
+        drawPerson.setTorsoRotation(360.0f);
     } else if (cycleTime < 5.0f) {
-        // Step 5: Right hand to right hip
-        drawPerson.setRightArmRotation(30.0f, 0.0f, 30.0f);
-        drawPerson.setLeftArmRotation(-120.0f, 30.0f, 0.0f);
-    } else if (cycleTime < 6.0f) {
-        // Step 6: Left hand to left hip
-        drawPerson.setRightArmRotation(30.0f, 0.0f, 30.0f);
-        drawPerson.setLeftArmRotation(30.0f, 0.0f, -30.0f);
-    } else if (cycleTime < 7.0f) {
-        // Step 7: Hip sway right
-        drawPerson.setRightArmRotation(30.0f, 0.0f, 30.0f);
-        drawPerson.setLeftArmRotation(30.0f, 0.0f, -30.0f);
-        drawPerson.setTorsoRotation(15.0f);
+        // Quick leg sweeps while staying low
+        float t = cycleTime - 4.0f;
+        float sweep = 45.0f * sinf(t * static_cast<float>(M_PI) * 2.0f);
+        drawPerson.setLeftArmRotation(-80.0f, -20.0f, -40.0f);
+        drawPerson.setRightArmRotation(-100.0f, 20.0f, -40.0f);
+        drawPerson.setLeftLegRotation(sweep, 0.0f);
+        drawPerson.setRightLegRotation(-sweep, 0.0f);
+        drawPerson.setTorsoRotation(360.0f);
     } else {
-        // Step 8: Hip sway left and jump
-        drawPerson.setRightArmRotation(30.0f, 0.0f, 30.0f);
-        drawPerson.setLeftArmRotation(30.0f, 0.0f, -30.0f);
-        drawPerson.setTorsoRotation(-15.0f);
-        // Small hop
-        drawPerson.setJumpHeight(0.3f * sinf((cycleTime - 7.0f) * 6.0f * static_cast<float>(M_PI)));
+        // Return to standing with small bounce
+        float t = cycleTime - 5.0f;
+        drawPerson.setLeftArmRotation(-90.0f + 90.0f * t, 0.0f, -60.0f + 60.0f * t);
+        drawPerson.setRightArmRotation(-90.0f + 90.0f * t, 0.0f, -60.0f + 60.0f * t);
+        drawPerson.setLeftLegRotation(0.0f, 50.0f * (1.0f - t));
+        drawPerson.setRightLegRotation(0.0f, 50.0f * (1.0f - t));
+        drawPerson.setTorsoRotation(360.0f * (1.0f - t));
     }
 
-    // Subtle leg movement and head bobbing
-    drawPerson.setLeftLegRotation(5.0f * sinf(animationTime * 2.0f), 0.0f);
-    drawPerson.setRightLegRotation(5.0f * sinf(animationTime * 2.0f + static_cast<float>(M_PI)), 0.0f);
-    drawPerson.setHeadRotation(3.0f * sinf(animationTime * 1.5f), 5.0f * cosf(animationTime * 1.2f));
+    // Continuous bounce and head movement for rhythm
+    drawPerson.setJumpHeight(0.05f * sinf(animationTime * 6.0f));
+    drawPerson.setHeadRotation(5.0f * sinf(animationTime * 3.0f), 3.0f * cosf(animationTime * 2.0f));
 }
 
 void AnimationManager::updateKungFuAnimation() {
-    // Realistic kung fu fighting animation with fluid movements
+    // More natural kung fu routine with weight shifts and smoother transitions
     float cycleTime = fmodf(animationTime, 4.0f); // 4-second cycle
 
     if (cycleTime < 0.5f) {
-        // Fighting stance - guard position
-        drawPerson.setLeftArmRotation(-45.0f, -30.0f, -20.0f);
-        drawPerson.setRightArmRotation(-45.0f, 30.0f, 20.0f);
-        drawPerson.setLeftLegRotation(-10.0f, 0.0f);
-        drawPerson.setRightLegRotation(10.0f, 0.0f);
+        // Guard stance with a tiny bounce
+        float t = cycleTime / 0.5f;
+        drawPerson.setLeftArmRotation(-45.0f, -25.0f, -15.0f);
+        drawPerson.setRightArmRotation(-45.0f, 25.0f, 15.0f);
+        drawPerson.setLeftLegRotation(-10.0f * t, 0.0f);
+        drawPerson.setRightLegRotation(10.0f * t, 0.0f);
         drawPerson.setTorsoRotation(-5.0f);
     } else if (cycleTime < 1.0f) {
-        // Right punch with body rotation
-        float punchProgress = (cycleTime - 0.5f) / 0.5f;
-        drawPerson.setLeftArmRotation(-45.0f, -30.0f, -20.0f);
-        drawPerson.setRightArmRotation(-10.0f + (-70.0f * punchProgress), 30.0f, 20.0f);
-        drawPerson.setLeftLegRotation(-10.0f, 0.0f);
-        drawPerson.setRightLegRotation(10.0f, 0.0f);
-        drawPerson.setTorsoRotation(-5.0f + (20.0f * punchProgress));
+        // Step forward into a right punch
+        float t = (cycleTime - 0.5f) / 0.5f;
+        drawPerson.setLeftArmRotation(-45.0f + 10.0f * t, -25.0f, -15.0f);
+        drawPerson.setRightArmRotation(-45.0f - 80.0f * t, 25.0f, 15.0f * (1.0f - t));
+        drawPerson.setLeftLegRotation(-10.0f + 15.0f * t, 0.0f);
+        drawPerson.setRightLegRotation(10.0f - 10.0f * t, 0.0f);
+        drawPerson.setTorsoRotation(-5.0f + 20.0f * t);
     } else if (cycleTime < 1.5f) {
-        // Return to guard and prepare left punch
-        drawPerson.setLeftArmRotation(-45.0f, -30.0f, -20.0f);
-        drawPerson.setRightArmRotation(-45.0f, 30.0f, 20.0f);
-        drawPerson.setLeftLegRotation(-10.0f, 0.0f);
-        drawPerson.setRightLegRotation(10.0f, 0.0f);
-        drawPerson.setTorsoRotation(5.0f);
+        // Recover to guard while stepping back
+        float t = (cycleTime - 1.0f) / 0.5f;
+        drawPerson.setLeftArmRotation(-45.0f + 5.0f * t, -25.0f, -15.0f);
+        drawPerson.setRightArmRotation(-125.0f + 80.0f * t, 25.0f, 15.0f * t);
+        drawPerson.setLeftLegRotation(5.0f - 15.0f * t, 0.0f);
+        drawPerson.setRightLegRotation(0.0f + 10.0f * t, 0.0f);
+        drawPerson.setTorsoRotation(15.0f - 10.0f * t);
     } else if (cycleTime < 2.0f) {
-        // Left punch with body rotation
-        float punchProgress = (cycleTime - 1.5f) / 0.5f;
-        drawPerson.setLeftArmRotation(-10.0f + (-70.0f * punchProgress), -30.0f, -20.0f);
-        drawPerson.setRightArmRotation(-45.0f, 30.0f, 20.0f);
-        drawPerson.setLeftLegRotation(-10.0f, 0.0f);
-        drawPerson.setRightLegRotation(10.0f, 0.0f);
-        drawPerson.setTorsoRotation(5.0f + (-20.0f * punchProgress));
+        // Step forward into a left punch
+        float t = (cycleTime - 1.5f) / 0.5f;
+        drawPerson.setLeftArmRotation(-45.0f - 80.0f * t, -25.0f, -15.0f);
+        drawPerson.setRightArmRotation(-45.0f + 10.0f * t, 25.0f, 15.0f);
+        drawPerson.setLeftLegRotation(-10.0f + 10.0f * t, 0.0f);
+        drawPerson.setRightLegRotation(10.0f - 15.0f * t, 0.0f);
+        drawPerson.setTorsoRotation(5.0f - 20.0f * t);
     } else if (cycleTime < 2.5f) {
-        // Prepare for high kick
-        drawPerson.setLeftArmRotation(-30.0f, -45.0f, -30.0f);
-        drawPerson.setRightArmRotation(-30.0f, 45.0f, 30.0f);
-        drawPerson.setLeftLegRotation(-20.0f, -10.0f);
-        drawPerson.setRightLegRotation(-20.0f, -10.0f);
-        drawPerson.setTorsoRotation(0.0f);
+        // Lower stance preparing for kick
+        float t = (cycleTime - 2.0f) / 0.5f;
+        drawPerson.setLeftArmRotation(-30.0f, -40.0f, -25.0f);
+        drawPerson.setRightArmRotation(-30.0f, 40.0f, 25.0f);
+        drawPerson.setLeftLegRotation(-10.0f - 10.0f * t, -5.0f - 5.0f * t);
+        drawPerson.setRightLegRotation(-10.0f - 10.0f * t, -5.0f - 5.0f * t);
+        drawPerson.setTorsoRotation(-5.0f * t);
     } else if (cycleTime < 3.0f) {
-        // High kick execution
-        float kickProgress = (cycleTime - 2.5f) / 0.5f;
-        drawPerson.setLeftArmRotation(-30.0f, -45.0f, -30.0f);
-        drawPerson.setRightArmRotation(-30.0f, 45.0f, 30.0f);
+        // High kick with body lean
+        float t = (cycleTime - 2.5f) / 0.5f;
+        drawPerson.setLeftArmRotation(-30.0f + 15.0f * t, -40.0f, -25.0f);
+        drawPerson.setRightArmRotation(-30.0f - 15.0f * t, 40.0f, 25.0f);
         drawPerson.setLeftLegRotation(-20.0f, -10.0f);
-        drawPerson.setRightLegRotation(-20.0f + (110.0f * kickProgress), -10.0f + (20.0f * kickProgress));
-        drawPerson.setTorsoRotation(-10.0f * kickProgress);
+        drawPerson.setRightLegRotation(-20.0f + 120.0f * t, -10.0f + 20.0f * t);
+        drawPerson.setTorsoRotation(-5.0f - 10.0f * t);
     } else if (cycleTime < 3.5f) {
-        // Block position
-        drawPerson.setLeftArmRotation(-90.0f, -20.0f, -45.0f);
-        drawPerson.setRightArmRotation(-90.0f, 20.0f, 45.0f);
-        drawPerson.setLeftLegRotation(-15.0f, 0.0f);
-        drawPerson.setRightLegRotation(-15.0f, 0.0f);
-        drawPerson.setTorsoRotation(0.0f);
+        // Block after the kick
+        float t = (cycleTime - 3.0f) / 0.5f;
+        drawPerson.setLeftArmRotation(-90.0f + 20.0f * t, -20.0f, -45.0f + 5.0f * t);
+        drawPerson.setRightArmRotation(-90.0f + 20.0f * t, 20.0f, 45.0f - 5.0f * t);
+        drawPerson.setLeftLegRotation(-15.0f + 10.0f * t, 0.0f);
+        drawPerson.setRightLegRotation(-15.0f + 10.0f * t, 0.0f);
+        drawPerson.setTorsoRotation(-5.0f * (1.0f - t));
     } else {
-        // Return to fighting stance
+        // Return to fighting stance with slight bounce
+        float t = (cycleTime - 3.5f) / 0.5f;
         drawPerson.setLeftArmRotation(-45.0f, -30.0f, -20.0f);
         drawPerson.setRightArmRotation(-45.0f, 30.0f, 20.0f);
-        drawPerson.setLeftLegRotation(-10.0f, 0.0f);
-        drawPerson.setRightLegRotation(10.0f, 0.0f);
+        drawPerson.setLeftLegRotation(-10.0f + 5.0f * sinf(t * static_cast<float>(M_PI) * 2.0f), 0.0f);
+        drawPerson.setRightLegRotation(10.0f - 5.0f * sinf(t * static_cast<float>(M_PI) * 2.0f), 0.0f);
         drawPerson.setTorsoRotation(-5.0f);
     }
 
-    // Add subtle head movement for focus
-    drawPerson.setHeadRotation(2.0f * sinf(animationTime * 1.5f), 3.0f * cosf(animationTime * 1.2f));
+    // Subtle head focus and bounce
+    drawPerson.setHeadRotation(2.5f * sinf(animationTime * 1.2f), 3.0f * cosf(animationTime));
+    drawPerson.setJumpHeight(0.05f * fabsf(sinf(animationTime * 4.0f)));
 }
 
 void AnimationManager::resetLimbPositions() {
