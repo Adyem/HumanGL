@@ -26,4 +26,7 @@ public:
 
     // Apply matrix to OpenGL
     void applyToOpenGL() const;
+
+    // Access raw data for custom OpenGL loading
+    const float* data() const { return m; }
 };

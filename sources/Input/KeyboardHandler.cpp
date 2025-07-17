@@ -161,6 +161,13 @@ void KeyboardHandler::applyCameraTransform() {
     glRotatef(cameraRotationY, 0.0f, 1.0f, 0.0f);
 }
 
+Matrix4 KeyboardHandler::getViewMatrix() const {
+    Matrix4 view;
+    view.translate(0.0f, cameraHeight, -cameraDistance);
+    view.rotateY(cameraRotationY);
+    return view;
+}
+
 void KeyboardHandler::resetCameraPosition() {
     // Reset camera to default position
     cameraRotationY = 0.0f;

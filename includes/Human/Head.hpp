@@ -9,7 +9,7 @@ public:
     Torso();
     virtual ~Torso() = default;
 
-    void render() override;
+    void render(MatrixStack& matrixStack) override;
 };
 
 // Neck class
@@ -18,7 +18,7 @@ public:
     Neck();
     virtual ~Neck() = default;
 
-    void render() override;
+    void render(MatrixStack& matrixStack) override;
 };
 
 // Head class
@@ -31,7 +31,7 @@ public:
     Head();
     virtual ~Head() = default;
 
-    void render() override;
+    void render(MatrixStack& matrixStack) override;
     
     // Head-specific rotation methods
     void setHeadRotation(float x, float y);
@@ -48,7 +48,7 @@ public:
     Eyes();
     virtual ~Eyes() = default;
 
-    void render() override;
+    void render(MatrixStack& matrixStack) override;
     
     // Sync with head rotation
     void setHeadRotation(float x, float y);

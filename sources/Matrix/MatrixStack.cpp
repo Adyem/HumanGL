@@ -2,10 +2,12 @@
 
 MatrixStack::MatrixStack() {
     current.loadIdentity();
+    viewMatrix.loadIdentity();
 }
 
 void MatrixStack::loadIdentity() {
     current.loadIdentity();
+    stack.clear();
 }
 
 void MatrixStack::pushMatrix() {
@@ -41,5 +43,10 @@ void MatrixStack::scale(float x, float y, float z) {
 
 void MatrixStack::applyToOpenGL() {
     glLoadIdentity();
+    viewMatrix.applyToOpenGL();
     current.applyToOpenGL();
+}
+
+void MatrixStack::setViewMatrix(const Matrix4& view) {
+    viewMatrix = view;
 }

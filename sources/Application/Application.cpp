@@ -6,7 +6,7 @@ Application::Application()
       currentState(MAIN_MENU),
       keyboardHandler(drawPerson),
       animationManager(drawPerson),
-      simulationRenderer(drawPerson, keyboardHandler, windowWidth, windowHeight),
+      simulationRenderer(matrixStack, drawPerson, keyboardHandler, windowWidth, windowHeight),
       eventHandler(animationManager, keyboardHandler, menuSystem, simulationRenderer, 
                    &currentState, windowWidth, windowHeight),
       currentAnimation(NONE), animationTime(0.0f), jumpHeight(0.0f),

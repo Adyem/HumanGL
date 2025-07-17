@@ -7,12 +7,13 @@ class MatrixStack {
 private:
     std::vector<Matrix4> stack;
     Matrix4 current;
+    Matrix4 viewMatrix;
 
 public:
     // Constructor - initializes with identity matrix
     MatrixStack();
 
-    // Load identity matrix
+    // Load identity matrix and clear the stack
     void loadIdentity();
 
     // Stack operations
@@ -28,4 +29,7 @@ public:
 
     // Apply current matrix to OpenGL
     void applyToOpenGL();
+
+    // Set view matrix (camera transform)
+    void setViewMatrix(const Matrix4& view);
 };
