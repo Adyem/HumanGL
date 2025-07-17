@@ -13,7 +13,7 @@ public:
     // Constructor - initializes with identity matrix
     MatrixStack();
 
-    // Load identity matrix
+    // Load identity matrix and clear the stack
     void loadIdentity();
 
     // Stack operations
