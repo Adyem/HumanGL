@@ -6,27 +6,29 @@ Leg::Leg(float x, float y, float z)
     // Skin color for legs (will be overridden for thighs with pants color)
 }
 
-void Leg::render() {
+void Leg::render(MatrixStack& matrixStack) {
     // Draw the entire leg as a connected hierarchy
-    glPushMatrix();
-    glTranslatef(positionX, positionY, positionZ);
-    glRotatef(thighX, 1.0f, 0.0f, 0.0f);
+    matrixStack.pushMatrix();
+    matrixStack.translate(positionX, positionY, positionZ);
+    matrixStack.rotateX(thighX);
 
     // Draw thigh (with pants color)
-    glPushMatrix();
-    glTranslatef(0.0f, -0.4f, 0.0f);
-    glScalef(0.3f, 0.8f, 0.3f);
+    matrixStack.pushMatrix();
+    matrixStack.translate(0.0f, -0.4f, 0.0f);
+    matrixStack.scale(0.3f, 0.8f, 0.3f);
+    matrixStack.applyToOpenGL();
     drawColoredCube(0.1f, 0.2f, 0.6f);  // Dark blue pants color for thighs
-    glPopMatrix();
+    matrixStack.popMatrix();
 
     // Draw lower leg (connected to thigh)
-    glTranslatef(0.0f, -0.8f, 0.0f);
-    glRotatef(lowerLegX, 1.0f, 0.0f, 0.0f);
-    glTranslatef(0.0f, -0.4f, 0.0f);
-    glScalef(0.25f, 0.8f, 0.25f);
+    matrixStack.translate(0.0f, -0.8f, 0.0f);
+    matrixStack.rotateX(lowerLegX);
+    matrixStack.translate(0.0f, -0.4f, 0.0f);
+    matrixStack.scale(0.25f, 0.8f, 0.25f);
+    matrixStack.applyToOpenGL();
     drawColoredCube(colorR, colorG, colorB);  // Skin color for lower legs
 
-    glPopMatrix();
+    matrixStack.popMatrix();
 }
 
 void Leg::setThighRotation(float x) {

@@ -29,7 +29,7 @@ public:
     ~DrawPerson() = default;
 
     // Main render method
-    void render();
+    void render(MatrixStack& matrixStack);
 
     // Global transformation methods
     void setTorsoRotation(float y);

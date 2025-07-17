@@ -1,7 +1,7 @@
 #include "../../includes/Simulation/SimulationRenderer.hpp"
 
-SimulationRenderer::SimulationRenderer(DrawPerson& person, KeyboardHandler& kbHandler, int winWidth, int winHeight)
-    : drawPerson(person), keyboardHandler(kbHandler),
+SimulationRenderer::SimulationRenderer(MatrixStack& stack, DrawPerson& person, KeyboardHandler& kbHandler, int winWidth, int winHeight)
+    : matrixStack(stack), drawPerson(person), keyboardHandler(kbHandler),
       nearPlane(1.0f), farPlane(100.0f), fov(45.0f),
       windowWidth(winWidth), windowHeight(winHeight) {
 }
@@ -19,7 +19,7 @@ void SimulationRenderer::render() {
     keyboardHandler.applyCameraTransform();
     
     // Render the person
-    drawPerson.render();
+    drawPerson.render(matrixStack);
 }
 
 void SimulationRenderer::setupPerspective() {

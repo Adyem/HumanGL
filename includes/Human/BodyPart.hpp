@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../humangl.hpp"
+#include "../Matrix/MatrixStack.hpp"
 
 // Base class for all body part renderers
 class BodyPartRenderer {
@@ -12,7 +13,7 @@ public:
     virtual ~BodyPartRenderer() = default;
 
     // Pure virtual render method
-    virtual void render() = 0;
+    virtual void render(MatrixStack& matrixStack) = 0;
 
     // Color management
     void setColor(float r, float g, float b);

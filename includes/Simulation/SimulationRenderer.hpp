@@ -3,9 +3,11 @@
 #include "../humangl.hpp"
 #include "../Human/DrawPerson.hpp"
 #include "../Input/KeyboardHandler.hpp"
+#include "../Matrix/MatrixStack.hpp"
 
 class SimulationRenderer {
 private:
+    MatrixStack& matrixStack;
     DrawPerson& drawPerson;
     KeyboardHandler& keyboardHandler;
     
@@ -17,7 +19,7 @@ private:
     int windowHeight;
 
 public:
-    SimulationRenderer(DrawPerson& person, KeyboardHandler& kbHandler, int winWidth, int winHeight);
+    SimulationRenderer(MatrixStack& stack, DrawPerson& person, KeyboardHandler& kbHandler, int winWidth, int winHeight);
     ~SimulationRenderer() = default;
 
     // Main rendering method

@@ -6,28 +6,30 @@ Arm::Arm(float x, float y, float z)
     // Skin color for arms
 }
 
-void Arm::render() {
+void Arm::render(MatrixStack& matrixStack) {
     // Draw the entire arm as a connected hierarchy
-    glPushMatrix();
-    glTranslatef(positionX, positionY, positionZ);
-    glRotatef(upperArmX, 1.0f, 0.0f, 0.0f);
-    glRotatef(upperArmZ, 0.0f, 0.0f, 1.0f);
+    matrixStack.pushMatrix();
+    matrixStack.translate(positionX, positionY, positionZ);
+    matrixStack.rotateX(upperArmX);
+    matrixStack.rotateZ(upperArmZ);
 
     // Draw upper arm
-    glPushMatrix();
-    glTranslatef(0.0f, -0.4f, 0.0f);
-    glScalef(0.3f, 0.8f, 0.3f);
+    matrixStack.pushMatrix();
+    matrixStack.translate(0.0f, -0.4f, 0.0f);
+    matrixStack.scale(0.3f, 0.8f, 0.3f);
+    matrixStack.applyToOpenGL();
     drawColoredCube(colorR, colorG, colorB);  // Skin color for upper arms
-    glPopMatrix();
+    matrixStack.popMatrix();
 
     // Draw forearm (connected to upper arm)
-    glTranslatef(0.0f, -0.8f, 0.0f);
-    glRotatef(forearmX, 1.0f, 0.0f, 0.0f);
-    glTranslatef(0.0f, -0.4f, 0.0f);
-    glScalef(0.25f, 0.8f, 0.25f);
+    matrixStack.translate(0.0f, -0.8f, 0.0f);
+    matrixStack.rotateX(forearmX);
+    matrixStack.translate(0.0f, -0.4f, 0.0f);
+    matrixStack.scale(0.25f, 0.8f, 0.25f);
+    matrixStack.applyToOpenGL();
     drawColoredCube(colorR, colorG, colorB);  // Skin color for forearms
 
-    glPopMatrix();
+    matrixStack.popMatrix();
 }
 
 void Arm::setUpperArmRotation(float x, float z) {
