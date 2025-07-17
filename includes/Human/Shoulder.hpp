@@ -12,7 +12,7 @@ public:
     Shoulder(float x, float y, float z);
     virtual ~Shoulder() = default;
 
-    void render() override;
+    void render(MatrixStack& matrixStack) override;
 };
 
 // Left Shoulder class

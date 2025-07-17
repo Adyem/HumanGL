@@ -1,7 +1,7 @@
 #include "../../includes/Simulation/SimulationRenderer.hpp"
 
-SimulationRenderer::SimulationRenderer(DrawPerson& person, KeyboardHandler& kbHandler, int winWidth, int winHeight)
-    : drawPerson(person), keyboardHandler(kbHandler),
+SimulationRenderer::SimulationRenderer(MatrixStack& stack, DrawPerson& person, KeyboardHandler& kbHandler, int winWidth, int winHeight)
+    : matrixStack(stack), drawPerson(person), keyboardHandler(kbHandler),
       nearPlane(1.0f), farPlane(100.0f), fov(45.0f),
       windowWidth(winWidth), windowHeight(winHeight) {
 }
@@ -15,11 +15,13 @@ void SimulationRenderer::render() {
     setupLighting();
     setupScene();
     
-    // Apply camera transformations
-    keyboardHandler.applyCameraTransform();
-    
+    // Build view matrix from camera parameters
+    Matrix4 view = keyboardHandler.getViewMatrix();
+    matrixStack.setViewMatrix(view);
+    matrixStack.loadIdentity();
+
     // Render the person
-    drawPerson.render();
+    drawPerson.render(matrixStack);
 }
 
 void SimulationRenderer::setupPerspective() {

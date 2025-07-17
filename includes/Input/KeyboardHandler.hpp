@@ -3,6 +3,7 @@
 #include "../Human/DrawPerson.hpp"
 #include "../humangl.hpp"
 #include "../Simulation/AnimationManager.hpp"
+#include "../Matrix/Matrix4.hpp"
 
 class KeyboardHandler {
 private:
@@ -31,6 +32,9 @@ public:
     // Camera control methods
     void handleCameraControls();
     void applyCameraTransform();
+
+    // Build view matrix from camera parameters
+    Matrix4 getViewMatrix() const;
     
     // Camera getters
     float getCameraRotationY() const { return cameraRotationY; }

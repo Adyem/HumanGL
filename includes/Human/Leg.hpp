@@ -14,7 +14,7 @@ public:
     Leg(float x, float y, float z);
     virtual ~Leg() = default;
 
-    void render() override;
+    void render(MatrixStack& matrixStack) override;
     
     // Leg rotation methods
     void setThighRotation(float x);
