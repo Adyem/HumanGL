@@ -15,9 +15,11 @@ void SimulationRenderer::render() {
     setupLighting();
     setupScene();
     
-    // Apply camera transformations
-    keyboardHandler.applyCameraTransform();
-    
+    // Build view matrix from camera parameters
+    Matrix4 view = keyboardHandler.getViewMatrix();
+    matrixStack.setViewMatrix(view);
+    matrixStack.loadIdentity();
+
     // Render the person
     drawPerson.render(matrixStack);
 }
