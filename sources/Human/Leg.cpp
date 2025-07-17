@@ -1,8 +1,8 @@
 #include "../../includes/Human/Leg.hpp"
 
 Leg::Leg(float x, float y, float z)
-    : BodyPartRenderer(0.8f, 0.6f, 0.4f), positionX(x), positionY(y), positionZ(z),
-      thighX(0.0f), lowerLegX(0.0f) {
+    : BodyPartRenderer(HUMANGL_DEFAULT_SKIN_R, HUMANGL_DEFAULT_SKIN_G, HUMANGL_DEFAULT_SKIN_B), positionX(x), positionY(y), positionZ(z),
+      thighX(HUMANGL_OPENGL_AXIS_NONE), lowerLegX(HUMANGL_OPENGL_AXIS_NONE) {
     // Skin color for legs (will be overridden for thighs with pants color)
 }
 
@@ -10,20 +10,20 @@ void Leg::render() {
     // Draw the entire leg as a connected hierarchy
     glPushMatrix();
     glTranslatef(positionX, positionY, positionZ);
-    glRotatef(thighX, 1.0f, 0.0f, 0.0f);
+    glRotatef(thighX, HUMANGL_OPENGL_AXIS_X, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_NONE);
 
     // Draw thigh (with pants color)
     glPushMatrix();
-    glTranslatef(0.0f, -0.4f, 0.0f);
-    glScalef(0.3f, 0.8f, 0.3f);
-    drawColoredCube(0.1f, 0.2f, 0.6f);  // Dark blue pants color for thighs
+    glTranslatef(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_THIGH_Y_OFFSET, HUMANGL_OPENGL_AXIS_NONE);
+    glScalef(HUMANGL_THIGH_SCALE_X, HUMANGL_THIGH_SCALE_Y, HUMANGL_THIGH_SCALE_Z);
+    drawColoredCube(HUMANGL_PANTS_COLOR_R, HUMANGL_PANTS_COLOR_G, HUMANGL_PANTS_COLOR_B);  // Dark blue pants color for thighs
     glPopMatrix();
 
     // Draw lower leg (connected to thigh)
-    glTranslatef(0.0f, -0.8f, 0.0f);
-    glRotatef(lowerLegX, 1.0f, 0.0f, 0.0f);
-    glTranslatef(0.0f, -0.4f, 0.0f);
-    glScalef(0.25f, 0.8f, 0.25f);
+    glTranslatef(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_LOWER_LEG_Y_OFFSET, HUMANGL_OPENGL_AXIS_NONE);
+    glRotatef(lowerLegX, HUMANGL_OPENGL_AXIS_X, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_NONE);
+    glTranslatef(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_LOWER_LEG_Y_POSITION, HUMANGL_OPENGL_AXIS_NONE);
+    glScalef(HUMANGL_LOWER_LEG_SCALE_X, HUMANGL_LOWER_LEG_SCALE_Y, HUMANGL_LOWER_LEG_SCALE_Z);
     drawColoredCube(colorR, colorG, colorB);  // Skin color for lower legs
 
     glPopMatrix();
@@ -45,8 +45,8 @@ void Leg::getLowerLegRotation(float& x) const {
     x = lowerLegX;
 }
 
-LeftLeg::LeftLeg() : Leg(-0.3f, -0.75f, 0.0f) {
+LeftLeg::LeftLeg() : Leg(HUMANGL_LEFT_LEG_X_POSITION, HUMANGL_LEG_Y_POSITION, HUMANGL_LEG_Z_POSITION) {
 }
 
-RightLeg::RightLeg() : Leg(0.3f, -0.75f, 0.0f) {
+RightLeg::RightLeg() : Leg(HUMANGL_RIGHT_LEG_X_POSITION, HUMANGL_LEG_Y_POSITION, HUMANGL_LEG_Z_POSITION) {
 }

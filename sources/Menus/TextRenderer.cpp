@@ -1,6 +1,6 @@
 #include "../../includes/Menus/TextRenderer.hpp"
 
-TextRenderer::TextRenderer() : fontSize(16) {
+TextRenderer::TextRenderer() : fontSize(HUMANGL_TEXT_FONT_SIZE) {
 }
 
 TextRenderer::~TextRenderer() {
@@ -8,7 +8,7 @@ TextRenderer::~TextRenderer() {
 }
 
 bool TextRenderer::initialize() {
-    fontSize = 16;
+    fontSize = HUMANGL_TEXT_FONT_SIZE;
     return true;
 }
 
@@ -17,8 +17,8 @@ void TextRenderer::cleanup() {
 }
 
 void TextRenderer::getTextSize(const std::string& text, int* width, int* height) {
-    *width = static_cast<int>(text.length() * 10);  // 10 pixels per character
-    *height = 16;  // Fixed height
+    *width = static_cast<int>(text.length() * HUMANGL_TEXT_CHAR_WIDTH);  // pixels per character
+    *height = HUMANGL_TEXT_HEIGHT;  // Fixed height
 }
 
 void TextRenderer::drawText(float x, float y, const std::string& text, float r, float g, float b) {

@@ -2,7 +2,7 @@
 
 SimulationRenderer::SimulationRenderer(DrawPerson& person, KeyboardHandler& kbHandler, int winWidth, int winHeight)
     : drawPerson(person), keyboardHandler(kbHandler),
-      nearPlane(1.0f), farPlane(100.0f), fov(45.0f),
+      nearPlane(HUMANGL_SIMULATION_NEAR_PLANE), farPlane(HUMANGL_SIMULATION_FAR_PLANE), fov(HUMANGL_SIMULATION_FOV),
       windowWidth(winWidth), windowHeight(winHeight) {
 }
 
@@ -31,7 +31,7 @@ void SimulationRenderer::setupPerspective() {
     float aspectRatio = static_cast<float>(windowWidth) / static_cast<float>(windowHeight);
     
     // Manual perspective calculation to avoid gluPerspective
-    float top = nearPlane * tanf(fov * static_cast<float>(M_PI) / 360.0f);
+    float top = nearPlane * tanf(DEGREES_TO_RADIANS(fov) / 2.0f);
     float bottom = -top;
     float right = top * aspectRatio;
     float left = -right;
@@ -59,7 +59,7 @@ void SimulationRenderer::setupScene() {
     glDepthFunc(GL_LESS);
     
     // Set background color (dark blue)
-    glClearColor(0.1f, 0.1f, 0.3f, 1.0f);
+    glClearColor(HUMANGL_SIMULATION_BACKGROUND_R, HUMANGL_SIMULATION_BACKGROUND_G, HUMANGL_SIMULATION_BACKGROUND_B, HUMANGL_SIMULATION_BACKGROUND_A);
     
     // Enable smooth shading
     glShadeModel(GL_SMOOTH);

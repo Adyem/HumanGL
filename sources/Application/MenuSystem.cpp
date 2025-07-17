@@ -2,11 +2,11 @@
 
 MenuSystem::MenuSystem()
     : mainMenuRenderer(textRenderer), settingsMenuRenderer(textRenderer), creditsMenuRenderer(textRenderer), instructionsMenuRenderer(textRenderer),
-      mainMenu(mainMenuRenderer, mouseHandler, menuInput, 800, 600),
-      settingsMenu(settingsMenuRenderer, mouseHandler, menuInput, 800, 600),
-      creditsMenu(creditsMenuRenderer, mouseHandler, menuInput, 800, 600),
-      instructionsMenu(instructionsMenuRenderer, mouseHandler, menuInput, 800, 600),
-      currentState(MAIN_MENU), windowWidth(800), windowHeight(600) {
+      mainMenu(mainMenuRenderer, mouseHandler, menuInput, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
+      settingsMenu(settingsMenuRenderer, mouseHandler, menuInput, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
+      creditsMenu(creditsMenuRenderer, mouseHandler, menuInput, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
+      instructionsMenu(instructionsMenuRenderer, mouseHandler, menuInput, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
+      currentState(MAIN_MENU), windowWidth(HUMANGL_DEFAULT_WINDOW_WIDTH), windowHeight(HUMANGL_DEFAULT_WINDOW_HEIGHT) {
 }
 
 MenuSystem::~MenuSystem() {

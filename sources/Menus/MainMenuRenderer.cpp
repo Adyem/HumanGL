@@ -7,11 +7,11 @@ MainMenuRenderer::MainMenuRenderer(TextRenderer& textRenderer)
 
 void MainMenuRenderer::initializeButtons() {
     // Main menu buttons (centered)
-    float buttonWidth = 200.0f;
-    float buttonHeight = 50.0f;
+    float buttonWidth = HUMANGL_MENU_BUTTON_WIDTH;
+    float buttonHeight = HUMANGL_MENU_BUTTON_HEIGHT;
     float centerX = (static_cast<float>(windowWidth) - buttonWidth) / 2.0f;
-    float startY = static_cast<float>(windowHeight) / 2.0f - 120.0f;
-    float spacing = 60.0f;
+    float startY = static_cast<float>(windowHeight) / 2.0f - HUMANGL_MENU_TITLE_OFFSET_Y;
+    float spacing = HUMANGL_MENU_BUTTON_SPACING;
 
     buttons.clear();
     buttons.push_back(MenuButton(centerX, startY, buttonWidth, buttonHeight, "Start Simulation"));
@@ -70,6 +70,9 @@ void MainMenuRenderer::renderTitle() {
     // Draw main title
     float titleX = static_cast<float>(windowWidth) / 2.0f - 150.0f; // Rough centering
     float titleY = 100.0f;
-    textRenderer.drawText(titleX, titleY, "HumanGL - Skeletal Animation", 1.0f, 1.0f, 1.0f);
+	float lineSpacing = 30.0f;
+    textRenderer.drawText(titleX + lineSpacing * 4.0f, titleY, "HumanGL", 1.0f, 1.0f, 1.0f);
+	titleY += lineSpacing;
+	textRenderer.drawText(titleX, titleY, "Created by rperez-t and bvangene", 0.8f, 0.8f, 0.8f);
 }
 

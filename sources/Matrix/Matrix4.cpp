@@ -9,8 +9,8 @@ Matrix4::Matrix4() {
 }
 
 void Matrix4::loadIdentity() {
-    for (int i = 0; i < 16; i++) {
-        m[i] = (i % 5 == 0) ? 1.0f : 0.0f;
+    for (int i = 0; i < HUMANGL_MATRIX_SIZE; i++) {
+        m[i] = (i % HUMANGL_MATRIX_IDENTITY_STEP == 0) ? HUMANGL_OPENGL_AXIS_Y : HUMANGL_OPENGL_AXIS_NONE;
     }
 }
 
@@ -23,7 +23,7 @@ void Matrix4::translate(float x, float y, float z) {
 }
 
 void Matrix4::rotateX(float angle) {
-    float rad = angle * M_PI / 180.0f;
+    float rad = DEGREES_TO_RADIANS(angle);
     float c = cosf(rad);
     float s = sinf(rad);
     
@@ -37,7 +37,7 @@ void Matrix4::rotateX(float angle) {
 }
 
 void Matrix4::rotateY(float angle) {
-    float rad = angle * M_PI / 180.0f;
+    float rad = DEGREES_TO_RADIANS(angle);
     float c = cosf(rad);
     float s = sinf(rad);
     
@@ -51,7 +51,7 @@ void Matrix4::rotateY(float angle) {
 }
 
 void Matrix4::rotateZ(float angle) {
-    float rad = angle * M_PI / 180.0f;
+    float rad = DEGREES_TO_RADIANS(angle);
     float c = cosf(rad);
     float s = sinf(rad);
     
@@ -74,11 +74,11 @@ void Matrix4::scale(float x, float y, float z) {
 
 Matrix4 Matrix4::operator*(const Matrix4& other) const {
     Matrix4 result;
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            result.m[i * 4 + j] = 0;
-            for (int k = 0; k < 4; k++) {
-                result.m[i * 4 + j] += m[i * 4 + k] * other.m[k * 4 + j];
+    for (int i = 0; i < HUMANGL_MATRIX_DIMENSION; i++) {
+        for (int j = 0; j < HUMANGL_MATRIX_DIMENSION; j++) {
+            result.m[i * HUMANGL_MATRIX_DIMENSION + j] = HUMANGL_OPENGL_AXIS_NONE;
+            for (int k = 0; k < HUMANGL_MATRIX_DIMENSION; k++) {
+                result.m[i * HUMANGL_MATRIX_DIMENSION + j] += m[i * HUMANGL_MATRIX_DIMENSION + k] * other.m[k * HUMANGL_MATRIX_DIMENSION + j];
             }
         }
     }

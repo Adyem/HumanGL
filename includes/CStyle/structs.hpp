@@ -106,9 +106,9 @@ struct WindowSettings {
     bool vsync;
     std::string title;
     
-    WindowSettings() 
-        : width(800), height(600), fullscreen(false), vsync(true), 
-          title("HumanGL - Skeletal Animation") {}
+    WindowSettings()
+        : width(HUMANGL_DEFAULT_WINDOW_WIDTH), height(HUMANGL_DEFAULT_WINDOW_HEIGHT), fullscreen(false), vsync(true),
+          title(HUMANGL_WINDOW_TITLE) {}
     
     WindowSettings(int w, int h, bool fs = false, bool vs = true, const std::string& t = "HumanGL")
         : width(w), height(h), fullscreen(fs), vsync(vs), title(t) {}

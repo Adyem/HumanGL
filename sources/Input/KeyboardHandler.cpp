@@ -2,7 +2,7 @@
 
 KeyboardHandler::KeyboardHandler(DrawPerson& person)
     : keyboardState(SDL_GetKeyboardState(nullptr)), drawPerson(person), animationManager(nullptr),
-      cameraRotationY(0.0f), cameraDistance(8.0f), cameraHeight(0.0f) {
+      cameraRotationY(HUMANGL_CAMERA_DEFAULT_ROTATION_Y), cameraDistance(HUMANGL_CAMERA_DEFAULT_DISTANCE), cameraHeight(HUMANGL_CAMERA_DEFAULT_HEIGHT) {
 }
 
 void KeyboardHandler::handleInput() {
@@ -28,12 +28,12 @@ void KeyboardHandler::handleBodyPartControls() {
         bool rotationChanged = false;
 
         if (keyboardState[SDL_SCANCODE_A]) {
-            currentTorsoY -= 2.0f;
+            currentTorsoY -= HUMANGL_TORSO_ROTATION_SPEED;
             drawPerson.setTorsoRotation(currentTorsoY);
             rotationChanged = true;
         }
         if (keyboardState[SDL_SCANCODE_D]) {
-            currentTorsoY += 2.0f;
+            currentTorsoY += HUMANGL_TORSO_ROTATION_SPEED;
             drawPerson.setTorsoRotation(currentTorsoY);
             rotationChanged = true;
         }
@@ -63,68 +63,6 @@ void KeyboardHandler::handleBodyPartControls() {
         if (keyboardState[SDL_SCANCODE_E]) {
             currentHeadY = fminf(currentHeadY + 2.0f, 60.0f);
             drawPerson.setHeadRotation(currentHeadX, currentHeadY);
-        }
-    }
-
-    // Left arm controls (1, 2, 3) using DrawPerson (only when no animation)
-    if (allowOtherControls) {
-        float leftUpperX, leftUpperZ, leftForearmX;
-        drawPerson.getLeftArmRotation(leftUpperX, leftUpperZ, leftForearmX);
-        if (keyboardState[SDL_SCANCODE_1]) {
-            leftUpperX = fmaxf(leftUpperX - 2.0f, -180.0f);
-            drawPerson.setLeftArmRotation(leftUpperX, leftUpperZ, leftForearmX);
-        }
-        if (keyboardState[SDL_SCANCODE_2]) {
-            leftUpperZ = fmaxf(leftUpperZ - 2.0f, -90.0f);
-            drawPerson.setLeftArmRotation(leftUpperX, leftUpperZ, leftForearmX);
-        }
-        if (keyboardState[SDL_SCANCODE_3]) {
-            leftForearmX = fmaxf(leftForearmX - 2.0f, -135.0f);
-            drawPerson.setLeftArmRotation(leftUpperX, leftUpperZ, leftForearmX);
-        }
-    }
-
-    // Right arm controls (4, 5, 6) using DrawPerson (only when no animation)
-    if (allowOtherControls) {
-        float rightUpperX, rightUpperZ, rightForearmX;
-        drawPerson.getRightArmRotation(rightUpperX, rightUpperZ, rightForearmX);
-        if (keyboardState[SDL_SCANCODE_4]) {
-            rightUpperX = fmaxf(rightUpperX - 2.0f, -180.0f);
-            drawPerson.setRightArmRotation(rightUpperX, rightUpperZ, rightForearmX);
-        }
-        if (keyboardState[SDL_SCANCODE_5]) {
-            rightUpperZ = fminf(rightUpperZ + 2.0f, 90.0f);
-            drawPerson.setRightArmRotation(rightUpperX, rightUpperZ, rightForearmX);
-        }
-        if (keyboardState[SDL_SCANCODE_6]) {
-            rightForearmX = fmaxf(rightForearmX - 2.0f, -135.0f);
-            drawPerson.setRightArmRotation(rightUpperX, rightUpperZ, rightForearmX);
-        }
-    }
-
-    // Left leg controls (7, 8) using DrawPerson (only when no animation)
-    if (allowOtherControls) {
-        float leftThighX, leftLowerLegX;
-        drawPerson.getLeftLegRotation(leftThighX, leftLowerLegX);
-        if (keyboardState[SDL_SCANCODE_7]) {
-            leftThighX = fmaxf(leftThighX - 2.0f, -90.0f);
-            drawPerson.setLeftLegRotation(leftThighX, leftLowerLegX);
-        }
-        if (keyboardState[SDL_SCANCODE_8]) {
-            leftLowerLegX = fmaxf(leftLowerLegX - 2.0f, -135.0f);
-            drawPerson.setLeftLegRotation(leftThighX, leftLowerLegX);
-        }
-
-        // Right leg controls (9, 0) using DrawPerson
-        float rightThighX, rightLowerLegX;
-        drawPerson.getRightLegRotation(rightThighX, rightLowerLegX);
-        if (keyboardState[SDL_SCANCODE_9]) {
-            rightThighX = fmaxf(rightThighX - 2.0f, -90.0f);
-            drawPerson.setRightLegRotation(rightThighX, rightLowerLegX);
-        }
-        if (keyboardState[SDL_SCANCODE_0]) {
-            rightLowerLegX = fmaxf(rightLowerLegX - 2.0f, -135.0f);
-            drawPerson.setRightLegRotation(rightThighX, rightLowerLegX);
         }
     }
 }

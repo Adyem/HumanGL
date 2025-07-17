@@ -8,10 +8,10 @@ SettingsMenu::SettingsMenu(SettingsMenuRenderer& renderer, MouseHandler& mouseHa
 }
 
 void SettingsMenu::initializeButtons() {
-    float buttonWidth = 200.0f;
-    float buttonHeight = 50.0f;
+    float buttonWidth = HUMANGL_MENU_BUTTON_WIDTH;
+    float buttonHeight = HUMANGL_MENU_BUTTON_HEIGHT;
     float centerX = (static_cast<float>(windowWidth) - buttonWidth) / 2.0f;
-    float startY = static_cast<float>(windowHeight) / 2.0f + 150.0f;
+    float startY = static_cast<float>(windowHeight) / 2.0f + HUMANGL_MENU_SETTINGS_OFFSET_Y;
 
     buttons.clear();
     buttons.push_back(MenuButton(centerX, startY, buttonWidth, buttonHeight, "Back to Menu"));

@@ -1,39 +1,39 @@
 #include "../../includes/Human/Head.hpp"
 
 
-Torso::Torso() : BodyPartRenderer(0.2f, 0.4f, 0.8f) {
+Torso::Torso() : BodyPartRenderer(HUMANGL_DEFAULT_CLOTHING_R, HUMANGL_DEFAULT_CLOTHING_G, HUMANGL_DEFAULT_CLOTHING_B) {
     // Blue shirt color
 }
 
 void Torso::render() {
     glPushMatrix();
-    glScalef(1.0f, 1.5f, 0.5f);
+    glScalef(HUMANGL_TORSO_SCALE_X, HUMANGL_TORSO_SCALE_Y, HUMANGL_TORSO_SCALE_Z);
     drawColoredCube(colorR, colorG, colorB);
     glPopMatrix();
 }
 
-Neck::Neck() : BodyPartRenderer(0.8f, 0.6f, 0.4f) {
+Neck::Neck() : BodyPartRenderer(HUMANGL_DEFAULT_SKIN_R, HUMANGL_DEFAULT_SKIN_G, HUMANGL_DEFAULT_SKIN_B) {
     // Skin color
 }
 
 void Neck::render() {
     glPushMatrix();
-    glTranslatef(0.0f, 0.9f, 0.0f);
-    glScalef(0.3f, 0.3f, 0.3f);
+    glTranslatef(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_NECK_Y_POSITION, HUMANGL_OPENGL_AXIS_NONE);
+    glScalef(HUMANGL_NECK_SCALE, HUMANGL_NECK_SCALE, HUMANGL_NECK_SCALE);
     drawColoredCube(colorR, colorG, colorB);
     glPopMatrix();
 }
 
-Head::Head() : BodyPartRenderer(0.8f, 0.6f, 0.4f), headRotationX(0.0f), headRotationY(0.0f) {
+Head::Head() : BodyPartRenderer(HUMANGL_DEFAULT_SKIN_R, HUMANGL_DEFAULT_SKIN_G, HUMANGL_DEFAULT_SKIN_B), headRotationX(HUMANGL_OPENGL_AXIS_NONE), headRotationY(HUMANGL_OPENGL_AXIS_NONE) {
     // Skin color
 }
 
 void Head::render() {
     glPushMatrix();
-    glTranslatef(0.0f, 1.4f, 0.0f);
-    glRotatef(headRotationX, 1.0f, 0.0f, 0.0f);
-    glRotatef(headRotationY, 0.0f, 1.0f, 0.0f);
-    glScalef(0.6f, 0.6f, 0.6f);
+    glTranslatef(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_HEAD_Y_POSITION, HUMANGL_OPENGL_AXIS_NONE);
+    glRotatef(headRotationX, HUMANGL_OPENGL_AXIS_X, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_NONE);
+    glRotatef(headRotationY, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_Y, HUMANGL_OPENGL_AXIS_NONE);
+    glScalef(HUMANGL_HEAD_SCALE, HUMANGL_HEAD_SCALE, HUMANGL_HEAD_SCALE);
     drawColoredCube(colorR, colorG, colorB);
     glPopMatrix();
 }
@@ -48,27 +48,27 @@ void Head::getHeadRotation(float& x, float& y) const {
     y = headRotationY;
 }
 
-Eyes::Eyes() : BodyPartRenderer(0.0f, 0.0f, 0.0f), headRotationX(0.0f), headRotationY(0.0f) {
+Eyes::Eyes() : BodyPartRenderer(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_NONE), headRotationX(HUMANGL_OPENGL_AXIS_NONE), headRotationY(HUMANGL_OPENGL_AXIS_NONE) {
     // Black color for eyes
 }
 
 void Eyes::render() {
     glPushMatrix();
-    glTranslatef(0.0f, 1.4f, 0.0f);
-    glRotatef(headRotationX, 1.0f, 0.0f, 0.0f);
-    glRotatef(headRotationY, 0.0f, 1.0f, 0.0f);
+    glTranslatef(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_HEAD_Y_POSITION, HUMANGL_OPENGL_AXIS_NONE);
+    glRotatef(headRotationX, HUMANGL_OPENGL_AXIS_X, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_NONE);
+    glRotatef(headRotationY, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_Y, HUMANGL_OPENGL_AXIS_NONE);
 
     // Left eye
     glPushMatrix();
-    glTranslatef(-0.15f, 0.1f, 0.31f);
-    glScalef(0.1f, 0.1f, 0.1f);
+    glTranslatef(HUMANGL_LEFT_EYE_X_OFFSET, HUMANGL_EYE_Y_OFFSET, HUMANGL_EYE_Z_OFFSET);
+    glScalef(HUMANGL_EYE_SCALE, HUMANGL_EYE_SCALE, HUMANGL_EYE_SCALE);
     drawColoredCube(colorR, colorG, colorB);
     glPopMatrix();
 
     // Right eye
     glPushMatrix();
-    glTranslatef(0.15f, 0.1f, 0.31f);
-    glScalef(0.1f, 0.1f, 0.1f);
+    glTranslatef(HUMANGL_RIGHT_EYE_X_OFFSET, HUMANGL_EYE_Y_OFFSET, HUMANGL_EYE_Z_OFFSET);
+    glScalef(HUMANGL_EYE_SCALE, HUMANGL_EYE_SCALE, HUMANGL_EYE_SCALE);
     drawColoredCube(colorR, colorG, colorB);
     glPopMatrix();
 

@@ -1,6 +1,6 @@
 #include "../../includes/Human/DrawPerson.hpp"
 
-DrawPerson::DrawPerson() : torsoRotationY(0.0f), jumpHeight(0.0f) {
+DrawPerson::DrawPerson() : torsoRotationY(HUMANGL_OPENGL_AXIS_NONE), jumpHeight(HUMANGL_OPENGL_AXIS_NONE) {
     // Initialize all body parts
     torso = std::make_unique<Torso>();
     neck = std::make_unique<Neck>();
@@ -23,10 +23,10 @@ void DrawPerson::render() {
     glPushMatrix();
 
     // Apply jump height (affects entire body)
-    glTranslatef(0.0f, jumpHeight, 0.0f);
+    glTranslatef(HUMANGL_OPENGL_AXIS_NONE, jumpHeight, HUMANGL_OPENGL_AXIS_NONE);
 
     // Apply torso rotation (this affects all body parts)
-    glRotatef(torsoRotationY, 0.0f, 1.0f, 0.0f);
+    glRotatef(torsoRotationY, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_Y, HUMANGL_OPENGL_AXIS_NONE);
 
     // Draw body parts in hierarchical order
     torso->render();           // Base of hierarchy
