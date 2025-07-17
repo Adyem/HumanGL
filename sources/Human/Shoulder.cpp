@@ -5,12 +5,13 @@ Shoulder::Shoulder(float x, float y, float z)
     // Blue shirt color for shoulders
 }
 
-void Shoulder::render() {
-    glPushMatrix();
-    glTranslatef(positionX, positionY, positionZ);
-    glScalef(0.3f, 0.3f, 0.3f);
+void Shoulder::render(MatrixStack& matrixStack) {
+    matrixStack.pushMatrix();
+    matrixStack.translate(positionX, positionY, positionZ);
+    matrixStack.scale(0.3f, 0.3f, 0.3f);
+    matrixStack.applyToOpenGL();
     drawColoredCube(colorR, colorG, colorB);
-    glPopMatrix();
+    matrixStack.popMatrix();
 }
 
 LeftShoulder::LeftShoulder() : Shoulder(-0.7f, 0.5f, 0.0f) {
