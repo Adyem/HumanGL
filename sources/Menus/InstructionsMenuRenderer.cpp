@@ -62,46 +62,41 @@ void InstructionsMenuRenderer::renderTitle() {
 }
 
 void InstructionsMenuRenderer::renderInstructionsContent() {
-    // Draw instructions content
+    // Calculate column positions
+    float leftColumnX = HUMANGL_INSTRUCTIONS_LEFT_MARGIN;
+    float rightColumnX = static_cast<float>(windowWidth) / 2.0f + HUMANGL_INSTRUCTIONS_LEFT_MARGIN;
     float contentY = HUMANGL_INSTRUCTIONS_CONTENT_START_Y;
     float lineSpacing = HUMANGL_INSTRUCTIONS_LINE_SPACING;
 
-    textRenderer.drawText(HUMANGL_INSTRUCTIONS_LEFT_MARGIN, contentY, "=== HumanGL - Skeletal Animation Demo ===", 1.0f, 1.0f, 0.8f);
-    contentY += lineSpacing * 1.5f;
+    // Left Column - Menu Navigation and Basic Controls
+    float leftY = contentY;
+    textRenderer.drawText(leftColumnX, leftY, "Menu Navigation:", 0.9f, 0.9f, 0.9f);
+    leftY += lineSpacing;
+    textRenderer.drawText(leftColumnX + HUMANGL_SETTINGS_INDENT, leftY, "- Use mouse to navigate menus", 0.8f, 0.8f, 0.8f);
+    leftY += lineSpacing;
+    textRenderer.drawText(leftColumnX + HUMANGL_SETTINGS_INDENT, leftY, "- ESC: Exit application (this can be used anywhere on the app)", 0.8f, 0.8f, 0.8f);
+	leftY += lineSpacing;
+	textRenderer.drawText(leftColumnX + HUMANGL_SETTINGS_INDENT, leftY, "- M: Return to menu from simulation", 0.8f, 0.8f, 0.8f);
+    leftY += lineSpacing * 1.5f;
 
-    textRenderer.drawText(HUMANGL_INSTRUCTIONS_LEFT_MARGIN, contentY, "Menu Navigation:", 0.9f, 0.9f, 0.9f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_INSTRUCTIONS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- Use mouse to navigate menus", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_INSTRUCTIONS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- ESC: Exit application", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing * 1.5f;
+    textRenderer.drawText(leftColumnX, leftY, "Animation Controls:", 0.9f, 0.9f, 0.9f);
+    leftY += lineSpacing;
+    textRenderer.drawText(leftColumnX + HUMANGL_SETTINGS_INDENT, leftY, "- SPACE: Toggle walking", 0.8f, 0.8f, 0.8f);
+    leftY += lineSpacing;
+    textRenderer.drawText(leftColumnX + HUMANGL_SETTINGS_INDENT, leftY, "- P: Jump (single jump)", 0.8f, 0.8f, 0.8f);
+    leftY += lineSpacing;
+    textRenderer.drawText(leftColumnX + HUMANGL_SETTINGS_INDENT, leftY, "- J: Toggle disco dancing", 0.8f, 0.8f, 0.8f);
+    leftY += lineSpacing;
+    textRenderer.drawText(leftColumnX + HUMANGL_SETTINGS_INDENT, leftY, "- K: Toggle kung fu fighting", 0.8f, 0.8f, 0.8f);
 
-    textRenderer.drawText(HUMANGL_INSTRUCTIONS_LEFT_MARGIN, contentY, "Simulation Controls:", 0.9f, 0.9f, 0.9f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_INSTRUCTIONS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- M: Return to main menu", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_INSTRUCTIONS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- SPACE: Toggle walking animation", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_INSTRUCTIONS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- P: Jump (single jump)", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_INSTRUCTIONS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- J: Toggle disco dancing", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_INSTRUCTIONS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- K: Toggle kung fu fighting", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing * 1.5f;
-    
-    textRenderer.drawText(50.0f, contentY, "Manual Controls:", 0.9f, 0.9f, 0.9f);
-    contentY += lineSpacing;
-    textRenderer.drawText(70.0f, contentY, "- A/D: Rotate torso left/right", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(70.0f, contentY, "- W/S: Head up/down", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(70.0f, contentY, "- Q/E: Head left/right", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(70.0f, contentY, "- 1-3: Left arm controls", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(70.0f, contentY, "- 4-6: Right arm controls", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(70.0f, contentY, "- 7-8: Left leg controls", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(70.0f, contentY, "- 9-0: Right leg controls", 0.8f, 0.8f, 0.8f);
+    // Right Column - Manual Controls and Camera
+    float rightY = contentY;
+    textRenderer.drawText(rightColumnX, rightY, "Manual Controls:", 0.9f, 0.9f, 0.9f);
+    rightY += lineSpacing;
+    textRenderer.drawText(rightColumnX + HUMANGL_SETTINGS_INDENT, rightY, "- A/D: Rotate torso left/right", 0.8f, 0.8f, 0.8f);
+    rightY += lineSpacing;
+    textRenderer.drawText(rightColumnX + HUMANGL_SETTINGS_INDENT, rightY, "- W/S: Head up/down", 0.8f, 0.8f, 0.8f);
+    rightY += lineSpacing;
+    textRenderer.drawText(rightColumnX + HUMANGL_SETTINGS_INDENT, rightY, "- Q/E: Head left/right", 0.8f, 0.8f, 0.8f);
+    rightY += lineSpacing * 1.5f;
 }
