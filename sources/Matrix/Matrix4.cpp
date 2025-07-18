@@ -19,7 +19,7 @@ void Matrix4::translate(float x, float y, float z) {
     translation.m[12] = x;
     translation.m[13] = y;
     translation.m[14] = z;
-    *this = *this * translation;
+    *this = translation * *this;
 }
 
 void Matrix4::rotateX(float angle) {
@@ -33,7 +33,7 @@ void Matrix4::rotateX(float angle) {
     rotation.m[9] = -s;
     rotation.m[10] = c;
     
-    *this = *this * rotation;
+    *this = rotation * *this;
 }
 
 void Matrix4::rotateY(float angle) {
@@ -47,7 +47,7 @@ void Matrix4::rotateY(float angle) {
     rotation.m[8] = s;
     rotation.m[10] = c;
     
-    *this = *this * rotation;
+    *this = rotation * *this;
 }
 
 void Matrix4::rotateZ(float angle) {
@@ -61,7 +61,7 @@ void Matrix4::rotateZ(float angle) {
     rotation.m[4] = -s;
     rotation.m[5] = c;
     
-    *this = *this * rotation;
+    *this = rotation * *this;
 }
 
 void Matrix4::scale(float x, float y, float z) {
@@ -69,16 +69,17 @@ void Matrix4::scale(float x, float y, float z) {
     scaling.m[0] = x;
     scaling.m[5] = y;
     scaling.m[10] = z;
-    *this = *this * scaling;
+    *this = scaling * *this;
 }
 
 Matrix4 Matrix4::operator*(const Matrix4& other) const {
     Matrix4 result;
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            result.m[i * 4 + j] = 0;
-            for (int k = 0; k < 4; k++) {
-                result.m[i * 4 + j] += m[i * 4 + k] * other.m[k * 4 + j];
+    for (int col = 0; col < 4; ++col) {
+        for (int row = 0; row < 4; ++row) {
+            result.m[col * 4 + row] = 0.0f;
+            for (int k = 0; k < 4; ++k) {
+                result.m[col * 4 + row] +=
+                    m[k * 4 + row] * other.m[col * 4 + k];
             }
         }
     }
