@@ -10,6 +10,14 @@ void Leg::render(MatrixStack& matrixStack) {
     // Draw the entire leg as a connected hierarchy
     matrixStack.pushMatrix();
     matrixStack.translate(positionX, positionY, positionZ);
+
+    // Debug marker to visualize the hip joint position
+    matrixStack.pushMatrix();
+    matrixStack.scale(0.05f, 0.05f, 0.05f);
+    matrixStack.applyToOpenGL();
+    drawColoredCube(1.0f, 0.0f, 0.0f); // bright red cube
+    matrixStack.popMatrix();
+
     matrixStack.rotateX(thighX);
 
     // Draw thigh (with pants color)
@@ -47,8 +55,8 @@ void Leg::getLowerLegRotation(float& x) const {
     x = lowerLegX;
 }
 
-LeftLeg::LeftLeg() : Leg(-0.3f, -0.75f, 0.0f) {
+LeftLeg::LeftLeg() : Leg(-0.4f, -1.2f, 0.0f) {
 }
 
-RightLeg::RightLeg() : Leg(0.3f, -0.75f, 0.0f) {
+RightLeg::RightLeg() : Leg(0.4f, -1.2f, 0.0f) {
 }
