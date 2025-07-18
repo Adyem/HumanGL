@@ -16,4 +16,14 @@ public:
     void initializeButtons() override;
     void render() override;
     MenuAction handleButtonClick(int buttonIndex) override;
+
+    // Override event handling for custom mouse interactions
+    MenuAction handleEvent(const SDL_Event& event) override;
+
+    // Override update to ensure continuous hover updates
+    MenuAction update() override;
+
+protected:
+    // Override to ensure hover works with renderer's buttons
+    void updateButtonHover() override;
 };

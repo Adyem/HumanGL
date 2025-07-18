@@ -55,7 +55,15 @@ enum MenuState {
 enum SettingsPage {
     SETTINGS_MAIN,
     BODY_CUSTOMIZATION,
+    BODY_PART_DETAIL,
+    BACKGROUND_CUSTOMIZATION,
     RESOLUTION_SETTINGS
+};
+
+// Body part customization state
+enum CustomizationState {
+    CUSTOMIZATION_BODY_SELECTION,
+    CUSTOMIZATION_PART_DETAIL
 };
 
 // ============================================================================

@@ -9,6 +9,7 @@
 #include "../Menus/InstructionsMenuRenderer.hpp"
 #include "../Input/MouseHandler.hpp"
 #include "../Input/MenuInput.hpp"
+#include "../Input/SettingsInputHandler.hpp"
 #include "BaseMenu.hpp"
 #include "MainMenu.hpp"
 #include "SettingsMenu.hpp"
@@ -25,6 +26,7 @@ private:
     InstructionsMenuRenderer instructionsMenuRenderer;
     MouseHandler mouseHandler;
     MenuInput menuInput;
+    SettingsInputHandler settingsInputHandler;
 
     // Menu instances
     MainMenu mainMenu;

@@ -24,11 +24,11 @@ public:
     // Common functionality
     void updateWindowSize(int width, int height);
     const std::vector<MenuButton>& getButtons() const;
-    MenuAction handleEvent(const SDL_Event& event);
-    MenuAction update();
+    virtual MenuAction handleEvent(const SDL_Event& event);
+    virtual MenuAction update();
 
 protected:
     // Helper methods for derived classes
-    void updateButtonHover();
+    virtual void updateButtonHover();
     int checkButtonClick();
 };

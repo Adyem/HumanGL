@@ -7,6 +7,8 @@ MenuSystem::MenuSystem()
       creditsMenu(creditsMenuRenderer, mouseHandler, menuInput, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
       instructionsMenu(instructionsMenuRenderer, mouseHandler, menuInput, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
       currentState(MAIN_MENU), windowWidth(HUMANGL_DEFAULT_WINDOW_WIDTH), windowHeight(HUMANGL_DEFAULT_WINDOW_HEIGHT) {
+    // Initialize settings input handler
+    settingsInputHandler.setSettingsRenderer(&settingsMenuRenderer);
 }
 
 MenuSystem::~MenuSystem() {
@@ -57,6 +59,12 @@ void MenuSystem::updateWindowSize(int width, int height) {
 }
 
 void MenuSystem::setState(AppState state) {
+    // If we're entering settings from another state, reset to main settings page
+    if (state == SETTINGS && currentState != SETTINGS) {
+        settingsMenuRenderer.resetToMainPage();
+        settingsMenu.initializeButtons();
+    }
+
     currentState = state;
 }
 
@@ -76,6 +84,8 @@ MenuAction MenuSystem::handleEvent(const SDL_Event& event) {
             break;
         case SETTINGS:
             action = settingsMenu.handleEvent(event);
+            // Handle settings customization input
+            settingsInputHandler.handleInput();
             break;
         case CREDITS:
             action = creditsMenu.handleEvent(event);
@@ -88,22 +98,22 @@ MenuAction MenuSystem::handleEvent(const SDL_Event& event) {
             break;
     }
 
-    // Process menu actions
+    // Process menu actions using setState to ensure proper state transitions
     switch (action) {
         case MENU_ACTION_START_SIMULATION:
-            currentState = SIMULATION;
+            setState(SIMULATION);
             break;
         case MENU_ACTION_SETTINGS:
-            currentState = SETTINGS;
+            setState(SETTINGS);
             break;
         case MENU_ACTION_CREDITS:
-            currentState = CREDITS;
+            setState(CREDITS);
             break;
         case MENU_ACTION_INSTRUCTIONS:
-            currentState = INSTRUCTIONS;
+            setState(INSTRUCTIONS);
             break;
         case MENU_ACTION_BACK_TO_MENU:
-            currentState = MAIN_MENU;
+            setState(MAIN_MENU);
             break;
         default:
             break;

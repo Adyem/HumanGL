@@ -90,7 +90,7 @@ APPLICATION_HEADERS = Application.hpp BaseMenu.hpp CreditsMenu.hpp InstructionsM
 
 HUMAN_HEADERS = Arm.hpp BodyPart.hpp DrawPerson.hpp Head.hpp Leg.hpp Shoulder.hpp
 
-INPUT_HEADERS = KeyboardHandler.hpp MenuInput.hpp MouseHandler.hpp
+INPUT_HEADERS = KeyboardHandler.hpp MenuInput.hpp MouseHandler.hpp SettingsInputHandler.hpp
 
 MATRIX_HEADERS = Matrix4.hpp MatrixStack.hpp
 
