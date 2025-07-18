@@ -44,7 +44,7 @@ void SettingsMenuRenderer::initializeButtons() {
 
         // Create buttons using proper MenuButton constructor
         buttons.emplace_back(centerX, startY, buttonWidth, buttonHeight, "Body Customization");
-        buttons.emplace_back(centerX, startY + spacing, buttonWidth, buttonHeight, "Background Colors");
+        buttons.emplace_back(centerX, startY + spacing, buttonWidth, buttonHeight, "Graphics");
         buttons.emplace_back(centerX, startY + spacing * 2, buttonWidth, buttonHeight, "Back to Menu");
 
     } else if (currentPage == BODY_CUSTOMIZATION) {
@@ -58,13 +58,14 @@ void SettingsMenuRenderer::initializeButtons() {
         std::vector<BodyPart> mainBodyParts = getCustomizableBodyParts();
 
         // Center the grid
-        float totalGridWidth = HUMANGL_BODYPART_COLUMNS * buttonWidth + (HUMANGL_BODYPART_COLUMNS - 1) * 20.0f;
+        float horizontalSpacing = 30.0f; // More horizontal spacing between columns
+        float totalGridWidth = HUMANGL_BODYPART_COLUMNS * buttonWidth + (HUMANGL_BODYPART_COLUMNS - 1) * horizontalSpacing;
         float centerX = (static_cast<float>(windowWidth) - totalGridWidth) / 2.0f;
 
         int row = 0, col = 0;
         for (size_t i = 0; i < mainBodyParts.size(); i++) {
             BodyPart part = mainBodyParts[i];
-            float x = centerX + col * (buttonWidth + 20.0f);
+            float x = centerX + col * (buttonWidth + horizontalSpacing);
             float y = topMargin + row * spacing;
 
             // Create button using proper constructor
@@ -79,19 +80,19 @@ void SettingsMenuRenderer::initializeButtons() {
 
         // Back buttons (horizontal layout, centered)
         float backButtonY = topMargin + (row + 1) * spacing + 40.0f;
-        float buttonSpacing = 20.0f;
-        float totalBackButtonWidth = 2 * buttonWidth + buttonSpacing;
+        float backButtonSpacing = 30.0f; // More spacing to match grid
+        float totalBackButtonWidth = 2 * buttonWidth + backButtonSpacing;
         float backButtonStartX = (static_cast<float>(windowWidth) - totalBackButtonWidth) / 2.0f;
 
         buttons.emplace_back(backButtonStartX, backButtonY, buttonWidth, buttonHeight, "Back to Settings");
-        buttons.emplace_back(backButtonStartX + buttonWidth + buttonSpacing, backButtonY, buttonWidth, buttonHeight, "Back to Main Menu");
+        buttons.emplace_back(backButtonStartX + buttonWidth + backButtonSpacing, backButtonY, buttonWidth, buttonHeight, "Back to Main Menu");
 
     } else if (currentPage == BODY_PART_DETAIL) {
         // Body part detail page buttons (horizontal layout)
-        float buttonWidth = 140.0f; // Smaller to fit 4 buttons
+        float buttonWidth = 190.0f; // Even bigger to fit longer text
         float buttonHeight = HUMANGL_MENU_BUTTON_HEIGHT;
         float startY = static_cast<float>(windowHeight) - 100.0f;
-        float buttonSpacing = 15.0f;
+        float buttonSpacing = 25.0f; // More spacing between buttons
 
         // Calculate total width and center position for 4 buttons
         float totalWidth = 4 * buttonWidth + 3 * buttonSpacing;
@@ -104,10 +105,10 @@ void SettingsMenuRenderer::initializeButtons() {
 
     } else if (currentPage == BACKGROUND_CUSTOMIZATION) {
         // Background customization page buttons (horizontal layout)
-        float buttonWidth = 150.0f; // Smaller to fit 3 buttons
+        float buttonWidth = 180.0f; // Bigger to fit text better
         float buttonHeight = HUMANGL_MENU_BUTTON_HEIGHT;
         float startY = static_cast<float>(windowHeight) - 100.0f;
-        float buttonSpacing = 15.0f;
+        float buttonSpacing = 25.0f; // More spacing between buttons
 
         // Calculate total width and center position for 3 buttons
         float totalWidth = 3 * buttonWidth + 2 * buttonSpacing;
@@ -253,13 +254,13 @@ void SettingsMenuRenderer::renderTitle() {
             title = "Settings";
             break;
         case BODY_CUSTOMIZATION:
-            title = "Body Customization";
+            title = "Body Part Selector";
             break;
         case BODY_PART_DETAIL:
             title = "Customize " + getBodyPartName(selectedBodyPart);
             break;
         case BACKGROUND_CUSTOMIZATION:
-            title = "Background Colors";
+            title = "Graphics Customization";
             break;
         default:
             title = "Settings";
@@ -270,31 +271,6 @@ void SettingsMenuRenderer::renderTitle() {
 }
 
 void SettingsMenuRenderer::renderSettingsContent() {
-    // Draw settings content
-    float contentY = HUMANGL_SETTINGS_CONTENT_START_Y;
-    float lineSpacing = HUMANGL_SETTINGS_LINE_SPACING;
-
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN, contentY, "Graphics Settings:", 0.9f, 0.9f, 0.9f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- Resolution: 1280x720 (720p)", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- VSync: Enabled", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- Anti-aliasing: Off", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing * 1.5f;
-
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN, contentY, "Controls:", 0.9f, 0.9f, 0.9f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- Mouse sensitivity: Normal", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- Keyboard layout: QWERTY", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing * 1.5f;
-
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN, contentY, "Customization:", 0.9f, 0.9f, 0.9f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- Use 'Body Customization' to modify body parts", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- Use 'Background Colors' to change menu/simulation colors", 0.8f, 0.8f, 0.8f);
 }
 
 // Page navigation methods
@@ -429,9 +405,9 @@ void SettingsMenuRenderer::renderBodyPartCustomization() {
     float contentY = HUMANGL_SETTINGS_CONTENT_START_Y;
     float lineSpacing = HUMANGL_SETTINGS_LINE_SPACING;
 
-    std::string title = "Customizing: " + getBodyPartName(selectedBodyPart);
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN, contentY, title, 0.9f, 0.9f, 0.9f);
-    contentY += lineSpacing * 2.0f;
+    // std::string title = "Customizing: " + getBodyPartName(selectedBodyPart);
+    // textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN, contentY, title, 0.9f, 0.9f, 0.9f);
+    // contentY += lineSpacing * 2.0f;
 
     // Scale controls
     textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN, contentY, "Size:", 0.9f, 0.9f, 0.9f);
@@ -527,12 +503,12 @@ void SettingsMenuRenderer::drawColorSelector(float x, float y) {
     glEnd();
     glLineWidth(1.0f); // Reset line width
 
-    // Draw color name with hover effect
-    std::string colorText = isHovering ? "Click to change color!" : "Click to change color";
-    float textR = isHovering ? 1.0f : 0.8f;
-    float textG = isHovering ? 1.0f : 0.8f;
-    float textB = isHovering ? 1.0f : 0.8f;
-    textRenderer.drawText(x + HUMANGL_COLOR_PREVIEW_SIZE + 10.0f, y + 8.0f, colorText, textR, textG, textB);
+    // // Draw color name with hover effect
+    // std::string colorText = isHovering ? "Click to change color!" : "Click to change color";
+    // float textR = isHovering ? 1.0f : 0.8f;
+    // float textG = isHovering ? 1.0f : 0.8f;
+    // float textB = isHovering ? 1.0f : 0.8f;
+    // textRenderer.drawText(x + HUMANGL_COLOR_PREVIEW_SIZE + 10.0f, y + 8.0f, colorText, textR, textG, textB);
 }
 
 // Get body part name as string
@@ -687,9 +663,6 @@ void SettingsMenuRenderer::renderBackgroundCustomization() {
     float contentY = HUMANGL_SETTINGS_CONTENT_START_Y;
     float lineSpacing = HUMANGL_SETTINGS_LINE_SPACING;
 
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN, contentY, "Customize Background Colors:", 0.9f, 0.9f, 0.9f);
-    contentY += lineSpacing * 2.0f;
-
     // Menu background color section
     textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN, contentY, "Menu Background Color:", 0.9f, 0.9f, 0.9f);
     contentY += lineSpacing;
@@ -754,10 +727,9 @@ void SettingsMenuRenderer::drawBackgroundColorSelector(float x, float y, const C
     glLineWidth(1.0f);
 
     // Draw label
-    std::string label = isMenuColor ? "Menu Background" : "Simulation Background";
-    std::string clickText = isHovering ? " (Click to change!)" : " (Click to change)";
+    std::string label = isMenuColor ? "Menu" : "Simulation";
     float textR = isHovering ? 1.0f : 0.8f;
     float textG = isHovering ? 1.0f : 0.8f;
     float textB = isHovering ? 1.0f : 0.8f;
-    textRenderer.drawText(x + previewSize + 10.0f, y + 8.0f, label + clickText, textR, textG, textB);
+    textRenderer.drawText(x + previewSize + 10.0f, y + 8.0f, label, textR, textG, textB);
 }
