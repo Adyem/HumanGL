@@ -14,8 +14,8 @@ void Shoulder::render(MatrixStack& matrixStack) {
     matrixStack.popMatrix();
 }
 
-LeftShoulder::LeftShoulder() : Shoulder(-0.65f, 0.75f, 0.0f) {
+LeftShoulder::LeftShoulder() : Shoulder(-0.6f, 1.2f, 0.0f) {
 }
 
-RightShoulder::RightShoulder() : Shoulder(0.65f, 0.75f, 0.0f) {
+RightShoulder::RightShoulder() : Shoulder(0.6f, 1.2f, 0.0f) {
 }

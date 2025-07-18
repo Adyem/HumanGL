@@ -9,7 +9,16 @@ Arm::Arm(float x, float y, float z)
 void Arm::render(MatrixStack& matrixStack) {
     // Draw the entire arm as a connected hierarchy
     matrixStack.pushMatrix();
-    // Apply rotations before translation to keep the joint fixed
+
+    matrixStack.translate(positionX, positionY, positionZ);
+
+    // Debug marker to visualize the shoulder joint position
+    matrixStack.pushMatrix();
+    matrixStack.scale(0.05f, 0.05f, 0.05f);
+    matrixStack.applyToOpenGL();
+    drawColoredCube(1.0f, 0.0f, 0.0f); // bright red cube
+    matrixStack.popMatrix();
+
     matrixStack.rotateX(upperArmX);
     matrixStack.rotateZ(upperArmZ);
     matrixStack.translate(positionX, positionY, positionZ);
@@ -59,8 +68,9 @@ void Arm::getForearmRotation(float& x) const {
 }
 
 /* Left and Right Arm */
-LeftArm::LeftArm() : Arm(-0.65f, 0.75f, 0.0f) {
+
+LeftArm::LeftArm() : Arm(-0.6f, 1.2f, 0.0f) {
 }
 
-RightArm::RightArm() : Arm(0.65f, 0.75f, 0.0f) {
+RightArm::RightArm() : Arm(0.6f, 1.2f, 0.0f) {
 }
