@@ -9,13 +9,21 @@ Leg::Leg(float x, float y, float z)
 void Leg::render(MatrixStack& matrixStack) {
     // Draw the entire leg as a connected hierarchy
     matrixStack.pushMatrix();
-    matrixStack.translate(positionX, positionY, positionZ);
+    // Apply rotation before translating to hip position
     matrixStack.rotateX(thighX);
+    matrixStack.translate(positionX, positionY, positionZ);
+
+    // Debug marker to visualize the hip joint position
+    matrixStack.pushMatrix();
+    matrixStack.scale(0.05f, 0.05f, 0.05f);
+    matrixStack.applyToOpenGL();
+    drawColoredCube(1.0f, 0.0f, 0.0f); // bright red cube
+    matrixStack.popMatrix();
 
     // Draw thigh (with pants color)
     matrixStack.pushMatrix();
-    matrixStack.translate(0.0f, -0.4f, 0.0f);
     matrixStack.scale(0.3f, 0.8f, 0.3f);
+    matrixStack.translate(0.0f, -0.4f, 0.0f);
     matrixStack.applyToOpenGL();
     drawColoredCube(0.1f, 0.2f, 0.6f);  // Dark blue pants color for thighs
     matrixStack.popMatrix();
@@ -23,8 +31,8 @@ void Leg::render(MatrixStack& matrixStack) {
     // Draw lower leg (connected to thigh)
     matrixStack.translate(0.0f, -0.8f, 0.0f);
     matrixStack.rotateX(lowerLegX);
-    matrixStack.translate(0.0f, -0.4f, 0.0f);
     matrixStack.scale(0.25f, 0.8f, 0.25f);
+    matrixStack.translate(0.0f, -0.4f, 0.0f);
     matrixStack.applyToOpenGL();
     drawColoredCube(colorR, colorG, colorB);  // Skin color for lower legs
 
