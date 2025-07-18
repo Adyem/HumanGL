@@ -4,11 +4,15 @@
 #include "../Human/DrawPerson.hpp"
 #include "../Input/KeyboardHandler.hpp"
 
+// Forward declaration
+class SettingsMenuRenderer;
+
 class SimulationRenderer {
 private:
     DrawPerson& drawPerson;
     KeyboardHandler& keyboardHandler;
-    
+    SettingsMenuRenderer* settingsRenderer;
+
     // Rendering settings
     float nearPlane;
     float farPlane;
@@ -30,7 +34,13 @@ public:
     
     // Update window dimensions
     void updateWindowSize(int width, int height);
-    
+
+    // Set settings renderer for color access
+    void setSettingsRenderer(SettingsMenuRenderer* renderer);
+
+    // Apply body part customizations
+    void applyBodyPartCustomizations();
+
     // Getters
     float getNearPlane() const { return nearPlane; }
     float getFarPlane() const { return farPlane; }

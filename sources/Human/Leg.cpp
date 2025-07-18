@@ -2,8 +2,10 @@
 
 Leg::Leg(float x, float y, float z)
     : BodyPartRenderer(HUMANGL_DEFAULT_SKIN_R, HUMANGL_DEFAULT_SKIN_G, HUMANGL_DEFAULT_SKIN_B), positionX(x), positionY(y), positionZ(z),
-      thighX(HUMANGL_OPENGL_AXIS_NONE), lowerLegX(HUMANGL_OPENGL_AXIS_NONE) {
-    // Skin color for legs (will be overridden for thighs with pants color)
+      thighX(HUMANGL_OPENGL_AXIS_NONE), lowerLegX(HUMANGL_OPENGL_AXIS_NONE),
+      thighR(HUMANGL_PANTS_COLOR_R), thighG(HUMANGL_PANTS_COLOR_G), thighB(HUMANGL_PANTS_COLOR_B),
+      lowerLegR(HUMANGL_DEFAULT_SKIN_R), lowerLegG(HUMANGL_DEFAULT_SKIN_G), lowerLegB(HUMANGL_DEFAULT_SKIN_B) {
+    // Thighs use pants color (blue), lower legs use skin color
 }
 
 void Leg::render() {
@@ -12,19 +14,19 @@ void Leg::render() {
     glTranslatef(positionX, positionY, positionZ);
     glRotatef(thighX, HUMANGL_OPENGL_AXIS_X, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_NONE);
 
-    // Draw thigh (with pants color)
+    // Draw thigh (with individual thigh color)
     glPushMatrix();
     glTranslatef(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_THIGH_Y_OFFSET, HUMANGL_OPENGL_AXIS_NONE);
-    glScalef(HUMANGL_THIGH_SCALE_X, HUMANGL_THIGH_SCALE_Y, HUMANGL_THIGH_SCALE_Z);
-    drawColoredCube(HUMANGL_PANTS_COLOR_R, HUMANGL_PANTS_COLOR_G, HUMANGL_PANTS_COLOR_B);  // Dark blue pants color for thighs
+    glScalef(HUMANGL_THIGH_SCALE_X * scaleX, HUMANGL_THIGH_SCALE_Y * scaleY, HUMANGL_THIGH_SCALE_Z * scaleZ);
+    drawColoredCube(thighR, thighG, thighB);  // Individual thigh color
     glPopMatrix();
 
     // Draw lower leg (connected to thigh)
     glTranslatef(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_LOWER_LEG_Y_OFFSET, HUMANGL_OPENGL_AXIS_NONE);
     glRotatef(lowerLegX, HUMANGL_OPENGL_AXIS_X, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_NONE);
     glTranslatef(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_LOWER_LEG_Y_POSITION, HUMANGL_OPENGL_AXIS_NONE);
-    glScalef(HUMANGL_LOWER_LEG_SCALE_X, HUMANGL_LOWER_LEG_SCALE_Y, HUMANGL_LOWER_LEG_SCALE_Z);
-    drawColoredCube(colorR, colorG, colorB);  // Skin color for lower legs
+    glScalef(HUMANGL_LOWER_LEG_SCALE_X * scaleX, HUMANGL_LOWER_LEG_SCALE_Y * scaleY, HUMANGL_LOWER_LEG_SCALE_Z * scaleZ);
+    drawColoredCube(lowerLegR, lowerLegG, lowerLegB);  // Individual lower leg color
 
     glPopMatrix();
 }
@@ -43,6 +45,18 @@ void Leg::getThighRotation(float& x) const {
 
 void Leg::getLowerLegRotation(float& x) const {
     x = lowerLegX;
+}
+
+void Leg::setThighColor(float r, float g, float b) {
+    thighR = r;
+    thighG = g;
+    thighB = b;
+}
+
+void Leg::setLowerLegColor(float r, float g, float b) {
+    lowerLegR = r;
+    lowerLegG = g;
+    lowerLegB = b;
 }
 
 LeftLeg::LeftLeg() : Leg(HUMANGL_LEFT_LEG_X_POSITION, HUMANGL_LEG_Y_POSITION, HUMANGL_LEG_Z_POSITION) {

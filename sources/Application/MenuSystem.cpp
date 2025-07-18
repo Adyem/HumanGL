@@ -163,6 +163,10 @@ MenuAction MenuSystem::update() {
 }
 
 void MenuSystem::render() {
+    // Set menu background color from settings
+    const Color& menuBgColor = settingsMenuRenderer.getMenuBackgroundColor();
+    glClearColor(menuBgColor.r, menuBgColor.g, menuBgColor.b, menuBgColor.a);
+
     switch (currentState) {
         case MAIN_MENU:
             mainMenu.render();

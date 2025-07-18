@@ -68,6 +68,12 @@ bool Application::initialize() {
         return false;
     }
 
+    // Connect simulation renderer to settings for background colors
+    simulationRenderer.setSettingsRenderer(&menuSystem.getSettingsMenuRenderer());
+
+    // Apply initial body part colors
+    simulationRenderer.applyBodyPartCustomizations();
+
     running = true;
     return true;
 }

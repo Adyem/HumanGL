@@ -7,7 +7,7 @@ Torso::Torso() : BodyPartRenderer(HUMANGL_DEFAULT_CLOTHING_R, HUMANGL_DEFAULT_CL
 
 void Torso::render() {
     glPushMatrix();
-    glScalef(HUMANGL_TORSO_SCALE_X, HUMANGL_TORSO_SCALE_Y, HUMANGL_TORSO_SCALE_Z);
+    glScalef(HUMANGL_TORSO_SCALE_X * scaleX, HUMANGL_TORSO_SCALE_Y * scaleY, HUMANGL_TORSO_SCALE_Z * scaleZ);
     drawColoredCube(colorR, colorG, colorB);
     glPopMatrix();
 }
@@ -19,7 +19,7 @@ Neck::Neck() : BodyPartRenderer(HUMANGL_DEFAULT_SKIN_R, HUMANGL_DEFAULT_SKIN_G, 
 void Neck::render() {
     glPushMatrix();
     glTranslatef(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_NECK_Y_POSITION, HUMANGL_OPENGL_AXIS_NONE);
-    glScalef(HUMANGL_NECK_SCALE, HUMANGL_NECK_SCALE, HUMANGL_NECK_SCALE);
+    glScalef(HUMANGL_NECK_SCALE * scaleX, HUMANGL_NECK_SCALE * scaleY, HUMANGL_NECK_SCALE * scaleZ);
     drawColoredCube(colorR, colorG, colorB);
     glPopMatrix();
 }
@@ -33,7 +33,7 @@ void Head::render() {
     glTranslatef(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_HEAD_Y_POSITION, HUMANGL_OPENGL_AXIS_NONE);
     glRotatef(headRotationX, HUMANGL_OPENGL_AXIS_X, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_NONE);
     glRotatef(headRotationY, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_Y, HUMANGL_OPENGL_AXIS_NONE);
-    glScalef(HUMANGL_HEAD_SCALE, HUMANGL_HEAD_SCALE, HUMANGL_HEAD_SCALE);
+    glScalef(HUMANGL_HEAD_SCALE * scaleX, HUMANGL_HEAD_SCALE * scaleY, HUMANGL_HEAD_SCALE * scaleZ);
     drawColoredCube(colorR, colorG, colorB);
     glPopMatrix();
 }
@@ -61,14 +61,14 @@ void Eyes::render() {
     // Left eye
     glPushMatrix();
     glTranslatef(HUMANGL_LEFT_EYE_X_OFFSET, HUMANGL_EYE_Y_OFFSET, HUMANGL_EYE_Z_OFFSET);
-    glScalef(HUMANGL_EYE_SCALE, HUMANGL_EYE_SCALE, HUMANGL_EYE_SCALE);
+    glScalef(HUMANGL_EYE_SCALE * scaleX, HUMANGL_EYE_SCALE * scaleY, HUMANGL_EYE_SCALE * scaleZ);
     drawColoredCube(colorR, colorG, colorB);
     glPopMatrix();
 
     // Right eye
     glPushMatrix();
     glTranslatef(HUMANGL_RIGHT_EYE_X_OFFSET, HUMANGL_EYE_Y_OFFSET, HUMANGL_EYE_Z_OFFSET);
-    glScalef(HUMANGL_EYE_SCALE, HUMANGL_EYE_SCALE, HUMANGL_EYE_SCALE);
+    glScalef(HUMANGL_EYE_SCALE * scaleX, HUMANGL_EYE_SCALE * scaleY, HUMANGL_EYE_SCALE * scaleZ);
     drawColoredCube(colorR, colorG, colorB);
     glPopMatrix();
 

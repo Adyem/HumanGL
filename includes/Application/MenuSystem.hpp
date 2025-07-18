@@ -61,7 +61,10 @@ public:
     
     // Update menu system (call each frame)
     MenuAction update();
-    
+
+    // Get settings renderer for color access
+    SettingsMenuRenderer& getSettingsMenuRenderer() { return settingsMenuRenderer; }
+
     // Render current menu
     void render();
 };

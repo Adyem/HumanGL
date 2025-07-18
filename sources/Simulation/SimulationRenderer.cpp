@@ -1,7 +1,8 @@
 #include "../../includes/Simulation/SimulationRenderer.hpp"
+#include "../../includes/Menus/SettingsMenuRenderer.hpp"
 
 SimulationRenderer::SimulationRenderer(DrawPerson& person, KeyboardHandler& kbHandler, int winWidth, int winHeight)
-    : drawPerson(person), keyboardHandler(kbHandler),
+    : drawPerson(person), keyboardHandler(kbHandler), settingsRenderer(nullptr),
       nearPlane(HUMANGL_SIMULATION_NEAR_PLANE), farPlane(HUMANGL_SIMULATION_FAR_PLANE), fov(HUMANGL_SIMULATION_FOV),
       windowWidth(winWidth), windowHeight(winHeight) {
 }
@@ -17,7 +18,10 @@ void SimulationRenderer::render() {
     
     // Apply camera transformations
     keyboardHandler.applyCameraTransform();
-    
+
+    // Apply body part customizations before rendering
+    applyBodyPartCustomizations();
+
     // Render the person
     drawPerson.render();
 }
@@ -57,13 +61,19 @@ void SimulationRenderer::setupScene() {
     // Enable depth testing
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    
-    // Set background color (dark blue)
-    glClearColor(HUMANGL_SIMULATION_BACKGROUND_R, HUMANGL_SIMULATION_BACKGROUND_G, HUMANGL_SIMULATION_BACKGROUND_B, HUMANGL_SIMULATION_BACKGROUND_A);
-    
+
+    // Set background color from settings or use default
+    if (settingsRenderer) {
+        const Color& simBgColor = settingsRenderer->getSimulationBackgroundColor();
+        glClearColor(simBgColor.r, simBgColor.g, simBgColor.b, simBgColor.a);
+    } else {
+        // Fallback to default
+        glClearColor(HUMANGL_SIMULATION_BACKGROUND_R, HUMANGL_SIMULATION_BACKGROUND_G, HUMANGL_SIMULATION_BACKGROUND_B, HUMANGL_SIMULATION_BACKGROUND_A);
+    }
+
     // Enable smooth shading
     glShadeModel(GL_SMOOTH);
-    
+
     // Set viewport
     glViewport(0, 0, windowWidth, windowHeight);
 }
@@ -71,7 +81,18 @@ void SimulationRenderer::setupScene() {
 void SimulationRenderer::updateWindowSize(int width, int height) {
     windowWidth = width;
     windowHeight = height;
-    
+
     // Update viewport
     glViewport(0, 0, windowWidth, windowHeight);
+}
+
+void SimulationRenderer::setSettingsRenderer(SettingsMenuRenderer* renderer) {
+    settingsRenderer = renderer;
+}
+
+void SimulationRenderer::applyBodyPartCustomizations() {
+    if (settingsRenderer) {
+        const std::map<BodyPart, BodyPartSettings>& settings = settingsRenderer->getAllBodyPartSettings();
+        drawPerson.applyBodyPartSettings(settings);
+    }
 }

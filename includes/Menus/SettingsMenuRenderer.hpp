@@ -58,11 +58,14 @@ public:
     void cycleBodyPartColor();
     void adjustBodyPartScale(float scaleMultiplier);
     void setBodyPartScale(float newScale);
+    void resetBodyPartToDefault();
     const BodyPartSettings& getBodyPartSettings(BodyPart part) const;
+    const std::map<BodyPart, BodyPartSettings>& getAllBodyPartSettings() const;
 
     // Background color customization
     void cycleMenuBackgroundColor();
     void cycleSimulationBackgroundColor();
+    void resetColorsToDefault();
     const Color& getMenuBackgroundColor() const;
     const Color& getSimulationBackgroundColor() const;
 
@@ -84,4 +87,6 @@ private:
     void drawColorSelector(float x, float y);
     void drawBackgroundColorSelector(float x, float y, const Color& currentColor, bool isMenuColor);
     std::string getBodyPartName(BodyPart part) const;
+    BodyPartSettings getDefaultBodyPartSettings(BodyPart part) const;
+    std::vector<BodyPart> getCustomizableBodyParts() const;
 };

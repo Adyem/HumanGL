@@ -8,7 +8,7 @@ Shoulder::Shoulder(float x, float y, float z)
 void Shoulder::render() {
     glPushMatrix();
     glTranslatef(positionX, positionY, positionZ);
-    glScalef(HUMANGL_SHOULDER_SCALE, HUMANGL_SHOULDER_SCALE, HUMANGL_SHOULDER_SCALE);
+    glScalef(HUMANGL_SHOULDER_SCALE * scaleX, HUMANGL_SHOULDER_SCALE * scaleY, HUMANGL_SHOULDER_SCALE * scaleZ);
     drawColoredCube(colorR, colorG, colorB);
     glPopMatrix();
 }

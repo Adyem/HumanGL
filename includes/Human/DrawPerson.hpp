@@ -5,6 +5,7 @@
 #include "Shoulder.hpp"
 #include "Arm.hpp"
 #include "Leg.hpp"
+#include <map>
 
 class DrawPerson {
 private:
@@ -49,4 +50,9 @@ public:
     void getRightArmRotation(float& upperX, float& upperZ, float& forearmX) const;
     void getLeftLegRotation(float& thighX, float& lowerLegX) const;
     void getRightLegRotation(float& thighX, float& lowerLegX) const;
+
+    // Body part customization methods
+    void setBodyPartColor(BodyPart part, float r, float g, float b);
+    void setBodyPartScale(BodyPart part, float scaleX, float scaleY, float scaleZ);
+    void applyBodyPartSettings(const std::map<BodyPart, BodyPartSettings>& settings);
 };

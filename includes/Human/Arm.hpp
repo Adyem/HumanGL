@@ -10,6 +10,10 @@ protected:
     float upperArmX, upperArmZ;
     float forearmX;
 
+    // Individual part colors
+    float upperArmR, upperArmG, upperArmB;
+    float forearmR, forearmG, forearmB;
+
 public:
     Arm(float x, float y, float z);
     virtual ~Arm() = default;
@@ -21,6 +25,10 @@ public:
     void setForearmRotation(float x);
     void getUpperArmRotation(float& x, float& z) const;
     void getForearmRotation(float& x) const;
+
+    // Individual part color methods
+    void setUpperArmColor(float r, float g, float b);
+    void setForearmColor(float r, float g, float b);
 };
 
 // Left Arm class

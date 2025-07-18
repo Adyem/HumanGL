@@ -5,17 +5,19 @@
 
 SettingsMenuRenderer::SettingsMenuRenderer(TextRenderer& textRenderer)
     : MenuRenderer(textRenderer), currentPage(SETTINGS_MAIN), selectedBodyPart(BODY_PART_HEAD), currentColorIndex(0),
-      availableColors(), menuBackgroundColor(Color(0.2f, 0.3f, 0.4f, 1.0f)), simulationBackgroundColor(Color(0.2f, 0.3f, 0.4f, 1.0f)),
+      availableColors(),
+      menuBackgroundColor(Color(HUMANGL_BACKGROUND_COLOR_R, HUMANGL_BACKGROUND_COLOR_G, HUMANGL_BACKGROUND_COLOR_B, HUMANGL_BACKGROUND_COLOR_A)),
+      simulationBackgroundColor(Color(HUMANGL_SIMULATION_BACKGROUND_R, HUMANGL_SIMULATION_BACKGROUND_G, HUMANGL_SIMULATION_BACKGROUND_B, HUMANGL_SIMULATION_BACKGROUND_A)),
       menuBgColorIndex(0), simulationBgColorIndex(0), sliderX(0), sliderY(0), sliderWidth(0), sliderHeight(0),
       colorSelectorX(0), colorSelectorY(0), colorSelectorSize(0), menuColorSelectorX(0), menuColorSelectorY(0), menuColorSelectorSize(0),
       simColorSelectorX(0), simColorSelectorY(0), simColorSelectorSize(0), isDraggingSlider(false) {
     initializeAvailableColors();
     initializeButtons();
 
-    // Initialize default body part settings
+    // Initialize default body part settings with proper colors
     for (int i = 0; i < BODY_PART_COUNT; i++) {
         BodyPart part = static_cast<BodyPart>(i);
-        bodyPartSettings[part] = BodyPartSettings();
+        bodyPartSettings[part] = getDefaultBodyPartSettings(part);
     }
 }
 
@@ -52,18 +54,8 @@ void SettingsMenuRenderer::initializeButtons() {
         float spacing = HUMANGL_BODYPART_BUTTON_SPACING;
         float topMargin = HUMANGL_BODYPART_TOP_MARGIN;
 
-        // Create buttons for main body parts only (centered grid)
-        std::vector<BodyPart> mainBodyParts = {
-            BODY_PART_HEAD,
-            BODY_PART_TORSO,
-            BODY_PART_EYES,
-            BODY_PART_LEFT_ARM,
-            BODY_PART_RIGHT_ARM,
-            BODY_PART_LEFT_LEG,
-            BODY_PART_RIGHT_LEG,
-            BODY_PART_LEFT_SHOULDER,
-            BODY_PART_RIGHT_SHOULDER
-        };
+        // Create buttons for all customizable body parts (centered grid)
+        std::vector<BodyPart> mainBodyParts = getCustomizableBodyParts();
 
         // Center the grid
         float totalGridWidth = HUMANGL_BODYPART_COLUMNS * buttonWidth + (HUMANGL_BODYPART_COLUMNS - 1) * 20.0f;
@@ -96,32 +88,34 @@ void SettingsMenuRenderer::initializeButtons() {
 
     } else if (currentPage == BODY_PART_DETAIL) {
         // Body part detail page buttons (horizontal layout)
-        float buttonWidth = 180.0f; // Slightly smaller for horizontal layout
+        float buttonWidth = 140.0f; // Smaller to fit 4 buttons
         float buttonHeight = HUMANGL_MENU_BUTTON_HEIGHT;
         float startY = static_cast<float>(windowHeight) - 100.0f;
-        float buttonSpacing = 20.0f;
+        float buttonSpacing = 15.0f;
 
-        // Calculate total width and center position
-        float totalWidth = 3 * buttonWidth + 2 * buttonSpacing;
+        // Calculate total width and center position for 4 buttons
+        float totalWidth = 4 * buttonWidth + 3 * buttonSpacing;
         float startX = (static_cast<float>(windowWidth) - totalWidth) / 2.0f;
 
-        buttons.emplace_back(startX, startY, buttonWidth, buttonHeight, "Back to Body Parts");
-        buttons.emplace_back(startX + buttonWidth + buttonSpacing, startY, buttonWidth, buttonHeight, "Back to Settings");
-        buttons.emplace_back(startX + 2 * (buttonWidth + buttonSpacing), startY, buttonWidth, buttonHeight, "Back to Main Menu");
+        buttons.emplace_back(startX, startY, buttonWidth, buttonHeight, "Reset to Default");
+        buttons.emplace_back(startX + buttonWidth + buttonSpacing, startY, buttonWidth, buttonHeight, "Back to Body Parts");
+        buttons.emplace_back(startX + 2 * (buttonWidth + buttonSpacing), startY, buttonWidth, buttonHeight, "Back to Settings");
+        buttons.emplace_back(startX + 3 * (buttonWidth + buttonSpacing), startY, buttonWidth, buttonHeight, "Back to Main Menu");
 
     } else if (currentPage == BACKGROUND_CUSTOMIZATION) {
         // Background customization page buttons (horizontal layout)
-        float buttonWidth = 180.0f;
+        float buttonWidth = 150.0f; // Smaller to fit 3 buttons
         float buttonHeight = HUMANGL_MENU_BUTTON_HEIGHT;
         float startY = static_cast<float>(windowHeight) - 100.0f;
-        float buttonSpacing = 20.0f;
+        float buttonSpacing = 15.0f;
 
-        // Calculate total width and center position for 2 buttons
-        float totalWidth = 2 * buttonWidth + buttonSpacing;
+        // Calculate total width and center position for 3 buttons
+        float totalWidth = 3 * buttonWidth + 2 * buttonSpacing;
         float startX = (static_cast<float>(windowWidth) - totalWidth) / 2.0f;
 
-        buttons.emplace_back(startX, startY, buttonWidth, buttonHeight, "Back to Settings");
-        buttons.emplace_back(startX + buttonWidth + buttonSpacing, startY, buttonWidth, buttonHeight, "Back to Main Menu");
+        buttons.emplace_back(startX, startY, buttonWidth, buttonHeight, "Reset to Default");
+        buttons.emplace_back(startX + buttonWidth + buttonSpacing, startY, buttonWidth, buttonHeight, "Back to Settings");
+        buttons.emplace_back(startX + 2 * (buttonWidth + buttonSpacing), startY, buttonWidth, buttonHeight, "Back to Main Menu");
     }
 }
 
@@ -195,18 +189,8 @@ MenuAction SettingsMenuRenderer::handleButtonClick(int buttonIndex) {
                 return MENU_ACTION_NONE;
         }
     } else if (currentPage == BODY_CUSTOMIZATION) {
-        // Get the main body parts list (same as in initializeButtons)
-        std::vector<BodyPart> mainBodyParts = {
-            BODY_PART_HEAD,
-            BODY_PART_TORSO,
-            BODY_PART_EYES,
-            BODY_PART_LEFT_ARM,
-            BODY_PART_RIGHT_ARM,
-            BODY_PART_LEFT_LEG,
-            BODY_PART_RIGHT_LEG,
-            BODY_PART_LEFT_SHOULDER,
-            BODY_PART_RIGHT_SHOULDER
-        };
+        // Get the main body parts list (guaranteed to match button creation)
+        std::vector<BodyPart> mainBodyParts = getCustomizableBodyParts();
 
         if (buttonIndex < static_cast<int>(mainBodyParts.size())) {
             // Select body part
@@ -224,13 +208,16 @@ MenuAction SettingsMenuRenderer::handleButtonClick(int buttonIndex) {
         }
     } else if (currentPage == BODY_PART_DETAIL) {
         switch (buttonIndex) {
-            case 0: // Back to Body Parts
+            case 0: // Reset to Default
+                resetBodyPartToDefault();
+                return MENU_ACTION_NONE;
+            case 1: // Back to Body Parts
                 setPage(BODY_CUSTOMIZATION);
                 return MENU_ACTION_NONE;
-            case 1: // Back to Settings
+            case 2: // Back to Settings
                 setPage(SETTINGS_MAIN);
                 return MENU_ACTION_NONE;
-            case 2: // Back to Main Menu
+            case 3: // Back to Main Menu
                 currentPage = SETTINGS_MAIN;
                 return MENU_ACTION_BACK_TO_MENU;
             default:
@@ -238,10 +225,13 @@ MenuAction SettingsMenuRenderer::handleButtonClick(int buttonIndex) {
         }
     } else if (currentPage == BACKGROUND_CUSTOMIZATION) {
         switch (buttonIndex) {
-            case 0: // Back to Settings
+            case 0: // Reset to Default
+                resetColorsToDefault();
+                return MENU_ACTION_NONE;
+            case 1: // Back to Settings
                 setPage(SETTINGS_MAIN);
                 return MENU_ACTION_NONE;
-            case 1: // Back to Main Menu
+            case 2: // Back to Main Menu
                 currentPage = SETTINGS_MAIN;
                 return MENU_ACTION_BACK_TO_MENU;
             default:
@@ -347,6 +337,10 @@ void SettingsMenuRenderer::setBodyPartScale(float newScale) {
 
 const BodyPartSettings& SettingsMenuRenderer::getBodyPartSettings(BodyPart part) const {
     return bodyPartSettings.at(part);
+}
+
+const std::map<BodyPart, BodyPartSettings>& SettingsMenuRenderer::getAllBodyPartSettings() const {
+    return bodyPartSettings;
 }
 
 // Initialize available colors
@@ -566,6 +560,82 @@ std::string SettingsMenuRenderer::getBodyPartName(BodyPart part) const {
     }
 }
 
+BodyPartSettings SettingsMenuRenderer::getDefaultBodyPartSettings(BodyPart part) const {
+    BodyPartSettings settings;
+
+    // Set default colors based on body part type
+    switch (part) {
+        // Skin color parts (head, neck, forearms, lower legs)
+        case BODY_PART_HEAD:
+        case BODY_PART_NECK:
+        case BODY_PART_LEFT_FOREARM:
+        case BODY_PART_RIGHT_FOREARM:
+        case BODY_PART_LEFT_LOWER_LEG:
+        case BODY_PART_RIGHT_LOWER_LEG:
+            settings.color = Color::SkinTone();
+            break;
+
+        // Blue clothing parts (torso, shoulders, upper arms)
+        case BODY_PART_TORSO:
+        case BODY_PART_LEFT_SHOULDER:
+        case BODY_PART_RIGHT_SHOULDER:
+        case BODY_PART_LEFT_UPPER_ARM:
+        case BODY_PART_RIGHT_UPPER_ARM:
+            settings.color = Color::ClothingBlue();
+            break;
+
+        // Dark blue pants (thighs)
+        case BODY_PART_LEFT_THIGH:
+        case BODY_PART_RIGHT_THIGH:
+            settings.color = Color(HUMANGL_PANTS_COLOR_R, HUMANGL_PANTS_COLOR_G, HUMANGL_PANTS_COLOR_B, 1.0f);
+            break;
+
+        // Black eyes
+        case BODY_PART_EYES:
+            settings.color = Color::Black();
+            break;
+
+        // Arms and legs (use skin for now, will be overridden by specific parts)
+        case BODY_PART_LEFT_ARM:
+        case BODY_PART_RIGHT_ARM:
+        case BODY_PART_LEFT_LEG:
+        case BODY_PART_RIGHT_LEG:
+            settings.color = Color::SkinTone();
+            break;
+
+        default:
+            settings.color = Color::SkinTone();
+            break;
+    }
+
+    // Default scale and other settings
+    settings.scale = Vector3(1.0f, 1.0f, 1.0f);
+    settings.rotation = Vector3(0.0f, 0.0f, 0.0f);
+    settings.position = Vector3(0.0f, 0.0f, 0.0f);
+    settings.visible = true;
+
+    return settings;
+}
+
+std::vector<BodyPart> SettingsMenuRenderer::getCustomizableBodyParts() const {
+    return {
+        BODY_PART_HEAD,
+        BODY_PART_NECK,
+        BODY_PART_TORSO,
+        BODY_PART_EYES,
+        BODY_PART_LEFT_SHOULDER,
+        BODY_PART_RIGHT_SHOULDER,
+        BODY_PART_LEFT_UPPER_ARM,
+        BODY_PART_RIGHT_UPPER_ARM,
+        BODY_PART_LEFT_FOREARM,
+        BODY_PART_RIGHT_FOREARM,
+        BODY_PART_LEFT_THIGH,
+        BODY_PART_RIGHT_THIGH,
+        BODY_PART_LEFT_LOWER_LEG,
+        BODY_PART_RIGHT_LOWER_LEG
+    };
+}
+
 // Background color customization methods
 void SettingsMenuRenderer::cycleMenuBackgroundColor() {
     menuBgColorIndex = (menuBgColorIndex + 1) % availableColors.size();
@@ -575,6 +645,33 @@ void SettingsMenuRenderer::cycleMenuBackgroundColor() {
 void SettingsMenuRenderer::cycleSimulationBackgroundColor() {
     simulationBgColorIndex = (simulationBgColorIndex + 1) % availableColors.size();
     simulationBackgroundColor = availableColors[simulationBgColorIndex];
+}
+
+void SettingsMenuRenderer::resetColorsToDefault() {
+    // Reset to default colors
+    menuBackgroundColor = Color(HUMANGL_BACKGROUND_COLOR_R, HUMANGL_BACKGROUND_COLOR_G, HUMANGL_BACKGROUND_COLOR_B, HUMANGL_BACKGROUND_COLOR_A);
+    simulationBackgroundColor = Color(HUMANGL_SIMULATION_BACKGROUND_R, HUMANGL_SIMULATION_BACKGROUND_G, HUMANGL_SIMULATION_BACKGROUND_B, HUMANGL_SIMULATION_BACKGROUND_A);
+
+    // Reset color indices
+    menuBgColorIndex = 0;
+    simulationBgColorIndex = 0;
+}
+
+void SettingsMenuRenderer::resetBodyPartToDefault() {
+    // Reset current body part to proper default settings
+    bodyPartSettings[selectedBodyPart] = getDefaultBodyPartSettings(selectedBodyPart);
+
+    // Reset color index to match the default color
+    Color defaultColor = bodyPartSettings[selectedBodyPart].color;
+    currentColorIndex = 0; // Find matching color index
+    for (size_t i = 0; i < availableColors.size(); i++) {
+        if (availableColors[i].r == defaultColor.r &&
+            availableColors[i].g == defaultColor.g &&
+            availableColors[i].b == defaultColor.b) {
+            currentColorIndex = static_cast<int>(i);
+            break;
+        }
+    }
 }
 
 const Color& SettingsMenuRenderer::getMenuBackgroundColor() const {

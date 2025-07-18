@@ -1,13 +1,19 @@
 #include "../../includes/Human/BodyPart.hpp"
 
 BodyPartRenderer::BodyPartRenderer(float r, float g, float b)
-    : colorR(r), colorG(g), colorB(b) {
+    : colorR(r), colorG(g), colorB(b), scaleX(1.0f), scaleY(1.0f), scaleZ(1.0f) {
 }
 
 void BodyPartRenderer::setColor(float r, float g, float b) {
     colorR = r;
     colorG = g;
     colorB = b;
+}
+
+void BodyPartRenderer::setScale(float sX, float sY, float sZ) {
+    scaleX = sX;
+    scaleY = sY;
+    scaleZ = sZ;
 }
 
 void BodyPartRenderer::drawColoredCube(float r, float g, float b) {

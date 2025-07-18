@@ -1,22 +1,11 @@
 mandtory:
 - split human class further up
 - clean up comments
+- Matrix class use
 
 Bonus:
 
-- other animations
-- settings to change the color 
-- settings to change the bodypart size
 
 Creative bonus:
 - settings to change the resolution
 - settings to change the fontsize
-- settings to change the background color menu
-- settings to change the background color simulation
-- credits page
-- instruction page
-
-
-Bonus done:
-- menu system
-- rotation player
