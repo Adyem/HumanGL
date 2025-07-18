@@ -7,8 +7,8 @@ Shoulder::Shoulder(float x, float y, float z)
 
 void Shoulder::render(MatrixStack& matrixStack) {
     matrixStack.pushMatrix();
-    matrixStack.translate(positionX, positionY, positionZ);
     matrixStack.scale(0.3f, 0.3f, 0.3f);
+    matrixStack.translate(positionX, positionY, positionZ);
     matrixStack.applyToOpenGL();
     drawColoredCube(colorR, colorG, colorB);
     matrixStack.popMatrix();
