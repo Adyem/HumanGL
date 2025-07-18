@@ -74,11 +74,12 @@ void Matrix4::scale(float x, float y, float z) {
 
 Matrix4 Matrix4::operator*(const Matrix4& other) const {
     Matrix4 result;
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            result.m[i * 4 + j] = 0;
-            for (int k = 0; k < 4; k++) {
-                result.m[i * 4 + j] += m[i * 4 + k] * other.m[k * 4 + j];
+    for (int col = 0; col < 4; ++col) {
+        for (int row = 0; row < 4; ++row) {
+            result.m[col * 4 + row] = 0.0f;
+            for (int k = 0; k < 4; ++k) {
+                result.m[col * 4 + row] +=
+                    m[k * 4 + row] * other.m[col * 4 + k];
             }
         }
     }
