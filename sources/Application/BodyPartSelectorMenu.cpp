@@ -1,4 +1,4 @@
-#include "../../includes/Application/BodyPartSelectorLogic.hpp"
+#include "../../includes/Application/BodyPartSelectorMenu.hpp"
 
 BodyPartSelectorLogic::BodyPartSelectorLogic() {
     // No initialization needed

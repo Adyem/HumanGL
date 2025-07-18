@@ -1,8 +1,6 @@
 #pragma once
 
 #include "../humangl.hpp"
-#include <map>
-#include <vector>
 
 class BodyPartEditorLogic {
 private:
@@ -11,7 +9,8 @@ private:
     int currentColorIndex;
     std::vector<Color> availableColors;
     bool isDraggingSlider;
-    
+    bool isMousePressed;
+
     // Input handling state
     const Uint8* keyboardState;
     bool plusKeyPressed;

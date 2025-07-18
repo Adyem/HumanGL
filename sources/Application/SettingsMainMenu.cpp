@@ -1,4 +1,4 @@
-#include "../../includes/Application/SettingsMainMenuLogic.hpp"
+#include "../../includes/Application/SettingsMainMenu.hpp"
 
 SettingsMainMenuLogic::SettingsMainMenuLogic() {
     // No initialization needed for main menu logic

@@ -3,7 +3,7 @@
 #include "../humangl.hpp"
 #include "MenuRenderer.hpp"
 #include "TextRenderer.hpp"
-#include "../Application/BackgroundCustomizerLogic.hpp"
+#include "../Application/GraphicsMenu.hpp"
 
 class BackgroundCustomizerMenu : public MenuRenderer {
 private:

@@ -62,9 +62,4 @@ void Arm::setForearmColor(float r, float g, float b) {
     forearmB = b;
 }
 
-/* Left and Right Arm */
-LeftArm::LeftArm() : Arm(HUMANGL_LEFT_ARM_X_POSITION, HUMANGL_ARM_Y_POSITION, HUMANGL_ARM_Z_POSITION) {
-}
 
-RightArm::RightArm() : Arm(HUMANGL_RIGHT_ARM_X_POSITION, HUMANGL_ARM_Y_POSITION, HUMANGL_ARM_Z_POSITION) {
-}

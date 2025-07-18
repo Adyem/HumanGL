@@ -31,16 +31,4 @@ public:
     void setLowerLegColor(float r, float g, float b);
 };
 
-// Left Leg class
-class LeftLeg : public Leg {
-public:
-    LeftLeg();
-    virtual ~LeftLeg() = default;
-};
 
-// Right Leg class
-class RightLeg : public Leg {
-public:
-    RightLeg();
-    virtual ~RightLeg() = default;
-};

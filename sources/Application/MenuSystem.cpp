@@ -129,6 +129,11 @@ MenuAction MenuSystem::handleSettingsEvent(const SDL_Event& event) {
         case SDL_MOUSEBUTTONDOWN:
             if (event.button.button == SDL_BUTTON_LEFT) {
                 mouseHandler.setMousePressed(true);
+
+                // Check for custom UI interactions (sliders, color selectors) on mouse down
+                float mouseX = static_cast<float>(event.button.x);
+                float mouseY = static_cast<float>(event.button.y);
+                settingsMenuRenderer.handleMouseClick(mouseX, mouseY);
             }
             break;
 
@@ -140,14 +145,9 @@ MenuAction MenuSystem::handleSettingsEvent(const SDL_Event& event) {
                 int clickedButton = checkSettingsButtonClick();
                 if (clickedButton >= 0) {
                     action = settingsMenuRenderer.handleButtonClick(clickedButton);
-                } else {
-                    // If no button was clicked, check for custom UI interactions (sliders, color selectors)
-                    float mouseX = static_cast<float>(event.button.x);
-                    float mouseY = static_cast<float>(event.button.y);
-                    settingsMenuRenderer.handleMouseClick(mouseX, mouseY);
                 }
 
-                // Handle mouse up for custom UI elements
+                // Handle mouse up for custom UI elements (always call this)
                 settingsMenuRenderer.handleMouseUp();
             }
             break;

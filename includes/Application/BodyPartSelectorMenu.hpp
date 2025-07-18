@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../humangl.hpp"
-#include <vector>
 
 class BodyPartSelectorLogic {
 public:
@@ -16,7 +15,4 @@ public:
 
     // Get body part name as string
     std::string getBodyPartName(BodyPart part) const;
-
-private:
-    // No persistent state needed - just logic functions
 };

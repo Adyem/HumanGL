@@ -1,11 +1,16 @@
 #pragma once
 
 #include "../humangl.hpp"
+#include "Torso.hpp"
+#include "Neck.hpp"
 #include "Head.hpp"
-#include "Shoulder.hpp"
-#include "Arm.hpp"
-#include "Leg.hpp"
-#include <map>
+#include "Eyes.hpp"
+#include "LeftShoulder.hpp"
+#include "RightShoulder.hpp"
+#include "LeftArm.hpp"
+#include "RightArm.hpp"
+#include "LeftLeg.hpp"
+#include "RightLeg.hpp"
 
 class DrawPerson {
 private:

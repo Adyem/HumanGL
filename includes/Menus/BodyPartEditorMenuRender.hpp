@@ -3,8 +3,7 @@
 #include "../humangl.hpp"
 #include "MenuRenderer.hpp"
 #include "TextRenderer.hpp"
-#include "../Application/BodyPartEditorLogic.hpp"
-#include <map>
+#include "../Application/BodyPartEditorMenu.hpp"
 
 class BodyPartEditorMenu : public MenuRenderer {
 private:

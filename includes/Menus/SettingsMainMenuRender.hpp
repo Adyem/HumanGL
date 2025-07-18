@@ -3,18 +3,18 @@
 #include "../humangl.hpp"
 #include "MenuRenderer.hpp"
 #include "TextRenderer.hpp"
-#include "../Application/BodyPartSelectorLogic.hpp"
+#include "../Application/SettingsMainMenu.hpp"
 
-class BodyPartSelectorMenu : public MenuRenderer {
+class SettingsMainMenu : public MenuRenderer {
 private:
     std::vector<MenuButton> buttons;
-    BodyPartSelectorLogic logic;
+    SettingsMainMenuLogic logic;
 
 public:
-    BodyPartSelectorMenu(TextRenderer& textRenderer);
-    virtual ~BodyPartSelectorMenu() = default;
+    SettingsMainMenu(TextRenderer& textRenderer);
+    virtual ~SettingsMainMenu() = default;
 
-    // Initialize body part selection buttons
+    // Initialize main settings buttons
     void initializeButtons();
 
     // Override the base class render method
@@ -26,13 +26,14 @@ public:
     // Get buttons for interaction
     const std::vector<MenuButton>& getButtons() const;
 
-    // Handle button clicks - returns selected body part or navigation action
-    MenuAction handleButtonClick(int buttonIndex, BodyPart& selectedPart);
+    // Handle button clicks
+    MenuAction handleButtonClick(int buttonIndex);
 
     // Update button hover states
     void updateButtonHover(class MouseHandler& mouseHandler);
 
 private:
-    // Helper methods
+    // Settings menu specific rendering methods
     void renderTitle();
+    void renderSettingsContent();
 };

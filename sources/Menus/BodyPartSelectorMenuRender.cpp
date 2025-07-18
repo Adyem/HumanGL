@@ -1,4 +1,4 @@
-#include "../../includes/Menus/BodyPartSelectorMenu.hpp"
+#include "../../includes/Menus/BodyPartSelectorMenuRender.hpp"
 #include "../../includes/Input/MouseHandler.hpp"
 
 BodyPartSelectorMenu::BodyPartSelectorMenu(TextRenderer& textRenderer)

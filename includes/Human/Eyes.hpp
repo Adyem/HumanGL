@@ -3,19 +3,18 @@
 #include "../humangl.hpp"
 #include "BodyPart.hpp"
 
-// Head class
-class Head : public BodyPartRenderer {
+// Eyes class - rendered as part of head
+class Eyes : public BodyPartRenderer {
 private:
     float headRotationX;
     float headRotationY;
 
 public:
-    Head();
-    virtual ~Head() = default;
+    Eyes();
+    virtual ~Eyes() = default;
 
     void render() override;
-
-    // Head-specific rotation methods
+    
+    // Sync with head rotation
     void setHeadRotation(float x, float y);
-    void getHeadRotation(float& x, float& y) const;
 };

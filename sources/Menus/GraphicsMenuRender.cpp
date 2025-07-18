@@ -1,4 +1,4 @@
-#include "../../includes/Menus/BackgroundCustomizerMenu.hpp"
+#include "../../includes/Menus/GraphicsMenuRender.hpp"
 #include "../../includes/Input/MouseHandler.hpp"
 
 BackgroundCustomizerMenu::BackgroundCustomizerMenu(TextRenderer& textRenderer)

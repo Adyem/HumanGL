@@ -1,4 +1,4 @@
-#include "../../includes/Application/BackgroundCustomizerLogic.hpp"
+#include "../../includes/Application/GraphicsMenu.hpp"
 
 BackgroundCustomizerLogic::BackgroundCustomizerLogic()
     : menuBackgroundColor(Color(HUMANGL_BACKGROUND_COLOR_R, HUMANGL_BACKGROUND_COLOR_G, HUMANGL_BACKGROUND_COLOR_B, HUMANGL_BACKGROUND_COLOR_A)),

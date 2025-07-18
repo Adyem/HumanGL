@@ -59,8 +59,4 @@ void Leg::setLowerLegColor(float r, float g, float b) {
     lowerLegB = b;
 }
 
-LeftLeg::LeftLeg() : Leg(HUMANGL_LEFT_LEG_X_POSITION, HUMANGL_LEG_Y_POSITION, HUMANGL_LEG_Z_POSITION) {
-}
 
-RightLeg::RightLeg() : Leg(HUMANGL_RIGHT_LEG_X_POSITION, HUMANGL_LEG_Y_POSITION, HUMANGL_LEG_Z_POSITION) {
-}

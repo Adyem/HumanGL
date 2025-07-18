@@ -1,4 +1,4 @@
-#include "../../includes/Application/SettingsMenuLogic.hpp"
+#include "../../includes/Application/SettingsMenu.hpp"
 
 SettingsMenuLogic::SettingsMenuLogic()
     : currentPage(SETTINGS_MAIN), selectedBodyPart(BODY_PART_HEAD) {

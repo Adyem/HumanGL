@@ -1,7 +1,6 @@
 #pragma once
 
 #include "../humangl.hpp"
-#include <vector>
 
 class BackgroundCustomizerLogic {
 private:

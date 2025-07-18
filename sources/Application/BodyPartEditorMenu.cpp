@@ -1,8 +1,7 @@
-#include "../../includes/Application/BodyPartEditorLogic.hpp"
-#include <algorithm>
+#include "../../includes/Application/BodyPartEditorMenu.hpp"
 
 BodyPartEditorLogic::BodyPartEditorLogic()
-    : selectedBodyPart(BODY_PART_HEAD), currentColorIndex(0), isDraggingSlider(false),
+    : selectedBodyPart(BODY_PART_HEAD), currentColorIndex(0), isDraggingSlider(false), isMousePressed(false),
       keyboardState(SDL_GetKeyboardState(nullptr)), plusKeyPressed(false), minusKeyPressed(false), cKeyPressed(false) {
     initializeAvailableColors();
 
@@ -49,9 +48,12 @@ MenuAction BodyPartEditorLogic::handleButtonClick(int buttonIndex) {
     }
 }
 
-bool BodyPartEditorLogic::handleMouseClick(float mouseX, float mouseY, float sliderX, float sliderY, 
-                                          float sliderWidth, float sliderHeight, float colorSelectorX, 
+bool BodyPartEditorLogic::handleMouseClick(float mouseX, float mouseY, float sliderX, float sliderY,
+                                          float sliderWidth, float sliderHeight, float colorSelectorX,
                                           float colorSelectorY, float colorSelectorSize) {
+    // Set mouse pressed state
+    isMousePressed = true;
+
     // Check if clicked on slider
     if (mouseX >= sliderX && mouseX <= sliderX + sliderWidth &&
         mouseY >= sliderY && mouseY <= sliderY + sliderHeight) {
@@ -82,11 +84,12 @@ void BodyPartEditorLogic::updateHover(float mouseX, float mouseY, float sliderX,
     // Handle mouse up signal (negative coordinates)
     if (mouseX < 0 || mouseY < 0) {
         isDraggingSlider = false;
+        isMousePressed = false;
         return;
     }
 
-    // Update slider dragging if mouse button is held down
-    if (isDraggingSlider && sliderWidth > 0) {
+    // Update slider dragging if mouse button is held down AND we're dragging the slider
+    if (isDraggingSlider && isMousePressed && sliderWidth > 0) {
         float normalizedPos = std::max(0.0f, std::min(1.0f, (mouseX - sliderX) / sliderWidth));
         float newScale = HUMANGL_SLIDER_MIN_VALUE + normalizedPos * (HUMANGL_SLIDER_MAX_VALUE - HUMANGL_SLIDER_MIN_VALUE);
         setBodyPartScale(newScale);
@@ -95,6 +98,7 @@ void BodyPartEditorLogic::updateHover(float mouseX, float mouseY, float sliderX,
 
 void BodyPartEditorLogic::handleMouseUp() {
     isDraggingSlider = false;
+    isMousePressed = false;
 }
 
 void BodyPartEditorLogic::handleInput() {

@@ -10,6 +10,4 @@ public:
     // Handle button clicks - returns navigation action
     MenuAction handleButtonClick(int buttonIndex);
 
-private:
-    // No state needed for main menu logic - it's just navigation
 };

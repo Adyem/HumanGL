@@ -31,16 +31,4 @@ public:
     void setForearmColor(float r, float g, float b);
 };
 
-// Left Arm class
-class LeftArm : public Arm {
-public:
-    LeftArm();
-    virtual ~LeftArm() = default;
-};
 
-// Right Arm class
-class RightArm : public Arm {
-public:
-    RightArm();
-    virtual ~RightArm() = default;
-};

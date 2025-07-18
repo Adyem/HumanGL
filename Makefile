@@ -85,12 +85,15 @@ SIMULATION_SUBDIRS = Simulation
 SUBDIRS = $(APPLICATION_SUBDIRS) $(HUMAN_SUBDIRS) $(INPUT_SUBDIRS) $(MATRIX_SUBDIRS) $(MENUS_SUBDIRS) $(SIMULATION_SUBDIRS)
 # PUT IN ALPHABETICAL ORDER
 # Header Files (without paths)
+#MenuInputInterface.hpp 
 APPLICATION_HEADERS = Application.hpp BaseMenu.hpp CreditsMenu.hpp InstructionsMenu.hpp \
-					  MainMenu.hpp MenuSystem.hpp \
-					  SettingsMainMenuLogic.hpp BodyPartSelectorLogic.hpp BodyPartEditorLogic.hpp BackgroundCustomizerLogic.hpp \
-					  SettingsMenuLogic.hpp
+					  MainMenu.hpp MenuSystem.hpp  \
+					  SettingsMainMenu.hpp BodyPartSelectorMenu.hpp BodyPartEditorMenu.hpp GraphicsMenu.hpp \
+					  SettingsMenu.hpp
 
-HUMAN_HEADERS = Arm.hpp BodyPart.hpp DrawPerson.hpp Head.hpp Leg.hpp Shoulder.hpp
+HUMAN_HEADERS = Arm.hpp BodyPart.hpp DrawPerson.hpp Head.hpp Leg.hpp Shoulder.hpp \
+				Torso.hpp Neck.hpp Eyes.hpp LeftArm.hpp RightArm.hpp LeftLeg.hpp RightLeg.hpp \
+				LeftShoulder.hpp RightShoulder.hpp
 
 INPUT_HEADERS = KeyboardHandler.hpp MouseHandler.hpp
 
@@ -98,7 +101,7 @@ MATRIX_HEADERS = Matrix4.hpp MatrixStack.hpp
 
 MENUS_HEADERS = CreditsMenuRenderer.hpp InstructionsMenuRenderer.hpp MainMenuRenderer.hpp \
 				MenuRenderer.hpp SettingsMenuRenderer.hpp TextRenderer.hpp \
-				SettingsMainMenu.hpp BodyPartSelectorMenu.hpp BodyPartEditorMenu.hpp BackgroundCustomizerMenu.hpp
+				SettingsMainMenuRender.hpp BodyPartSelectorMenuRender.hpp BodyPartEditorMenuRender.hpp GraphicsMenuRender.hpp
 
 SIMULATION_HEADERS = AnimationManager.hpp EventHandler.hpp SimulationRenderer.hpp
 

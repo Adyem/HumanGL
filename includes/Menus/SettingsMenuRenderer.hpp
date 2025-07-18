@@ -3,14 +3,11 @@
 #include "../humangl.hpp"
 #include "MenuRenderer.hpp"
 #include "TextRenderer.hpp"
-#include "SettingsMainMenu.hpp"
-#include "BodyPartSelectorMenu.hpp"
-#include "BodyPartEditorMenu.hpp"
-#include "BackgroundCustomizerMenu.hpp"
-#include "../Application/SettingsMenuLogic.hpp"
-#include <vector>
-#include <map>
-#include <string>
+#include "SettingsMainMenuRender.hpp"
+#include "BodyPartSelectorMenuRender.hpp"
+#include "BodyPartEditorMenuRender.hpp"
+#include "GraphicsMenuRender.hpp"
+#include "../Application/SettingsMenu.hpp"
 
 class SettingsMenuRenderer : public MenuRenderer {
 private:

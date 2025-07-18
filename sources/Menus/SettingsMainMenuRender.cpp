@@ -1,4 +1,4 @@
-#include "../../includes/Menus/SettingsMainMenu.hpp"
+#include "../../includes/Menus/SettingsMainMenuRender.hpp"
 #include "../../includes/Input/MouseHandler.hpp"
 
 SettingsMainMenu::SettingsMainMenu(TextRenderer& textRenderer)

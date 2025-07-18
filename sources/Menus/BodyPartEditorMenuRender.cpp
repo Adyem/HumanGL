@@ -1,7 +1,5 @@
-#include "../../includes/Menus/BodyPartEditorMenu.hpp"
+#include "../../includes/Menus/BodyPartEditorMenuRender.hpp"
 #include "../../includes/Input/MouseHandler.hpp"
-#include <algorithm>
-#include <string>
 
 BodyPartEditorMenu::BodyPartEditorMenu(TextRenderer& textRenderer)
     : MenuRenderer(textRenderer), externalLogic(nullptr),

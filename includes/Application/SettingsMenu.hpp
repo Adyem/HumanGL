@@ -1,11 +1,10 @@
 #pragma once
 
 #include "../humangl.hpp"
-#include "SettingsMainMenuLogic.hpp"
-#include "BodyPartSelectorLogic.hpp"
-#include "BodyPartEditorLogic.hpp"
-#include "BackgroundCustomizerLogic.hpp"
-#include <map>
+#include "SettingsMainMenu.hpp"
+#include "BodyPartSelectorMenu.hpp"
+#include "BodyPartEditorMenu.hpp"
+#include "GraphicsMenu.hpp"
 
 class SettingsMenuLogic {
 private:

@@ -15,16 +15,4 @@ public:
     void render() override;
 };
 
-// Left Shoulder class
-class LeftShoulder : public Shoulder {
-public:
-    LeftShoulder();
-    virtual ~LeftShoulder() = default;
-};
 
-// Right Shoulder class
-class RightShoulder : public Shoulder {
-public:
-    RightShoulder();
-    virtual ~RightShoulder() = default;
-};
