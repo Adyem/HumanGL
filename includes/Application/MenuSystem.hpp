@@ -10,7 +10,6 @@
 #include "../Input/MouseHandler.hpp"
 #include "BaseMenu.hpp"
 #include "MainMenu.hpp"
-#include "SettingsMenu.hpp"
 #include "CreditsMenu.hpp"
 #include "InstructionsMenu.hpp"
 
@@ -36,7 +35,6 @@ private:
 
     // Menu instances
     MainMenu mainMenu;
-    SettingsMenu settingsMenu;
     CreditsMenu creditsMenu;
     InstructionsMenu instructionsMenu;
     
@@ -73,4 +71,13 @@ public:
 
     // Render current menu
     void render();
+
+private:
+    // Settings-specific event handling (follows BaseMenu pattern)
+    MenuAction handleSettingsEvent(const SDL_Event& event);
+    void updateSettingsButtonHover();
+    int checkSettingsButtonClick();
+    MenuAction updateSettings();
+
+
 };

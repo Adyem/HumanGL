@@ -3,10 +3,12 @@
 #include "../humangl.hpp"
 #include "MenuRenderer.hpp"
 #include "TextRenderer.hpp"
+#include "../Application/SettingsMainMenuLogic.hpp"
 
 class SettingsMainMenu : public MenuRenderer {
 private:
     std::vector<MenuButton> buttons;
+    SettingsMainMenuLogic logic;
 
 public:
     SettingsMainMenu(TextRenderer& textRenderer);

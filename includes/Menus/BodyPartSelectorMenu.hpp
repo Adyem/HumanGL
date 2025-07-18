@@ -3,10 +3,12 @@
 #include "../humangl.hpp"
 #include "MenuRenderer.hpp"
 #include "TextRenderer.hpp"
+#include "../Application/BodyPartSelectorLogic.hpp"
 
 class BodyPartSelectorMenu : public MenuRenderer {
 private:
     std::vector<MenuButton> buttons;
+    BodyPartSelectorLogic logic;
 
 public:
     BodyPartSelectorMenu(TextRenderer& textRenderer);
@@ -32,7 +34,5 @@ public:
 
 private:
     // Helper methods
-    std::string getBodyPartName(BodyPart part) const;
-    std::vector<BodyPart> getCustomizableBodyParts() const;
     void renderTitle();
 };

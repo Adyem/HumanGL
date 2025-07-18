@@ -2,15 +2,17 @@
 #include "../../includes/Input/MouseHandler.hpp"
 
 SettingsMenuRenderer::SettingsMenuRenderer(TextRenderer& textRenderer)
-    : MenuRenderer(textRenderer), currentPage(SETTINGS_MAIN), selectedBodyPart(BODY_PART_HEAD),
+    : MenuRenderer(textRenderer),
       mainMenu(textRenderer), bodyPartSelector(textRenderer),
       bodyPartEditor(textRenderer), backgroundCustomizer(textRenderer) {
+    // Sync the shared logic components with the menu components
+    syncLogicWithMenuComponents();
     initializeButtons();
 }
 
 void SettingsMenuRenderer::initializeButtons() {
     // Delegate button initialization to the appropriate component
-    switch (currentPage) {
+    switch (logic.getCurrentPage()) {
         case SETTINGS_MAIN:
             mainMenu.initializeButtons();
             break;
@@ -39,7 +41,7 @@ void SettingsMenuRenderer::render(const std::vector<MenuButton>& externalButtons
 
 void SettingsMenuRenderer::render() {
     // Delegate rendering to the appropriate component
-    switch (currentPage) {
+    switch (logic.getCurrentPage()) {
         case SETTINGS_MAIN:
             mainMenu.render();
             break;
@@ -63,7 +65,7 @@ void SettingsMenuRenderer::render() {
 
 const std::vector<MenuButton>& SettingsMenuRenderer::getButtons() const {
     // Delegate to the appropriate component
-    switch (currentPage) {
+    switch (logic.getCurrentPage()) {
         case SETTINGS_MAIN:
             return mainMenu.getButtons();
         case BODY_CUSTOMIZATION:
@@ -80,78 +82,33 @@ const std::vector<MenuButton>& SettingsMenuRenderer::getButtons() const {
 }
 
 MenuAction SettingsMenuRenderer::handleButtonClick(int buttonIndex) {
-    MenuAction action = MENU_ACTION_NONE;
+    MenuAction action = logic.handleButtonClick(buttonIndex);
 
-    switch (currentPage) {
-        case SETTINGS_MAIN:
-            action = mainMenu.handleButtonClick(buttonIndex);
-            if (action == MENU_ACTION_BODY_CUSTOMIZATION) {
-                setPage(BODY_CUSTOMIZATION);
-                return MENU_ACTION_NONE;
-            } else if (action == MENU_ACTION_BACKGROUND_CUSTOMIZATION) {
-                setPage(BACKGROUND_CUSTOMIZATION);
-                return MENU_ACTION_NONE;
-            }
-            break;
-
-        case BODY_CUSTOMIZATION:
-            action = bodyPartSelector.handleButtonClick(buttonIndex, selectedBodyPart);
-            if (action == MENU_ACTION_BODY_PART_DETAIL) {
-                bodyPartEditor.setSelectedBodyPart(selectedBodyPart);
-                setPage(BODY_PART_DETAIL);
-                return MENU_ACTION_NONE;
-            } else if (action == MENU_ACTION_SETTINGS) {
-                setPage(SETTINGS_MAIN);
-                return MENU_ACTION_NONE;
-            }
-            break;
-
-        case BODY_PART_DETAIL:
-            action = bodyPartEditor.handleButtonClick(buttonIndex);
-            if (action == MENU_ACTION_BODY_CUSTOMIZATION) {
-                setPage(BODY_CUSTOMIZATION);
-                return MENU_ACTION_NONE;
-            } else if (action == MENU_ACTION_SETTINGS) {
-                setPage(SETTINGS_MAIN);
-                return MENU_ACTION_NONE;
-            }
-            break;
-
-        case BACKGROUND_CUSTOMIZATION:
-            action = backgroundCustomizer.handleButtonClick(buttonIndex);
-            if (action == MENU_ACTION_SETTINGS) {
-                setPage(SETTINGS_MAIN);
-                return MENU_ACTION_NONE;
-            }
-            break;
-
-        case RESOLUTION_SETTINGS:
-            // For now, handle resolution settings like main menu
-            action = mainMenu.handleButtonClick(buttonIndex);
-            break;
+    // If page changed, reinitialize buttons for the new page
+    if (action == MENU_ACTION_NONE) {
+        initializeButtons();
     }
 
     return action;
 }
 
-// Page navigation
+// Page navigation (delegates to logic)
 void SettingsMenuRenderer::setPage(SettingsPage page) {
-    currentPage = page;
+    logic.setPage(page);
     initializeButtons();
 }
 
 void SettingsMenuRenderer::setSelectedBodyPart(BodyPart part) {
-    selectedBodyPart = part;
+    logic.setSelectedBodyPart(part);
     bodyPartEditor.setSelectedBodyPart(part);
 }
 
 SettingsPage SettingsMenuRenderer::getCurrentPage() const {
-    return currentPage;
+    return logic.getCurrentPage();
 }
 
 void SettingsMenuRenderer::resetToMainPage() {
-    currentPage = SETTINGS_MAIN;
-    selectedBodyPart = BODY_PART_HEAD;
+    logic.resetToMainPage();
     initializeButtons();
 }
 
@@ -169,55 +126,60 @@ void SettingsMenuRenderer::updateWindowSize(int width, int height) {
     initializeButtons();
 }
 
-// Body part customization (delegated to BodyPartEditor)
+// Body part customization (delegates to logic - now using shared state)
 void SettingsMenuRenderer::cycleBodyPartColor() {
-    bodyPartEditor.cycleBodyPartColor();
+    logic.cycleBodyPartColor();
 }
 
 void SettingsMenuRenderer::adjustBodyPartScale(float scaleMultiplier) {
-    bodyPartEditor.adjustBodyPartScale(scaleMultiplier);
+    logic.adjustBodyPartScale(scaleMultiplier);
 }
 
 void SettingsMenuRenderer::setBodyPartScale(float newScale) {
-    bodyPartEditor.setBodyPartScale(newScale);
+    logic.setBodyPartScale(newScale);
 }
 
 void SettingsMenuRenderer::resetBodyPartToDefault() {
-    bodyPartEditor.resetBodyPartToDefault();
+    logic.resetBodyPartToDefault();
 }
 
 const BodyPartSettings& SettingsMenuRenderer::getBodyPartSettings(BodyPart part) const {
-    return bodyPartEditor.getBodyPartSettings(part);
+    // Always return from the main logic (single source of truth)
+    return logic.getBodyPartSettings(part);
 }
 
 const std::map<BodyPart, BodyPartSettings>& SettingsMenuRenderer::getAllBodyPartSettings() const {
-    return bodyPartEditor.getAllBodyPartSettings();
+    // Always return from the main logic (single source of truth)
+    return logic.getAllBodyPartSettings();
 }
 
-// Background color customization (delegated to BackgroundCustomizer)
+// Background color customization (delegates to logic - now using shared state)
 void SettingsMenuRenderer::cycleMenuBackgroundColor() {
-    backgroundCustomizer.cycleMenuBackgroundColor();
+    logic.cycleMenuBackgroundColor();
 }
 
 void SettingsMenuRenderer::cycleSimulationBackgroundColor() {
-    backgroundCustomizer.cycleSimulationBackgroundColor();
+    logic.cycleSimulationBackgroundColor();
 }
 
 void SettingsMenuRenderer::resetColorsToDefault() {
-    backgroundCustomizer.resetColorsToDefault();
+    logic.resetColorsToDefault();
 }
 
 const Color& SettingsMenuRenderer::getMenuBackgroundColor() const {
-    return backgroundCustomizer.getMenuBackgroundColor();
+    // Always return from the main logic (single source of truth)
+    return logic.getMenuBackgroundColor();
 }
 
 const Color& SettingsMenuRenderer::getSimulationBackgroundColor() const {
-    return backgroundCustomizer.getSimulationBackgroundColor();
+    // Always return from the main logic (single source of truth)
+    return logic.getSimulationBackgroundColor();
 }
 
-// Mouse interaction (delegated to appropriate component)
+// Mouse interaction (delegates to rendering components - now using shared state)
 bool SettingsMenuRenderer::handleMouseClick(float mouseX, float mouseY) {
-    switch (currentPage) {
+    // Delegate to the rendering components which handle UI positioning
+    switch (logic.getCurrentPage()) {
         case BODY_PART_DETAIL:
             return bodyPartEditor.handleMouseClick(mouseX, mouseY);
         case BACKGROUND_CUSTOMIZATION:
@@ -228,7 +190,7 @@ bool SettingsMenuRenderer::handleMouseClick(float mouseX, float mouseY) {
 }
 
 void SettingsMenuRenderer::updateHover(float mouseX, float mouseY) {
-    switch (currentPage) {
+    switch (logic.getCurrentPage()) {
         case BODY_PART_DETAIL:
             bodyPartEditor.updateHover(mouseX, mouseY);
             break;
@@ -238,7 +200,7 @@ void SettingsMenuRenderer::updateHover(float mouseX, float mouseY) {
 }
 
 void SettingsMenuRenderer::handleMouseUp() {
-    switch (currentPage) {
+    switch (logic.getCurrentPage()) {
         case BODY_PART_DETAIL:
             bodyPartEditor.handleMouseUp();
             break;
@@ -247,23 +209,14 @@ void SettingsMenuRenderer::handleMouseUp() {
     }
 }
 
-// Input handling (delegated to appropriate component)
+// Input handling (delegates to logic - now using shared state)
 void SettingsMenuRenderer::handleInput() {
-    switch (currentPage) {
-        case BODY_PART_DETAIL:
-            bodyPartEditor.handleInput();
-            break;
-        case BACKGROUND_CUSTOMIZATION:
-            backgroundCustomizer.handleInput();
-            break;
-        default:
-            break;
-    }
+    logic.handleInput();
 }
 
 // Helper method to get the current menu renderer
 MenuRenderer* SettingsMenuRenderer::getCurrentMenuRenderer() {
-    switch (currentPage) {
+    switch (logic.getCurrentPage()) {
         case SETTINGS_MAIN:
             return &mainMenu;
         case BODY_CUSTOMIZATION:
@@ -280,7 +233,7 @@ MenuRenderer* SettingsMenuRenderer::getCurrentMenuRenderer() {
 }
 
 const MenuRenderer* SettingsMenuRenderer::getCurrentMenuRenderer() const {
-    switch (currentPage) {
+    switch (logic.getCurrentPage()) {
         case SETTINGS_MAIN:
             return &mainMenu;
         case BODY_CUSTOMIZATION:
@@ -297,18 +250,29 @@ const MenuRenderer* SettingsMenuRenderer::getCurrentMenuRenderer() const {
 }
 
 void SettingsMenuRenderer::syncBodyPartSettings() {
-    // Sync body part settings between components if needed
-    // For now, the BodyPartEditor manages its own settings
+    // Sync body part settings from main logic to rendering component
+    bodyPartEditor.setBodyPartSettings(logic.getAllBodyPartSettings());
 }
 
 void SettingsMenuRenderer::syncBackgroundColors() {
-    // Sync background colors between components if needed
-    // For now, the BackgroundCustomizer manages its own colors
+    // Background colors are now managed by the logic component
+    // No sync needed as rendering components get colors from logic
+}
+
+void SettingsMenuRenderer::syncLogicWithMenuComponents() {
+    // Set the menu components to use the main logic components directly
+    // This eliminates the need for synchronization by using shared state
+
+    bodyPartEditor.setExternalLogic(logic.getBodyPartEditorLogic());
+    backgroundCustomizer.setExternalLogic(logic.getBackgroundCustomizerLogic());
+
+    // Sync initial settings to rendering components
+    syncBodyPartSettings();
 }
 
 void SettingsMenuRenderer::updateButtonHover(MouseHandler& mouseHandler) {
     // Delegate button hover updates to the appropriate component
-    switch (currentPage) {
+    switch (logic.getCurrentPage()) {
         case SETTINGS_MAIN:
             mainMenu.updateButtonHover(mouseHandler);
             break;

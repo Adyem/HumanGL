@@ -86,7 +86,9 @@ SUBDIRS = $(APPLICATION_SUBDIRS) $(HUMAN_SUBDIRS) $(INPUT_SUBDIRS) $(MATRIX_SUBD
 # PUT IN ALPHABETICAL ORDER
 # Header Files (without paths)
 APPLICATION_HEADERS = Application.hpp BaseMenu.hpp CreditsMenu.hpp InstructionsMenu.hpp \
-					  MainMenu.hpp MenuSystem.hpp SettingsMenu.hpp
+					  MainMenu.hpp MenuSystem.hpp \
+					  SettingsMainMenuLogic.hpp BodyPartSelectorLogic.hpp BodyPartEditorLogic.hpp BackgroundCustomizerLogic.hpp \
+					  SettingsMenuLogic.hpp
 
 HUMAN_HEADERS = Arm.hpp BodyPart.hpp DrawPerson.hpp Head.hpp Leg.hpp Shoulder.hpp
 

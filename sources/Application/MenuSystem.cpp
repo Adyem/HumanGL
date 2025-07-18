@@ -3,11 +3,10 @@
 MenuSystem::MenuSystem()
     : mainMenuRenderer(textRenderer), settingsMenuRenderer(textRenderer), creditsMenuRenderer(textRenderer), instructionsMenuRenderer(textRenderer),
       mainMenu(mainMenuRenderer, mouseHandler, menuInputStub, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
-      settingsMenu(settingsMenuRenderer, mouseHandler, menuInputStub, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
       creditsMenu(creditsMenuRenderer, mouseHandler, menuInputStub, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
       instructionsMenu(instructionsMenuRenderer, mouseHandler, menuInputStub, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
       currentState(MAIN_MENU), windowWidth(HUMANGL_DEFAULT_WINDOW_WIDTH), windowHeight(HUMANGL_DEFAULT_WINDOW_HEIGHT) {
-    // Input handling is now integrated into SettingsMenuRenderer and EventHandler
+    // Settings use SettingsMenuRenderer directly (no wrapper needed)
 }
 
 MenuSystem::~MenuSystem() {
@@ -50,7 +49,6 @@ void MenuSystem::updateWindowSize(int width, int height) {
 
     // Update menu instances for new window size
     mainMenu.updateWindowSize(width, height);
-    settingsMenu.updateWindowSize(width, height);
     creditsMenu.updateWindowSize(width, height);
     instructionsMenu.updateWindowSize(width, height);
 }
@@ -59,7 +57,6 @@ void MenuSystem::setState(AppState state) {
     // If we're entering settings from another state, reset to main settings page
     if (state == SETTINGS && currentState != SETTINGS) {
         settingsMenuRenderer.resetToMainPage();
-        settingsMenu.initializeButtons();
     }
 
     currentState = state;
@@ -80,9 +77,7 @@ MenuAction MenuSystem::handleEvent(const SDL_Event& event) {
             action = mainMenu.handleEvent(event);
             break;
         case SETTINGS:
-            action = settingsMenu.handleEvent(event);
-            // Handle settings customization input (now integrated into SettingsMenuRenderer)
-            settingsMenuRenderer.handleInput();
+            action = handleSettingsEvent(event);
             break;
         case CREDITS:
             action = creditsMenu.handleEvent(event);
@@ -119,6 +114,87 @@ MenuAction MenuSystem::handleEvent(const SDL_Event& event) {
     return action;
 }
 
+// Settings-specific event handling (follows BaseMenu pattern)
+MenuAction MenuSystem::handleSettingsEvent(const SDL_Event& event) {
+    MenuAction action = MENU_ACTION_NONE;
+
+    switch (event.type) {
+        case SDL_MOUSEMOTION:
+            mouseHandler.updateMousePosition(event.motion.x, event.motion.y);
+            updateSettingsButtonHover();
+            // Also update hover for custom UI elements (sliders, color selectors)
+            settingsMenuRenderer.updateHover(static_cast<float>(event.motion.x), static_cast<float>(event.motion.y));
+            break;
+
+        case SDL_MOUSEBUTTONDOWN:
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                mouseHandler.setMousePressed(true);
+            }
+            break;
+
+        case SDL_MOUSEBUTTONUP:
+            if (event.button.button == SDL_BUTTON_LEFT) {
+                mouseHandler.setMouseReleased(true);
+
+                // First check if it's a button click
+                int clickedButton = checkSettingsButtonClick();
+                if (clickedButton >= 0) {
+                    action = settingsMenuRenderer.handleButtonClick(clickedButton);
+                } else {
+                    // If no button was clicked, check for custom UI interactions (sliders, color selectors)
+                    float mouseX = static_cast<float>(event.button.x);
+                    float mouseY = static_cast<float>(event.button.y);
+                    settingsMenuRenderer.handleMouseClick(mouseX, mouseY);
+                }
+
+                // Handle mouse up for custom UI elements
+                settingsMenuRenderer.handleMouseUp();
+            }
+            break;
+
+        case SDL_KEYDOWN:
+            menuInputStub.handleKeyEvent(event);
+            if (event.key.keysym.sym == SDLK_ESCAPE) {
+                action = MENU_ACTION_BACK_TO_MENU;
+            }
+            break;
+
+        default:
+            break;
+    }
+
+    return action;
+}
+
+void MenuSystem::updateSettingsButtonHover() {
+    // Update hover for the current page's buttons
+    const std::vector<MenuButton>& buttons = settingsMenuRenderer.getButtons();
+    mouseHandler.updateButtonHover(const_cast<std::vector<MenuButton>&>(buttons));
+    // Also update hover for the renderer's button system
+    settingsMenuRenderer.updateButtonHover(mouseHandler);
+}
+
+int MenuSystem::checkSettingsButtonClick() {
+    const std::vector<MenuButton>& buttons = settingsMenuRenderer.getButtons();
+    return mouseHandler.checkButtonClick(const_cast<std::vector<MenuButton>&>(buttons));
+}
+
+MenuAction MenuSystem::updateSettings() {
+    MenuAction action = MENU_ACTION_NONE;
+
+    // Update input system
+    menuInputStub.update();
+
+    // Handle settings-specific input (keyboard shortcuts for customization)
+    settingsMenuRenderer.handleInput();
+
+    // Reset input states
+    menuInputStub.resetKeyStates();
+    mouseHandler.resetMouseState();
+
+    return action;
+}
+
 MenuAction MenuSystem::update() {
     MenuAction action = MENU_ACTION_NONE;
 
@@ -128,7 +204,7 @@ MenuAction MenuSystem::update() {
             action = mainMenu.update();
             break;
         case SETTINGS:
-            action = settingsMenu.update();
+            action = updateSettings();
             break;
         case CREDITS:
             action = creditsMenu.update();
@@ -171,7 +247,7 @@ void MenuSystem::render() {
             mainMenu.render();
             break;
         case SETTINGS:
-            settingsMenu.render();
+            settingsMenuRenderer.render();
             break;
         case CREDITS:
             creditsMenu.render();

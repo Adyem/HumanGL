@@ -3,32 +3,25 @@
 #include "../humangl.hpp"
 #include "MenuRenderer.hpp"
 #include "TextRenderer.hpp"
+#include "../Application/BodyPartEditorLogic.hpp"
 #include <map>
 
 class BodyPartEditorMenu : public MenuRenderer {
 private:
     std::vector<MenuButton> buttons;
-    BodyPart selectedBodyPart;
-    std::map<BodyPart, BodyPartSettings> bodyPartSettings;
-    int currentColorIndex;
-    std::vector<Color> availableColors;
-    
-    // UI element positions for mouse interaction
+    BodyPartEditorLogic* externalLogic; // Reference to external logic (can be null)
+    BodyPartEditorLogic internalLogic;  // Fallback internal logic
+
+    // UI element positions for mouse interaction (rendering only)
     float sliderX, sliderY, sliderWidth, sliderHeight;
     float colorSelectorX, colorSelectorY, colorSelectorSize;
-    bool isDraggingSlider;
-    
-    // Input handling state
-    const Uint8* keyboardState;
-    bool plusKeyPressed;
-    bool minusKeyPressed;
-    bool cKeyPressed;
 
 public:
     BodyPartEditorMenu(TextRenderer& textRenderer);
+    BodyPartEditorMenu(TextRenderer& textRenderer, BodyPartEditorLogic& logic);
     virtual ~BodyPartEditorMenu() = default;
 
-    // Set the body part to edit
+    // Set the body part to edit (delegates to logic)
     void setSelectedBodyPart(BodyPart part);
     void setBodyPartSettings(const std::map<BodyPart, BodyPartSettings>& settings);
 
@@ -58,24 +51,29 @@ public:
     // Update button hover states
     void updateButtonHover(class MouseHandler& mouseHandler);
 
-    // Body part customization
+    // Body part customization (delegates to logic)
     void cycleBodyPartColor();
     void adjustBodyPartScale(float scaleMultiplier);
     void setBodyPartScale(float newScale);
     void resetBodyPartToDefault();
 
-    // Get current settings
+    // Get current settings (delegates to logic)
     const BodyPartSettings& getBodyPartSettings(BodyPart part) const;
     const std::map<BodyPart, BodyPartSettings>& getAllBodyPartSettings() const;
 
+    // Access to logic component for external coordination
+    BodyPartEditorLogic& getLogic();
+
+    // Set external logic reference
+    void setExternalLogic(BodyPartEditorLogic& logic);
+
 private:
-    // Helper methods
-    void initializeAvailableColors();
+    // Helper methods (rendering only)
     void drawSlider(float x, float y, float value, const std::string& label);
     void drawColorSelector(float x, float y);
-    std::string getBodyPartName(BodyPart part) const;
-    BodyPartSettings getDefaultBodyPartSettings(BodyPart part) const;
     void renderTitle();
     void renderBodyPartCustomization();
-    void handleCustomizationInput();
+
+    // Get the active logic (external if set, otherwise internal)
+    BodyPartEditorLogic& getActiveLogic();
 };

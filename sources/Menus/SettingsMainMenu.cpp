@@ -45,16 +45,7 @@ const std::vector<MenuButton>& SettingsMainMenu::getButtons() const {
 }
 
 MenuAction SettingsMainMenu::handleButtonClick(int buttonIndex) {
-    switch (buttonIndex) {
-        case 0: // Body Customization
-            return MENU_ACTION_BODY_CUSTOMIZATION;
-        case 1: // Background Colors
-            return MENU_ACTION_BACKGROUND_CUSTOMIZATION;
-        case 2: // Back to Menu
-            return MENU_ACTION_BACK_TO_MENU;
-        default:
-            return MENU_ACTION_NONE;
-    }
+    return logic.handleButtonClick(buttonIndex);
 }
 
 void SettingsMainMenu::renderTitle() {

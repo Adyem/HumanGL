@@ -3,29 +3,21 @@
 #include "../humangl.hpp"
 #include "MenuRenderer.hpp"
 #include "TextRenderer.hpp"
+#include "../Application/BackgroundCustomizerLogic.hpp"
 
 class BackgroundCustomizerMenu : public MenuRenderer {
 private:
     std::vector<MenuButton> buttons;
-    std::vector<Color> availableColors;
-    
-    // Background color settings
-    Color menuBackgroundColor;
-    Color simulationBackgroundColor;
-    int menuBgColorIndex;
-    int simulationBgColorIndex;
-    
-    // UI element positions for mouse interaction
+    BackgroundCustomizerLogic* externalLogic; // Reference to external logic (can be null)
+    BackgroundCustomizerLogic internalLogic;  // Fallback internal logic
+
+    // UI element positions for mouse interaction (rendering only)
     float menuColorSelectorX, menuColorSelectorY, menuColorSelectorSize;
     float simColorSelectorX, simColorSelectorY, simColorSelectorSize;
-    
-    // Input handling state
-    const Uint8* keyboardState;
-    bool plusKeyPressed;  // Reused for M key
-    bool minusKeyPressed; // Reused for S key
 
 public:
     BackgroundCustomizerMenu(TextRenderer& textRenderer);
+    BackgroundCustomizerMenu(TextRenderer& textRenderer, BackgroundCustomizerLogic& logic);
     virtual ~BackgroundCustomizerMenu() = default;
 
     // Initialize buttons
@@ -57,15 +49,22 @@ public:
     void cycleSimulationBackgroundColor();
     void resetColorsToDefault();
 
-    // Get current colors
-    const Color& getMenuBackgroundColor() const { return menuBackgroundColor; }
-    const Color& getSimulationBackgroundColor() const { return simulationBackgroundColor; }
+    // Get current colors (delegates to logic)
+    const Color& getMenuBackgroundColor() const;
+    const Color& getSimulationBackgroundColor() const;
+
+    // Access to logic component for external coordination
+    BackgroundCustomizerLogic& getLogic();
+
+    // Set external logic reference
+    void setExternalLogic(BackgroundCustomizerLogic& logic);
 
 private:
-    // Helper methods
-    void initializeAvailableColors();
+    // Helper methods (rendering only)
     void drawBackgroundColorSelector(float x, float y, const Color& currentColor, bool isMenuColor);
     void renderTitle();
     void renderBackgroundCustomization();
-    void handleBackgroundCustomizationInput();
+
+    // Get the active logic (external if set, otherwise internal)
+    BackgroundCustomizerLogic& getActiveLogic();
 };

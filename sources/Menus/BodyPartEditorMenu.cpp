@@ -4,27 +4,39 @@
 #include <string>
 
 BodyPartEditorMenu::BodyPartEditorMenu(TextRenderer& textRenderer)
-    : MenuRenderer(textRenderer), selectedBodyPart(BODY_PART_HEAD), currentColorIndex(0),
+    : MenuRenderer(textRenderer), externalLogic(nullptr),
       sliderX(0), sliderY(0), sliderWidth(0), sliderHeight(0),
-      colorSelectorX(0), colorSelectorY(0), colorSelectorSize(0), isDraggingSlider(false),
-      keyboardState(SDL_GetKeyboardState(nullptr)), plusKeyPressed(false), minusKeyPressed(false), cKeyPressed(false) {
-    initializeAvailableColors();
+      colorSelectorX(0), colorSelectorY(0), colorSelectorSize(0) {
     initializeButtons();
+}
 
-    // Initialize default body part settings
-    for (int i = 0; i < BODY_PART_COUNT; i++) {
-        BodyPart part = static_cast<BodyPart>(i);
-        bodyPartSettings[part] = getDefaultBodyPartSettings(part);
-    }
+BodyPartEditorMenu::BodyPartEditorMenu(TextRenderer& textRenderer, BodyPartEditorLogic& logic)
+    : MenuRenderer(textRenderer), externalLogic(&logic),
+      sliderX(0), sliderY(0), sliderWidth(0), sliderHeight(0),
+      colorSelectorX(0), colorSelectorY(0), colorSelectorSize(0) {
+    initializeButtons();
 }
 
 void BodyPartEditorMenu::setSelectedBodyPart(BodyPart part) {
-    selectedBodyPart = part;
+    getActiveLogic().setSelectedBodyPart(part);
     initializeButtons(); // Refresh buttons for new body part
 }
 
 void BodyPartEditorMenu::setBodyPartSettings(const std::map<BodyPart, BodyPartSettings>& settings) {
-    bodyPartSettings = settings;
+    getActiveLogic().setBodyPartSettings(settings);
+}
+
+// Method to get the logic component for external access
+BodyPartEditorLogic& BodyPartEditorMenu::getLogic() {
+    return getActiveLogic();
+}
+
+void BodyPartEditorMenu::setExternalLogic(BodyPartEditorLogic& logic) {
+    externalLogic = &logic;
+}
+
+BodyPartEditorLogic& BodyPartEditorMenu::getActiveLogic() {
+    return externalLogic ? *externalLogic : internalLogic;
 }
 
 void BodyPartEditorMenu::initializeButtons() {
@@ -85,125 +97,48 @@ MenuAction BodyPartEditorMenu::handleButtonClick(int buttonIndex) {
 }
 
 bool BodyPartEditorMenu::handleMouseClick(float mouseX, float mouseY) {
-    // Check if clicked on slider
-    if (mouseX >= sliderX && mouseX <= sliderX + sliderWidth &&
-        mouseY >= sliderY && mouseY <= sliderY + sliderHeight) {
-
-        // Calculate new scale value based on click position
-        float normalizedPos = (mouseX - sliderX) / sliderWidth;
-        float newScale = HUMANGL_SLIDER_MIN_VALUE + normalizedPos * (HUMANGL_SLIDER_MAX_VALUE - HUMANGL_SLIDER_MIN_VALUE);
-        setBodyPartScale(newScale);
-        isDraggingSlider = true;
-        return true;
-    }
-
-    // Check if clicked on color selector
-    if (mouseX >= colorSelectorX && mouseX <= colorSelectorX + colorSelectorSize &&
-        mouseY >= colorSelectorY && mouseY <= colorSelectorY + colorSelectorSize) {
-
-        // Cycle to next color
-        cycleBodyPartColor();
-        return true;
-    }
-
-    isDraggingSlider = false;
-    return false;
+    return getActiveLogic().handleMouseClick(mouseX, mouseY, sliderX, sliderY, sliderWidth, sliderHeight,
+                                            colorSelectorX, colorSelectorY, colorSelectorSize);
 }
 
 void BodyPartEditorMenu::updateHover(float mouseX, float mouseY) {
-    // Handle mouse up signal (negative coordinates)
-    if (mouseX < 0 || mouseY < 0) {
-        isDraggingSlider = false;
-        return;
-    }
-
-    // Update slider dragging if mouse button is held down
-    if (isDraggingSlider && sliderWidth > 0) {
-        float normalizedPos = std::max(0.0f, std::min(1.0f, (mouseX - sliderX) / sliderWidth));
-        float newScale = HUMANGL_SLIDER_MIN_VALUE + normalizedPos * (HUMANGL_SLIDER_MAX_VALUE - HUMANGL_SLIDER_MIN_VALUE);
-        setBodyPartScale(newScale);
-    }
+    getActiveLogic().updateHover(mouseX, mouseY, sliderX, sliderY, sliderWidth, sliderHeight);
 }
 
 void BodyPartEditorMenu::handleMouseUp() {
-    isDraggingSlider = false;
+    getActiveLogic().handleMouseUp();
 }
 
 void BodyPartEditorMenu::handleInput() {
-    if (!keyboardState) return;
-    
-    handleCustomizationInput();
+    getActiveLogic().handleInput();
 }
 
 void BodyPartEditorMenu::cycleBodyPartColor() {
-    currentColorIndex = (currentColorIndex + 1) % availableColors.size();
-    bodyPartSettings[selectedBodyPart].color = availableColors[currentColorIndex];
+    getActiveLogic().cycleBodyPartColor();
 }
 
 void BodyPartEditorMenu::adjustBodyPartScale(float scaleMultiplier) {
-    BodyPartSettings& settings = bodyPartSettings[selectedBodyPart];
-    settings.scale.x = std::max(HUMANGL_SLIDER_MIN_VALUE, std::min(HUMANGL_SLIDER_MAX_VALUE, settings.scale.x * scaleMultiplier));
-    settings.scale.y = std::max(HUMANGL_SLIDER_MIN_VALUE, std::min(HUMANGL_SLIDER_MAX_VALUE, settings.scale.y * scaleMultiplier));
-    settings.scale.z = std::max(HUMANGL_SLIDER_MIN_VALUE, std::min(HUMANGL_SLIDER_MAX_VALUE, settings.scale.z * scaleMultiplier));
+    getActiveLogic().adjustBodyPartScale(scaleMultiplier);
 }
 
 void BodyPartEditorMenu::setBodyPartScale(float newScale) {
-    BodyPartSettings& settings = bodyPartSettings[selectedBodyPart];
-    float clampedScale = std::max(HUMANGL_SLIDER_MIN_VALUE, std::min(HUMANGL_SLIDER_MAX_VALUE, newScale));
-    settings.scale.x = clampedScale;
-    settings.scale.y = clampedScale;
-    settings.scale.z = clampedScale;
+    getActiveLogic().setBodyPartScale(newScale);
 }
 
 void BodyPartEditorMenu::resetBodyPartToDefault() {
-    // Reset current body part to proper default settings
-    bodyPartSettings[selectedBodyPart] = getDefaultBodyPartSettings(selectedBodyPart);
-
-    // Reset color index to match the default color
-    Color defaultColor = bodyPartSettings[selectedBodyPart].color;
-    currentColorIndex = 0; // Find matching color index
-    for (size_t i = 0; i < availableColors.size(); i++) {
-        if (availableColors[i].r == defaultColor.r &&
-            availableColors[i].g == defaultColor.g &&
-            availableColors[i].b == defaultColor.b) {
-            currentColorIndex = static_cast<int>(i);
-            break;
-        }
-    }
+    getActiveLogic().resetBodyPartToDefault();
 }
 
 const BodyPartSettings& BodyPartEditorMenu::getBodyPartSettings(BodyPart part) const {
-    auto it = bodyPartSettings.find(part);
-    if (it != bodyPartSettings.end()) {
-        return it->second;
-    }
-    // Return default if not found
-    static BodyPartSettings defaultSettings = getDefaultBodyPartSettings(part);
-    return defaultSettings;
+    return const_cast<BodyPartEditorMenu*>(this)->getActiveLogic().getBodyPartSettings(part);
 }
 
 const std::map<BodyPart, BodyPartSettings>& BodyPartEditorMenu::getAllBodyPartSettings() const {
-    return bodyPartSettings;
-}
-
-void BodyPartEditorMenu::initializeAvailableColors() {
-    availableColors.clear();
-
-    // Add a variety of colors for customization
-    availableColors.push_back(Color::SkinTone());
-    availableColors.push_back(Color::Blue());
-    availableColors.push_back(Color::Red());
-    availableColors.push_back(Color::Green());
-    availableColors.push_back(Color::Yellow());
-    availableColors.push_back(Color::Magenta());
-    availableColors.push_back(Color::Cyan());
-    availableColors.push_back(Color::ClothingBlue());
-    availableColors.push_back(Color::White());
-    availableColors.push_back(Color::Black());
+    return const_cast<BodyPartEditorMenu*>(this)->getActiveLogic().getAllBodyPartSettings();
 }
 
 void BodyPartEditorMenu::renderTitle() {
-    std::string title = "Customize " + getBodyPartName(selectedBodyPart);
+    std::string title = "Customize " + getActiveLogic().getBodyPartName(getActiveLogic().getSelectedBodyPart());
     float titleX = static_cast<float>(windowWidth) / 2.0f - HUMANGL_TITLE_X_OFFSET;
     float titleY = HUMANGL_TITLE_Y_POSITION;
     textRenderer.drawText(titleX, titleY, title, 1.0f, 1.0f, 1.0f);
@@ -217,7 +152,7 @@ void BodyPartEditorMenu::renderBodyPartCustomization() {
     textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN, contentY, "Size:", 0.9f, 0.9f, 0.9f);
     contentY += lineSpacing;
 
-    const BodyPartSettings& settings = bodyPartSettings[selectedBodyPart];
+    const BodyPartSettings& settings = getActiveLogic().getBodyPartSettings(getActiveLogic().getSelectedBodyPart());
     drawSlider(HUMANGL_SETTINGS_LEFT_MARGIN + 50.0f, contentY, settings.scale.x, "Scale");
     contentY += lineSpacing * 2.0f;
 
@@ -261,9 +196,10 @@ void BodyPartEditorMenu::drawSlider(float x, float y, float value, const std::st
     float handleX = x + normalizedValue * (HUMANGL_SLIDER_WIDTH - HUMANGL_SLIDER_HANDLE_WIDTH);
 
     // Draw slider handle with hover and drag effects
-    float handleR = isDraggingSlider ? 1.0f : (isHovering ? 0.9f : 0.7f);
-    float handleG = isDraggingSlider ? 1.0f : (isHovering ? 0.9f : 0.7f);
-    float handleB = isDraggingSlider ? 1.0f : (isHovering ? 0.9f : 0.7f);
+    bool isDragging = getActiveLogic().getIsDraggingSlider();
+    float handleR = isDragging ? 1.0f : (isHovering ? 0.9f : 0.7f);
+    float handleG = isDragging ? 1.0f : (isHovering ? 0.9f : 0.7f);
+    float handleB = isDragging ? 1.0f : (isHovering ? 0.9f : 0.7f);
     drawRect(handleX, y - 2.0f, HUMANGL_SLIDER_HANDLE_WIDTH, HUMANGL_SLIDER_HEIGHT + 4.0f, handleR, handleG, handleB, 1.0f);
 
     // Draw value text
@@ -283,7 +219,7 @@ void BodyPartEditorMenu::drawColorSelector(float x, float y) {
     bool isHovering = (static_cast<float>(mouseX) >= x && static_cast<float>(mouseX) <= x + HUMANGL_COLOR_PREVIEW_SIZE &&
                       static_cast<float>(mouseY) >= y && static_cast<float>(mouseY) <= y + HUMANGL_COLOR_PREVIEW_SIZE);
 
-    const Color& currentColor = bodyPartSettings[selectedBodyPart].color;
+    const Color& currentColor = getActiveLogic().getBodyPartSettings(getActiveLogic().getSelectedBodyPart()).color;
 
     // Draw current color preview
     drawRect(x, y, HUMANGL_COLOR_PREVIEW_SIZE, HUMANGL_COLOR_PREVIEW_SIZE, currentColor.r, currentColor.g, currentColor.b, 1.0f);
@@ -304,91 +240,6 @@ void BodyPartEditorMenu::drawColorSelector(float x, float y) {
     glVertex2f(x, y + HUMANGL_COLOR_PREVIEW_SIZE);
     glEnd();
     glLineWidth(1.0f); // Reset line width
-}
-
-std::string BodyPartEditorMenu::getBodyPartName(BodyPart part) const {
-    switch (part) {
-        case BODY_PART_HEAD: return "Head";
-        case BODY_PART_NECK: return "Neck";
-        case BODY_PART_TORSO: return "Torso";
-        case BODY_PART_LEFT_ARM: return "Left Arm";
-        case BODY_PART_RIGHT_ARM: return "Right Arm";
-        case BODY_PART_LEFT_LEG: return "Left Leg";
-        case BODY_PART_RIGHT_LEG: return "Right Leg";
-        case BODY_PART_LEFT_SHOULDER: return "Left Shoulder";
-        case BODY_PART_RIGHT_SHOULDER: return "Right Shoulder";
-        case BODY_PART_LEFT_UPPER_ARM: return "Left Upper Arm";
-        case BODY_PART_LEFT_FOREARM: return "Left Forearm";
-        case BODY_PART_RIGHT_UPPER_ARM: return "Right Upper Arm";
-        case BODY_PART_RIGHT_FOREARM: return "Right Forearm";
-        case BODY_PART_LEFT_THIGH: return "Left Thigh";
-        case BODY_PART_LEFT_LOWER_LEG: return "Left Lower Leg";
-        case BODY_PART_RIGHT_THIGH: return "Right Thigh";
-        case BODY_PART_RIGHT_LOWER_LEG: return "Right Lower Leg";
-        case BODY_PART_EYES: return "Eyes";
-        default: return "Unknown";
-    }
-}
-
-BodyPartSettings BodyPartEditorMenu::getDefaultBodyPartSettings(BodyPart part) const {
-    BodyPartSettings settings;
-
-    // Set default scale
-    settings.scale = Vector3(1.0f, 1.0f, 1.0f);
-
-    // Set default colors based on body part type
-    switch (part) {
-        case BODY_PART_EYES:
-            settings.color = Color::Black(); // Eyes are black by default
-            break;
-        case BODY_PART_HEAD:
-        case BODY_PART_NECK:
-        case BODY_PART_LEFT_FOREARM:
-        case BODY_PART_RIGHT_FOREARM:
-        case BODY_PART_LEFT_LOWER_LEG:
-        case BODY_PART_RIGHT_LOWER_LEG:
-            settings.color = Color::SkinTone(); // Exposed skin parts
-            break;
-        default:
-            settings.color = Color::Blue(); // Clothing parts (torso, arms, legs)
-            break;
-    }
-
-    // Set visibility
-    settings.visible = true;
-
-    return settings;
-}
-
-void BodyPartEditorMenu::handleCustomizationInput() {
-    // Handle scale adjustment with + and - keys (including = key for +)
-    bool currentPlusState = keyboardState[SDL_SCANCODE_KP_PLUS] || keyboardState[SDL_SCANCODE_EQUALS];
-    bool currentMinusState = keyboardState[SDL_SCANCODE_KP_MINUS] || keyboardState[SDL_SCANCODE_MINUS];
-    bool currentCState = keyboardState[SDL_SCANCODE_C];
-
-    // Scale up with + or = key (only on key press, not hold)
-    if (currentPlusState && !plusKeyPressed) {
-        adjustBodyPartScale(1.1f);
-        plusKeyPressed = true;
-    } else if (!currentPlusState) {
-        plusKeyPressed = false;
-    }
-
-    // Scale down with - key (only on key press, not hold)
-    if (currentMinusState && !minusKeyPressed) {
-        adjustBodyPartScale(0.9f);
-        minusKeyPressed = true;
-    } else if (!currentMinusState) {
-        minusKeyPressed = false;
-    }
-
-    // Cycle color with C key (only on key press, not hold)
-    if (currentCState && !cKeyPressed) {
-        cycleBodyPartColor();
-        cKeyPressed = true;
-    } else if (!currentCState) {
-        cKeyPressed = false;
-    }
 }
 
 void BodyPartEditorMenu::updateButtonHover(MouseHandler& mouseHandler) {

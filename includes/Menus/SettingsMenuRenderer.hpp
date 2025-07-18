@@ -7,17 +7,17 @@
 #include "BodyPartSelectorMenu.hpp"
 #include "BodyPartEditorMenu.hpp"
 #include "BackgroundCustomizerMenu.hpp"
+#include "../Application/SettingsMenuLogic.hpp"
 #include <vector>
 #include <map>
 #include <string>
 
 class SettingsMenuRenderer : public MenuRenderer {
 private:
-    // Current state
-    SettingsPage currentPage;
-    BodyPart selectedBodyPart;
+    // Logic component (handles all state and business logic)
+    SettingsMenuLogic logic;
 
-    // Component menu renderers
+    // Component menu renderers (pure rendering)
     SettingsMainMenu mainMenu;
     BodyPartSelectorMenu bodyPartSelector;
     BodyPartEditorMenu bodyPartEditor;
@@ -42,16 +42,16 @@ public:
     // Get buttons for interaction
     const std::vector<MenuButton>& getButtons() const;
 
-    // Handle button clicks
+    // Handle button clicks (delegates to logic)
     MenuAction handleButtonClick(int buttonIndex);
 
-    // Page navigation
+    // Page navigation (delegates to logic)
     void setPage(SettingsPage page);
     void setSelectedBodyPart(BodyPart part);
     SettingsPage getCurrentPage() const;
     void resetToMainPage();
 
-    // Body part customization (delegated to components)
+    // Body part customization (delegates to logic)
     void cycleBodyPartColor();
     void adjustBodyPartScale(float scaleMultiplier);
     void setBodyPartScale(float newScale);
@@ -59,22 +59,22 @@ public:
     const BodyPartSettings& getBodyPartSettings(BodyPart part) const;
     const std::map<BodyPart, BodyPartSettings>& getAllBodyPartSettings() const;
 
-    // Background color customization (delegated to components)
+    // Background color customization (delegates to logic)
     void cycleMenuBackgroundColor();
     void cycleSimulationBackgroundColor();
     void resetColorsToDefault();
     const Color& getMenuBackgroundColor() const;
     const Color& getSimulationBackgroundColor() const;
 
-    // Mouse interaction (delegated to components)
+    // Mouse interaction (delegates to logic)
     bool handleMouseClick(float mouseX, float mouseY);
     void updateHover(float mouseX, float mouseY);
     void handleMouseUp();
 
-    // Button hover updates
+    // Button hover updates (rendering coordination)
     void updateButtonHover(class MouseHandler& mouseHandler);
 
-    // Input handling (delegated to components)
+    // Input handling (delegates to logic)
     void handleInput();
 
 private:
@@ -83,4 +83,5 @@ private:
     const MenuRenderer* getCurrentMenuRenderer() const;
     void syncBodyPartSettings();
     void syncBackgroundColors();
+    void syncLogicWithMenuComponents();
 };

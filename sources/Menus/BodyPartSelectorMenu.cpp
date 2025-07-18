@@ -17,7 +17,7 @@ void BodyPartSelectorMenu::initializeButtons() {
     float topMargin = HUMANGL_BODYPART_TOP_MARGIN;
 
     // Create buttons for all customizable body parts (centered grid)
-    std::vector<BodyPart> mainBodyParts = getCustomizableBodyParts();
+    std::vector<BodyPart> mainBodyParts = logic.getCustomizableBodyParts();
 
     // Center the grid
     float horizontalSpacing = 30.0f; // More horizontal spacing between columns
@@ -31,7 +31,7 @@ void BodyPartSelectorMenu::initializeButtons() {
         float y = topMargin + row * spacing;
 
         // Create button using proper constructor
-        buttons.emplace_back(x, y, buttonWidth, buttonHeight, getBodyPartName(part));
+        buttons.emplace_back(x, y, buttonWidth, buttonHeight, logic.getBodyPartName(part));
 
         col++;
         if (col >= HUMANGL_BODYPART_COLUMNS) {
@@ -71,68 +71,7 @@ const std::vector<MenuButton>& BodyPartSelectorMenu::getButtons() const {
 }
 
 MenuAction BodyPartSelectorMenu::handleButtonClick(int buttonIndex, BodyPart& selectedPart) {
-    // Get the main body parts list (guaranteed to match button creation)
-    std::vector<BodyPart> mainBodyParts = getCustomizableBodyParts();
-
-    if (buttonIndex < static_cast<int>(mainBodyParts.size())) {
-        // Select body part
-        selectedPart = mainBodyParts[buttonIndex];
-        return MENU_ACTION_BODY_PART_DETAIL;
-    } else {
-        // Handle back buttons
-        int backButtonIndex = buttonIndex - static_cast<int>(mainBodyParts.size());
-        switch (backButtonIndex) {
-            case 0: // Back to Settings
-                return MENU_ACTION_SETTINGS;
-            case 1: // Back to Main Menu
-                return MENU_ACTION_BACK_TO_MENU;
-            default:
-                return MENU_ACTION_NONE;
-        }
-    }
-}
-
-std::string BodyPartSelectorMenu::getBodyPartName(BodyPart part) const {
-    switch (part) {
-        case BODY_PART_HEAD: return "Head";
-        case BODY_PART_NECK: return "Neck";
-        case BODY_PART_TORSO: return "Torso";
-        case BODY_PART_LEFT_ARM: return "Left Arm";
-        case BODY_PART_RIGHT_ARM: return "Right Arm";
-        case BODY_PART_LEFT_LEG: return "Left Leg";
-        case BODY_PART_RIGHT_LEG: return "Right Leg";
-        case BODY_PART_LEFT_SHOULDER: return "Left Shoulder";
-        case BODY_PART_RIGHT_SHOULDER: return "Right Shoulder";
-        case BODY_PART_LEFT_UPPER_ARM: return "Left Upper Arm";
-        case BODY_PART_LEFT_FOREARM: return "Left Forearm";
-        case BODY_PART_RIGHT_UPPER_ARM: return "Right Upper Arm";
-        case BODY_PART_RIGHT_FOREARM: return "Right Forearm";
-        case BODY_PART_LEFT_THIGH: return "Left Thigh";
-        case BODY_PART_LEFT_LOWER_LEG: return "Left Lower Leg";
-        case BODY_PART_RIGHT_THIGH: return "Right Thigh";
-        case BODY_PART_RIGHT_LOWER_LEG: return "Right Lower Leg";
-        case BODY_PART_EYES: return "Eyes";
-        default: return "Unknown";
-    }
-}
-
-std::vector<BodyPart> BodyPartSelectorMenu::getCustomizableBodyParts() const {
-    return {
-        BODY_PART_HEAD,
-        BODY_PART_NECK,
-        BODY_PART_TORSO,
-        BODY_PART_EYES,
-        BODY_PART_LEFT_SHOULDER,
-        BODY_PART_RIGHT_SHOULDER,
-        BODY_PART_LEFT_UPPER_ARM,
-        BODY_PART_RIGHT_UPPER_ARM,
-        BODY_PART_LEFT_FOREARM,
-        BODY_PART_RIGHT_FOREARM,
-        BODY_PART_LEFT_THIGH,
-        BODY_PART_RIGHT_THIGH,
-        BODY_PART_LEFT_LOWER_LEG,
-        BODY_PART_RIGHT_LOWER_LEG
-    };
+    return logic.handleButtonClick(buttonIndex, selectedPart);
 }
 
 void BodyPartSelectorMenu::renderTitle() {
