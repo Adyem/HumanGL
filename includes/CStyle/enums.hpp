@@ -22,7 +22,10 @@ enum MenuAction {
     MENU_ACTION_INSTRUCTIONS,
     MENU_ACTION_EXIT,
     MENU_ACTION_BACK_TO_MENU,
-    MENU_ACTION_RETURN_TO_MENU
+    MENU_ACTION_RETURN_TO_MENU,
+    MENU_ACTION_BODY_CUSTOMIZATION,
+    MENU_ACTION_BACKGROUND_CUSTOMIZATION,
+    MENU_ACTION_BODY_PART_DETAIL
 };
 
 // ============================================================================

@@ -9,7 +9,7 @@ private:
     CreditsMenuRenderer& renderer;
 
 public:
-    CreditsMenu(CreditsMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInput& menuInput, int winWidth, int winHeight);
+    CreditsMenu(CreditsMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInputInterface& menuInput, int winWidth, int winHeight);
     virtual ~CreditsMenu() = default;
 
     // Implement pure virtual methods from BaseMenu

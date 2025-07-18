@@ -1,6 +1,6 @@
 #include "../../includes/Application/InstructionsMenu.hpp"
 
-InstructionsMenu::InstructionsMenu(InstructionsMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInput& menuInput, int winWidth, int winHeight)
+InstructionsMenu::InstructionsMenu(InstructionsMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInputInterface& menuInput, int winWidth, int winHeight)
     : BaseMenu(mouseHandler, menuInput, winWidth, winHeight), renderer(renderer) {
     initializeButtons();
 }

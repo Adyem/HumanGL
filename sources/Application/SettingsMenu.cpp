@@ -2,7 +2,7 @@
 
 
 
-SettingsMenu::SettingsMenu(SettingsMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInput& menuInput, int winWidth, int winHeight)
+SettingsMenu::SettingsMenu(SettingsMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInputInterface& menuInput, int winWidth, int winHeight)
     : BaseMenu(mouseHandler, menuInput, winWidth, winHeight), renderer(renderer) {
     initializeButtons();
 }
@@ -41,9 +41,11 @@ MenuAction SettingsMenu::handleEvent(const SDL_Event& event) {
             // Update mouse position in handler
             mouseHandler.updateMousePosition(event.motion.x, event.motion.y);
 
-            // Force button sync and update hover state immediately
+            // Update button hover states through the renderer
+            renderer.updateButtonHover(mouseHandler);
+
+            // Force button sync after hover update
             buttons = renderer.getButtons();
-            mouseHandler.updateButtonHover(buttons);
 
             // Update custom UI element hover state
             float mouseX = static_cast<float>(event.motion.x);
@@ -102,10 +104,10 @@ MenuAction SettingsMenu::update() {
 }
 
 void SettingsMenu::updateButtonHover() {
-    // Always sync with renderer's buttons first - this is critical!
+    // Update hover states in the renderer's components first
+    renderer.updateButtonHover(mouseHandler);
+
+    // Then sync with renderer's buttons - this is critical!
     const std::vector<MenuButton>& rendererButtons = renderer.getButtons();
     buttons = rendererButtons;
-
-    // Then update hover states on the synced buttons
-    mouseHandler.updateButtonHover(buttons);
 }

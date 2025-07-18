@@ -90,12 +90,13 @@ APPLICATION_HEADERS = Application.hpp BaseMenu.hpp CreditsMenu.hpp InstructionsM
 
 HUMAN_HEADERS = Arm.hpp BodyPart.hpp DrawPerson.hpp Head.hpp Leg.hpp Shoulder.hpp
 
-INPUT_HEADERS = KeyboardHandler.hpp MenuInput.hpp MouseHandler.hpp SettingsInputHandler.hpp
+INPUT_HEADERS = KeyboardHandler.hpp MouseHandler.hpp
 
 MATRIX_HEADERS = Matrix4.hpp MatrixStack.hpp
 
 MENUS_HEADERS = CreditsMenuRenderer.hpp InstructionsMenuRenderer.hpp MainMenuRenderer.hpp \
-				MenuRenderer.hpp SettingsMenuRenderer.hpp TextRenderer.hpp
+				MenuRenderer.hpp SettingsMenuRenderer.hpp TextRenderer.hpp \
+				SettingsMainMenu.hpp BodyPartSelectorMenu.hpp BodyPartEditorMenu.hpp BackgroundCustomizerMenu.hpp
 
 SIMULATION_HEADERS = AnimationManager.hpp EventHandler.hpp SimulationRenderer.hpp
 

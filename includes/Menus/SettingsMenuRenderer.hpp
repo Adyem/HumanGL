@@ -3,31 +3,25 @@
 #include "../humangl.hpp"
 #include "MenuRenderer.hpp"
 #include "TextRenderer.hpp"
+#include "SettingsMainMenu.hpp"
+#include "BodyPartSelectorMenu.hpp"
+#include "BodyPartEditorMenu.hpp"
+#include "BackgroundCustomizerMenu.hpp"
 #include <vector>
 #include <map>
 #include <string>
 
 class SettingsMenuRenderer : public MenuRenderer {
 private:
-    std::vector<MenuButton> buttons;
+    // Current state
     SettingsPage currentPage;
     BodyPart selectedBodyPart;
-    std::map<BodyPart, BodyPartSettings> bodyPartSettings;
-    int currentColorIndex;
-    std::vector<Color> availableColors;
 
-    // Background color settings
-    Color menuBackgroundColor;
-    Color simulationBackgroundColor;
-    int menuBgColorIndex;
-    int simulationBgColorIndex;
-
-    // UI element positions for mouse interaction
-    float sliderX, sliderY, sliderWidth, sliderHeight;
-    float colorSelectorX, colorSelectorY, colorSelectorSize;
-    float menuColorSelectorX, menuColorSelectorY, menuColorSelectorSize;
-    float simColorSelectorX, simColorSelectorY, simColorSelectorSize;
-    bool isDraggingSlider;
+    // Component menu renderers
+    SettingsMainMenu mainMenu;
+    BodyPartSelectorMenu bodyPartSelector;
+    BodyPartEditorMenu bodyPartEditor;
+    BackgroundCustomizerMenu backgroundCustomizer;
 
 public:
     SettingsMenuRenderer(TextRenderer& textRenderer);
@@ -38,6 +32,9 @@ public:
 
     // Override the base class render method
     void render(const std::vector<MenuButton>& buttons) override;
+
+    // Update window size for all components
+    void updateWindowSize(int width, int height);
 
     // Render this menu without external buttons
     void render();
@@ -54,7 +51,7 @@ public:
     SettingsPage getCurrentPage() const;
     void resetToMainPage();
 
-    // Body part customization
+    // Body part customization (delegated to components)
     void cycleBodyPartColor();
     void adjustBodyPartScale(float scaleMultiplier);
     void setBodyPartScale(float newScale);
@@ -62,31 +59,28 @@ public:
     const BodyPartSettings& getBodyPartSettings(BodyPart part) const;
     const std::map<BodyPart, BodyPartSettings>& getAllBodyPartSettings() const;
 
-    // Background color customization
+    // Background color customization (delegated to components)
     void cycleMenuBackgroundColor();
     void cycleSimulationBackgroundColor();
     void resetColorsToDefault();
     const Color& getMenuBackgroundColor() const;
     const Color& getSimulationBackgroundColor() const;
 
-    // Mouse interaction
+    // Mouse interaction (delegated to components)
     bool handleMouseClick(float mouseX, float mouseY);
     void updateHover(float mouseX, float mouseY);
+    void handleMouseUp();
+
+    // Button hover updates
+    void updateButtonHover(class MouseHandler& mouseHandler);
+
+    // Input handling (delegated to components)
+    void handleInput();
 
 private:
-    // Settings menu specific rendering methods
-    void renderTitle();
-    void renderSettingsContent();
-    void renderBodyPartSelection();
-    void renderBodyPartCustomization();
-    void renderBackgroundCustomization();
-
-    // UI helper methods
-    void initializeAvailableColors();
-    void drawSlider(float x, float y, float value, const std::string& label);
-    void drawColorSelector(float x, float y);
-    void drawBackgroundColorSelector(float x, float y, const Color& currentColor, bool isMenuColor);
-    std::string getBodyPartName(BodyPart part) const;
-    BodyPartSettings getDefaultBodyPartSettings(BodyPart part) const;
-    std::vector<BodyPart> getCustomizableBodyParts() const;
+    // Helper methods for coordination
+    MenuRenderer* getCurrentMenuRenderer();
+    const MenuRenderer* getCurrentMenuRenderer() const;
+    void syncBodyPartSettings();
+    void syncBackgroundColors();
 };

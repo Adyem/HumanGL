@@ -9,7 +9,7 @@ private:
     MainMenuRenderer& renderer;
 
 public:
-    MainMenu(MainMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInput& menuInput, int winWidth, int winHeight);
+    MainMenu(MainMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInputInterface& menuInput, int winWidth, int winHeight);
     virtual ~MainMenu() = default;
 
     // Implement pure virtual methods from BaseMenu

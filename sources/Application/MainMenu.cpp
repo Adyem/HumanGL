@@ -1,6 +1,6 @@
 #include "../../includes/Application/MainMenu.hpp"
 
-MainMenu::MainMenu(MainMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInput& menuInput, int winWidth, int winHeight)
+MainMenu::MainMenu(MainMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInputInterface& menuInput, int winWidth, int winHeight)
     : BaseMenu(mouseHandler, menuInput, winWidth, winHeight), renderer(renderer) {
     initializeButtons();
 }

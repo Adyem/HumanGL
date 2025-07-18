@@ -2,13 +2,12 @@
 
 MenuSystem::MenuSystem()
     : mainMenuRenderer(textRenderer), settingsMenuRenderer(textRenderer), creditsMenuRenderer(textRenderer), instructionsMenuRenderer(textRenderer),
-      mainMenu(mainMenuRenderer, mouseHandler, menuInput, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
-      settingsMenu(settingsMenuRenderer, mouseHandler, menuInput, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
-      creditsMenu(creditsMenuRenderer, mouseHandler, menuInput, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
-      instructionsMenu(instructionsMenuRenderer, mouseHandler, menuInput, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
+      mainMenu(mainMenuRenderer, mouseHandler, menuInputStub, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
+      settingsMenu(settingsMenuRenderer, mouseHandler, menuInputStub, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
+      creditsMenu(creditsMenuRenderer, mouseHandler, menuInputStub, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
+      instructionsMenu(instructionsMenuRenderer, mouseHandler, menuInputStub, HUMANGL_DEFAULT_WINDOW_WIDTH, HUMANGL_DEFAULT_WINDOW_HEIGHT),
       currentState(MAIN_MENU), windowWidth(HUMANGL_DEFAULT_WINDOW_WIDTH), windowHeight(HUMANGL_DEFAULT_WINDOW_HEIGHT) {
-    // Initialize settings input handler
-    settingsInputHandler.setSettingsRenderer(&settingsMenuRenderer);
+    // Input handling is now integrated into SettingsMenuRenderer and EventHandler
 }
 
 MenuSystem::~MenuSystem() {
@@ -24,9 +23,7 @@ bool MenuSystem::initialize(int winWidth, int winHeight) {
         return false;
     }
     
-    if (!menuInput.initialize()) {
-        return false;
-    }
+    // MenuInput functionality moved to EventHandler - no initialization needed
     
     // Update renderers with window size
     mainMenuRenderer.updateWindowSize(windowWidth, windowHeight);
@@ -84,8 +81,8 @@ MenuAction MenuSystem::handleEvent(const SDL_Event& event) {
             break;
         case SETTINGS:
             action = settingsMenu.handleEvent(event);
-            // Handle settings customization input
-            settingsInputHandler.handleInput();
+            // Handle settings customization input (now integrated into SettingsMenuRenderer)
+            settingsMenuRenderer.handleInput();
             break;
         case CREDITS:
             action = creditsMenu.handleEvent(event);
@@ -140,19 +137,18 @@ MenuAction MenuSystem::update() {
             action = instructionsMenu.update();
             break;
         case SIMULATION:
-            // Check for M key to return to menu from simulation
-            menuInput.update();
-            if (menuInput.isMKeyPressed()) {
-                action = MENU_ACTION_RETURN_TO_MENU;
-                currentState = MAIN_MENU;
-            }
-            menuInput.resetKeyStates();
+            // Simulation input is now handled by EventHandler
+            // No menu input handling needed here
             break;
     }
 
     // Process menu actions
     switch (action) {
         case MENU_ACTION_RETURN_TO_MENU:
+            currentState = MAIN_MENU;
+            break;
+        case MENU_ACTION_EXIT:
+            // Return to main menu when ESC is pressed
             currentState = MAIN_MENU;
             break;
         default:
@@ -166,6 +162,9 @@ void MenuSystem::render() {
     // Set menu background color from settings
     const Color& menuBgColor = settingsMenuRenderer.getMenuBackgroundColor();
     glClearColor(menuBgColor.r, menuBgColor.g, menuBgColor.b, menuBgColor.a);
+
+    // Clear the screen with the background color
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     switch (currentState) {
         case MAIN_MENU:

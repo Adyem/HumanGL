@@ -1,6 +1,6 @@
 #include "../../includes/Application/CreditsMenu.hpp"
 
-CreditsMenu::CreditsMenu(CreditsMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInput& menuInput, int winWidth, int winHeight)
+CreditsMenu::CreditsMenu(CreditsMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInputInterface& menuInput, int winWidth, int winHeight)
     : BaseMenu(mouseHandler, menuInput, winWidth, winHeight), renderer(renderer) {
     initializeButtons();
 }

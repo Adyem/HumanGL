@@ -9,7 +9,7 @@ private:
     SettingsMenuRenderer& renderer;
 
 public:
-    SettingsMenu(SettingsMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInput& menuInput, int winWidth, int winHeight);
+    SettingsMenu(SettingsMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInputInterface& menuInput, int winWidth, int winHeight);
     virtual ~SettingsMenu() = default;
 
     // Implement pure virtual methods from BaseMenu

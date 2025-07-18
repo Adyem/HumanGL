@@ -19,6 +19,13 @@ private:
     int& windowWidth;
     int& windowHeight;
 
+    // Menu input state (moved from MenuInput)
+    const Uint8* keyboardState;
+    bool escapePressed;
+    bool mKeyPressed;
+    bool prevEscapeState;
+    bool prevMKeyState;
+
 public:
     EventHandler(AnimationManager& animMgr, KeyboardHandler& kbHandler, MenuSystem& menuSys,
                 SimulationRenderer& simRenderer, AppState* appState, int& winWidth, int& winHeight);
@@ -36,6 +43,13 @@ public:
     // Menu event handling
     void handleMenuEvents();
     void processMenuAction(MenuAction action);
+
+    // Menu input methods (moved from MenuInput)
+    void updateMenuInput();
+    void resetMenuKeyStates();
+    bool isEscapePressed() const { return escapePressed; }
+    bool isMKeyPressed() const { return mKeyPressed; }
+    bool isKeyDown(SDL_Scancode key) const;
 
     // Animation control methods
     void toggleWalkingAnimation();
