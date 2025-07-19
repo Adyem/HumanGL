@@ -20,9 +20,8 @@ void Leg::render(MatrixStack& matrixStack) {
     matrixStack.popMatrix();
 
     matrixStack.rotateX(thighX);
-    matrixStack.translate(positionX, positionY, positionZ);
 
-    // Debug marker to visualize the hip joint position
+    // Debug marker to visualize the hip joint position after rotation
     matrixStack.pushMatrix();
     matrixStack.scale(0.05f, 0.05f, 0.05f);
     matrixStack.applyToOpenGL();
