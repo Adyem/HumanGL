@@ -22,8 +22,8 @@ void SimulationRenderer::render() {
     // Apply body part customizations before rendering
     applyBodyPartCustomizations();
 
-    // Render the person
-    drawPerson.render();
+    // Render the person using custom matrix stack
+    drawPerson.render(matrixStack);
 }
 
 void SimulationRenderer::setupPerspective() {

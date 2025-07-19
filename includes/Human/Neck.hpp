@@ -9,5 +9,5 @@ public:
     Neck();
     virtual ~Neck() = default;
 
-    void render() override;
+    void render(MatrixStack& matrixStack) override;
 };

@@ -4,27 +4,34 @@ Eyes::Eyes() : BodyPartRenderer(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_NO
     // Black color for eyes
 }
 
-void Eyes::render() {
-    glPushMatrix();
-    glTranslatef(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_HEAD_Y_POSITION, HUMANGL_OPENGL_AXIS_NONE);
-    glRotatef(headRotationX, HUMANGL_OPENGL_AXIS_X, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_NONE);
-    glRotatef(headRotationY, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_Y, HUMANGL_OPENGL_AXIS_NONE);
+void Eyes::render(MatrixStack& matrixStack) {
+    // Use custom matrix stack for transformations (100% PDF compliant - NO OpenGL matrix calls)
+    matrixStack.pushMatrix();
+    matrixStack.translate(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_HEAD_Y_POSITION, HUMANGL_OPENGL_AXIS_NONE);
+    matrixStack.rotateX(headRotationX);
+    matrixStack.rotateY(headRotationY);
 
     // Left eye
-    glPushMatrix();
-    glTranslatef(HUMANGL_LEFT_EYE_X_OFFSET, HUMANGL_EYE_Y_OFFSET, HUMANGL_EYE_Z_OFFSET);
-    glScalef(HUMANGL_EYE_SCALE * scaleX, HUMANGL_EYE_SCALE * scaleY, HUMANGL_EYE_SCALE * scaleZ);
-    drawColoredCube(colorR, colorG, colorB);
-    glPopMatrix();
+    matrixStack.pushMatrix();
+    matrixStack.translate(HUMANGL_LEFT_EYE_X_OFFSET, HUMANGL_EYE_Y_OFFSET, HUMANGL_EYE_Z_OFFSET);
+    matrixStack.scale(HUMANGL_EYE_SCALE * scaleX, HUMANGL_EYE_SCALE * scaleY, HUMANGL_EYE_SCALE * scaleZ);
+
+    // Draw cube with custom matrix transformations - NO OpenGL matrix functions!
+    drawColoredCubeWithMatrix(colorR, colorG, colorB, matrixStack);
+
+    matrixStack.popMatrix();
 
     // Right eye
-    glPushMatrix();
-    glTranslatef(HUMANGL_RIGHT_EYE_X_OFFSET, HUMANGL_EYE_Y_OFFSET, HUMANGL_EYE_Z_OFFSET);
-    glScalef(HUMANGL_EYE_SCALE * scaleX, HUMANGL_EYE_SCALE * scaleY, HUMANGL_EYE_SCALE * scaleZ);
-    drawColoredCube(colorR, colorG, colorB);
-    glPopMatrix();
+    matrixStack.pushMatrix();
+    matrixStack.translate(HUMANGL_RIGHT_EYE_X_OFFSET, HUMANGL_EYE_Y_OFFSET, HUMANGL_EYE_Z_OFFSET);
+    matrixStack.scale(HUMANGL_EYE_SCALE * scaleX, HUMANGL_EYE_SCALE * scaleY, HUMANGL_EYE_SCALE * scaleZ);
 
-    glPopMatrix();
+    // Draw cube with custom matrix transformations - NO OpenGL matrix functions!
+    drawColoredCubeWithMatrix(colorR, colorG, colorB, matrixStack);
+
+    matrixStack.popMatrix();
+
+    matrixStack.popMatrix();
 }
 
 void Eyes::setHeadRotation(float x, float y) {

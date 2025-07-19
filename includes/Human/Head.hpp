@@ -13,7 +13,7 @@ public:
     Head();
     virtual ~Head() = default;
 
-    void render() override;
+    void render(MatrixStack& matrixStack) override;
 
     // Head-specific rotation methods
     void setHeadRotation(float x, float y);

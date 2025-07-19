@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../humangl.hpp"
+#include "../Matrix/MatrixStack.hpp"
 #include "../Human/DrawPerson.hpp"
 #include "../Input/KeyboardHandler.hpp"
 
@@ -9,6 +10,7 @@ class SettingsMenuRenderer;
 
 class SimulationRenderer {
 private:
+    MatrixStack matrixStack;
     DrawPerson& drawPerson;
     KeyboardHandler& keyboardHandler;
     SettingsMenuRenderer* settingsRenderer;

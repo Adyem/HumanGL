@@ -14,39 +14,38 @@ DrawPerson::DrawPerson() : torsoRotationY(HUMANGL_OPENGL_AXIS_NONE), jumpHeight(
     rightLeg = std::make_unique<RightLeg>();
 }
 
-void DrawPerson::render() {
+void DrawPerson::render(MatrixStack& matrixStack) {
     // Enable face culling for better performance
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
 
-    // Apply global transformations
-    glPushMatrix();
+    // 100% PDF compliant - ONLY use custom MatrixStack, NO OpenGL matrix functions!
 
-    // Apply jump height (affects entire body)
-    glTranslatef(HUMANGL_OPENGL_AXIS_NONE, jumpHeight, HUMANGL_OPENGL_AXIS_NONE);
-
-    // Apply torso rotation (this affects all body parts)
-    glRotatef(torsoRotationY, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_Y, HUMANGL_OPENGL_AXIS_NONE);
+    // Apply global transformations using ONLY custom matrix stack
+    matrixStack.pushMatrix();
+    matrixStack.translate(HUMANGL_OPENGL_AXIS_NONE, jumpHeight, HUMANGL_OPENGL_AXIS_NONE);
+    matrixStack.rotateY(torsoRotationY);
 
     // Draw body parts in hierarchical order
-    torso->render();           // Base of hierarchy
-    neck->render();            // Connected to torso
-    head->render();            // Connected to neck
-    eyes->render();            // Eyes on the head (shows front direction)
+    torso->render(matrixStack);           // Base of hierarchy
+    neck->render(matrixStack);            // Connected to torso
+    head->render(matrixStack);            // Connected to neck
+    eyes->render(matrixStack);            // Eyes on the head (shows front direction)
 
     // Draw shoulder joints
-    leftShoulder->render();    // Left shoulder joint
-    rightShoulder->render();   // Right shoulder joint
+    leftShoulder->render(matrixStack);    // Left shoulder joint
+    rightShoulder->render(matrixStack);   // Right shoulder joint
 
     // Draw arms (connected to shoulders)
-    leftArm->render();         // Left arm (upper arm + forearm connected)
-    rightArm->render();        // Right arm (upper arm + forearm connected)
+    leftArm->render(matrixStack);         // Left arm (upper arm + forearm connected)
+    rightArm->render(matrixStack);        // Right arm (upper arm + forearm connected)
 
     // Draw legs (connected to torso)
-    leftLeg->render();         // Left leg (thigh + lower leg connected)
-    rightLeg->render();        // Right leg (thigh + lower leg connected)
+    leftLeg->render(matrixStack);         // Left leg (thigh + lower leg connected)
+    rightLeg->render(matrixStack);        // Right leg (thigh + lower leg connected)
 
-    glPopMatrix();
+    // Pop from custom matrix stack only - NO OpenGL matrix calls!
+    matrixStack.popMatrix();
 
     // Disable states we enabled
     glDisable(GL_CULL_FACE);

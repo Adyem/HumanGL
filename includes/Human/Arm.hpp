@@ -18,7 +18,7 @@ public:
     Arm(float x, float y, float z);
     virtual ~Arm() = default;
 
-    void render() override;
+    void render(MatrixStack& matrixStack) override;
     
     // Arm rotation methods
     void setUpperArmRotation(float x, float z);

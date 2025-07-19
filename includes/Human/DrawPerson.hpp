@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../humangl.hpp"
+#include "../Matrix/MatrixStack.hpp"
 #include "Torso.hpp"
 #include "Neck.hpp"
 #include "Head.hpp"
@@ -34,8 +35,8 @@ public:
     DrawPerson();
     ~DrawPerson() = default;
 
-    // Main render method
-    void render();
+    // Main render method (100% PDF compliant - uses custom MatrixStack only)
+    void render(MatrixStack& matrixStack);
 
     // Global transformation methods
     void setTorsoRotation(float y);

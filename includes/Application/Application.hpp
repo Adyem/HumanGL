@@ -7,6 +7,7 @@
 #include "../Simulation/SimulationRenderer.hpp"
 #include "../Simulation/AnimationManager.hpp"
 #include "../Simulation/EventHandler.hpp"
+#include "../Matrix/MatrixStack.hpp"
 
 class Application {
 private:
@@ -23,6 +24,7 @@ private:
     AppState currentState;
     
     // Core systems
+    MatrixStack matrixStack;
     DrawPerson drawPerson;
     KeyboardHandler keyboardHandler;
     MenuSystem menuSystem;

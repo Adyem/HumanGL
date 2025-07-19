@@ -9,5 +9,5 @@ public:
     Torso();
     virtual ~Torso() = default;
 
-    void render() override;
+    void render(MatrixStack& matrixStack) override;
 };

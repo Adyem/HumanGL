@@ -8,28 +8,33 @@ Arm::Arm(float x, float y, float z)
     // Upper arms use clothing color (blue), forearms use skin color
 }
 
-void Arm::render() {
-    // Draw the entire arm as a connected hierarchy
-    glPushMatrix();
-    glTranslatef(positionX, positionY, positionZ);
-    glRotatef(upperArmX, HUMANGL_OPENGL_AXIS_X, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_NONE);
-    glRotatef(upperArmZ, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_Z);
+void Arm::render(MatrixStack& matrixStack) {
+    // Use custom matrix stack for transformations (100% PDF compliant - NO OpenGL matrix calls)
+    matrixStack.pushMatrix();
+    matrixStack.translate(positionX, positionY, positionZ);
+    matrixStack.rotateX(upperArmX);
+    matrixStack.rotateZ(upperArmZ);
 
     // Draw upper arm
-    glPushMatrix();
-    glTranslatef(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_UPPER_ARM_Y_OFFSET, HUMANGL_OPENGL_AXIS_NONE);
-    glScalef(HUMANGL_UPPER_ARM_SCALE_X * scaleX, HUMANGL_UPPER_ARM_SCALE_Y * scaleY, HUMANGL_UPPER_ARM_SCALE_Z * scaleZ);
-    drawColoredCube(upperArmR, upperArmG, upperArmB);  // Individual upper arm color
-    glPopMatrix();
+    matrixStack.pushMatrix();
+    matrixStack.translate(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_UPPER_ARM_Y_OFFSET, HUMANGL_OPENGL_AXIS_NONE);
+    matrixStack.scale(HUMANGL_UPPER_ARM_SCALE_X * scaleX, HUMANGL_UPPER_ARM_SCALE_Y * scaleY, HUMANGL_UPPER_ARM_SCALE_Z * scaleZ);
+
+    // Draw cube with custom matrix transformations - NO OpenGL matrix functions!
+    drawColoredCubeWithMatrix(upperArmR, upperArmG, upperArmB, matrixStack);  // Individual upper arm color
+
+    matrixStack.popMatrix();
 
     // Draw forearm (connected to upper arm)
-    glTranslatef(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_FOREARM_Y_OFFSET, HUMANGL_OPENGL_AXIS_NONE);
-    glRotatef(forearmX, HUMANGL_OPENGL_AXIS_X, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_NONE);
-    glTranslatef(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_FOREARM_Y_POSITION, HUMANGL_OPENGL_AXIS_NONE);
-    glScalef(HUMANGL_FOREARM_SCALE_X * scaleX, HUMANGL_FOREARM_SCALE_Y * scaleY, HUMANGL_FOREARM_SCALE_Z * scaleZ);
-    drawColoredCube(forearmR, forearmG, forearmB);  // Individual forearm color
+    matrixStack.translate(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_FOREARM_Y_OFFSET, HUMANGL_OPENGL_AXIS_NONE);
+    matrixStack.rotateX(forearmX);
+    matrixStack.translate(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_FOREARM_Y_POSITION, HUMANGL_OPENGL_AXIS_NONE);
+    matrixStack.scale(HUMANGL_FOREARM_SCALE_X * scaleX, HUMANGL_FOREARM_SCALE_Y * scaleY, HUMANGL_FOREARM_SCALE_Z * scaleZ);
 
-    glPopMatrix();
+    // Draw cube with custom matrix transformations - NO OpenGL matrix functions!
+    drawColoredCubeWithMatrix(forearmR, forearmG, forearmB, matrixStack);  // Individual forearm color
+
+    matrixStack.popMatrix();
 }
 
 void Arm::setUpperArmRotation(float x, float z) {

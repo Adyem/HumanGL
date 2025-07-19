@@ -4,14 +4,18 @@ Head::Head() : BodyPartRenderer(HUMANGL_DEFAULT_SKIN_R, HUMANGL_DEFAULT_SKIN_G, 
     // Skin color
 }
 
-void Head::render() {
-    glPushMatrix();
-    glTranslatef(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_HEAD_Y_POSITION, HUMANGL_OPENGL_AXIS_NONE);
-    glRotatef(headRotationX, HUMANGL_OPENGL_AXIS_X, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_NONE);
-    glRotatef(headRotationY, HUMANGL_OPENGL_AXIS_NONE, HUMANGL_OPENGL_AXIS_Y, HUMANGL_OPENGL_AXIS_NONE);
-    glScalef(HUMANGL_HEAD_SCALE * scaleX, HUMANGL_HEAD_SCALE * scaleY, HUMANGL_HEAD_SCALE * scaleZ);
-    drawColoredCube(colorR, colorG, colorB);
-    glPopMatrix();
+void Head::render(MatrixStack& matrixStack) {
+    // Use custom matrix stack for transformations (100% PDF compliant - NO OpenGL matrix calls)
+    matrixStack.pushMatrix();
+    matrixStack.translate(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_HEAD_Y_POSITION, HUMANGL_OPENGL_AXIS_NONE);
+    matrixStack.rotateX(headRotationX);
+    matrixStack.rotateY(headRotationY);
+    matrixStack.scale(HUMANGL_HEAD_SCALE * scaleX, HUMANGL_HEAD_SCALE * scaleY, HUMANGL_HEAD_SCALE * scaleZ);
+
+    // Draw cube with custom matrix transformations - NO OpenGL matrix functions!
+    drawColoredCubeWithMatrix(colorR, colorG, colorB, matrixStack);
+
+    matrixStack.popMatrix();
 }
 
 void Head::setHeadRotation(float x, float y) {

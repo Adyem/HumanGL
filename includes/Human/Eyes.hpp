@@ -13,7 +13,7 @@ public:
     Eyes();
     virtual ~Eyes() = default;
 
-    void render() override;
+    void render(MatrixStack& matrixStack) override;
     
     // Sync with head rotation
     void setHeadRotation(float x, float y);
