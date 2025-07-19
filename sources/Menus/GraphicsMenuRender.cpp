@@ -104,7 +104,7 @@ BackgroundCustomizerLogic& BackgroundCustomizerMenu::getActiveLogic() {
 void BackgroundCustomizerMenu::renderTitle() {
     float titleX = static_cast<float>(windowWidth) / 2.0f - HUMANGL_TITLE_X_OFFSET;
     float titleY = HUMANGL_TITLE_Y_POSITION;
-    textRenderer.drawText(titleX, titleY, "Background Colors", 1.0f, 1.0f, 1.0f);
+    textRenderer.drawText(titleX, titleY, "Graphics Customization", 1.0f, 1.0f, 1.0f);
 }
 
 void BackgroundCustomizerMenu::renderBackgroundCustomization() {
@@ -112,7 +112,7 @@ void BackgroundCustomizerMenu::renderBackgroundCustomization() {
     float lineSpacing = HUMANGL_SETTINGS_LINE_SPACING;
 
     // Menu background color section
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN, contentY, "Menu Background Color:", 0.9f, 0.9f, 0.9f);
+    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN, contentY, "Menu Color:", 0.9f, 0.9f, 0.9f);
     contentY += lineSpacing;
 
     float colorX = HUMANGL_SETTINGS_LEFT_MARGIN + 50.0f;
@@ -120,7 +120,7 @@ void BackgroundCustomizerMenu::renderBackgroundCustomization() {
     contentY += lineSpacing * 2.5f;
 
     // Simulation background color section
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN, contentY, "Simulation Background Color:", 0.9f, 0.9f, 0.9f);
+    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN, contentY, "Simulation Color:", 0.9f, 0.9f, 0.9f);
     contentY += lineSpacing;
 
     drawBackgroundColorSelector(colorX, contentY, getActiveLogic().getSimulationBackgroundColor(), false);

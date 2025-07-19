@@ -40,10 +40,5 @@ public:
 
     // Apply body part customizations
     void applyBodyPartCustomizations();
-
-    // Getters
-    float getNearPlane() const { return nearPlane; }
-    float getFarPlane() const { return farPlane; }
-    float getFOV() const { return fov; }
 };
 

@@ -31,17 +31,7 @@ public:
     // Camera control methods
     void handleCameraControls();
     void applyCameraTransform();
-    
-    // Camera getters
-    float getCameraRotationY() const { return cameraRotationY; }
-    float getCameraDistance() const { return cameraDistance; }
-    float getCameraHeight() const { return cameraHeight; }
 
     // Reset methods
     void resetCameraPosition();
-    
-    // Camera setters
-    void setCameraRotation(float rotY) { cameraRotationY = rotY; }
-    void setCameraDistance(float distance) { cameraDistance = distance; }
-    void setCameraHeight(float height) { cameraHeight = height; }
 };

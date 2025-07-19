@@ -99,43 +99,4 @@ struct AnimationKeyframe {
         : time(t), position(pos), rotation(rot), scale(scl) {}
 };
 
-// Window settings structure
-struct WindowSettings {
-    int width, height;
-    bool fullscreen;
-    bool vsync;
-    std::string title;
-    
-    WindowSettings()
-        : width(HUMANGL_DEFAULT_WINDOW_WIDTH), height(HUMANGL_DEFAULT_WINDOW_HEIGHT), fullscreen(false), vsync(true),
-          title(HUMANGL_WINDOW_TITLE) {}
-    
-    WindowSettings(int w, int h, bool fs = false, bool vs = true, const std::string& t = "HumanGL")
-        : width(w), height(h), fullscreen(fs), vsync(vs), title(t) {}
-};
 
-// Input state structure
-struct InputState {
-    bool keys[256];  // SDL key states
-    bool mouseButtons[3];  // Left, Right, Middle
-    int mouseX, mouseY;
-    int mouseDeltaX, mouseDeltaY;
-    bool quit;
-    
-    InputState() : mouseX(0), mouseY(0), mouseDeltaX(0), mouseDeltaY(0), quit(false) {
-        std::memset(keys, 0, sizeof(keys));
-        std::memset(mouseButtons, 0, sizeof(mouseButtons));
-    }
-};
-
-// Performance metrics structure
-struct PerformanceMetrics {
-    float frameTime;
-    float fps;
-    int frameCount;
-    std::chrono::high_resolution_clock::time_point lastTime;
-    
-    PerformanceMetrics() : frameTime(0.0f), fps(0.0f), frameCount(0) {
-        lastTime = std::chrono::high_resolution_clock::now();
-    }
-};

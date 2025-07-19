@@ -14,12 +14,12 @@ void SettingsMainMenu::initializeButtons() {
     float buttonWidth = HUMANGL_MENU_BUTTON_WIDTH;
     float buttonHeight = HUMANGL_MENU_BUTTON_HEIGHT;
     float centerX = (static_cast<float>(windowWidth) - buttonWidth) / 2.0f;
-    float startY = static_cast<float>(windowHeight) / 2.0f + 50.0f;
+    float startY = static_cast<float>(windowHeight) / 2.0f - HUMANGL_MENU_SETTINGS_OFFSET_Y;
     float spacing = HUMANGL_MENU_BUTTON_SPACING;
 
     // Create buttons using proper MenuButton constructor
-    buttons.emplace_back(centerX, startY, buttonWidth, buttonHeight, "Body Customization");
-    buttons.emplace_back(centerX, startY + spacing, buttonWidth, buttonHeight, "Background Colors");
+    buttons.emplace_back(centerX, startY, buttonWidth, buttonHeight, "Body parts");
+    buttons.emplace_back(centerX, startY + spacing, buttonWidth, buttonHeight, "Graphics");
     buttons.emplace_back(centerX, startY + spacing * 2, buttonWidth, buttonHeight, "Back to Menu");
 }
 
@@ -55,24 +55,7 @@ void SettingsMainMenu::renderTitle() {
 }
 
 void SettingsMainMenu::renderSettingsContent() {
-    float contentY = HUMANGL_SETTINGS_CONTENT_START_Y;
-    float lineSpacing = HUMANGL_SETTINGS_LINE_SPACING;
-    
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN, contentY, "Welcome to Settings!", 0.9f, 0.9f, 0.9f);
-    contentY += lineSpacing * 2.0f;
-    
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN, contentY, "Customization:", 0.9f, 0.9f, 0.9f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- Use 'Body Customization' to modify body parts", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- Use 'Background Colors' to change menu/simulation colors", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing * 2.0f;
-    
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN, contentY, "Navigation:", 0.9f, 0.9f, 0.9f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- Use buttons to navigate between sections", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(HUMANGL_SETTINGS_LEFT_MARGIN + HUMANGL_SETTINGS_INDENT, contentY, "- Press ESC to return to main menu", 0.8f, 0.8f, 0.8f);
+    // No content to render on the main settings page
 }
 
 void SettingsMainMenu::updateButtonHover(MouseHandler& mouseHandler) {

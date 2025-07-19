@@ -20,7 +20,6 @@
 #define HUMANGL_DEPTH_BUFFER_SIZE 24
 
 // Animation constants
-#define HUMANGL_TARGET_FPS 60
 #define HUMANGL_FRAME_DELAY 16  // ~60 FPS (1000ms / 60fps ≈ 16ms)
 
 // Math utility macros
