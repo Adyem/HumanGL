@@ -21,9 +21,8 @@ void Arm::render(MatrixStack& matrixStack) {
 
     matrixStack.rotateX(upperArmX);
     matrixStack.rotateZ(upperArmZ);
-    matrixStack.translate(positionX, positionY, positionZ);
 
-    // Debug marker to visualize the shoulder joint position
+    // Debug marker to visualize the shoulder joint position after rotation
     matrixStack.pushMatrix();
     matrixStack.scale(0.05f, 0.05f, 0.05f);
     matrixStack.applyToOpenGL();
