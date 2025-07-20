@@ -1,17 +1,17 @@
 #include "../../includes/Application/MainMenu.hpp"
 
-MainMenu::MainMenu(MainMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInput& menuInput, int winWidth, int winHeight)
+MainMenu::MainMenu(MainMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInputInterface& menuInput, int winWidth, int winHeight)
     : BaseMenu(mouseHandler, menuInput, winWidth, winHeight), renderer(renderer) {
     initializeButtons();
 }
 
 void MainMenu::initializeButtons() {
     // Main menu buttons (centered)
-    float buttonWidth = 200.0f;
-    float buttonHeight = 50.0f;
+    float buttonWidth = HUMANGL_MENU_BUTTON_WIDTH;
+    float buttonHeight = HUMANGL_MENU_BUTTON_HEIGHT;
     float centerX = (static_cast<float>(windowWidth) - buttonWidth) / 2.0f;
-    float startY = static_cast<float>(windowHeight) / 2.0f - 120.0f;
-    float spacing = 60.0f;
+    float startY = static_cast<float>(windowHeight) / 2.0f - HUMANGL_MENU_TITLE_OFFSET_Y;
+    float spacing = HUMANGL_MENU_BUTTON_SPACING;
 
     buttons.clear();
     buttons.push_back(MenuButton(centerX, startY, buttonWidth, buttonHeight, "Start Simulation"));

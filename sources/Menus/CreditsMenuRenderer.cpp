@@ -6,10 +6,10 @@ CreditsMenuRenderer::CreditsMenuRenderer(TextRenderer& textRenderer)
 }
 
 void CreditsMenuRenderer::initializeButtons() {
-    float buttonWidth = 200.0f;
-    float buttonHeight = 50.0f;
+    float buttonWidth = HUMANGL_MENU_BUTTON_WIDTH;
+    float buttonHeight = HUMANGL_MENU_BUTTON_HEIGHT;
     float centerX = (static_cast<float>(windowWidth) - buttonWidth) / 2.0f;
-    float startY = static_cast<float>(windowHeight) / 2.0f + 150.0f;
+    float startY = static_cast<float>(windowHeight) / 2.0f + HUMANGL_MENU_SETTINGS_OFFSET_Y;
 
     buttons.clear();
     buttons.push_back(MenuButton(centerX, startY, buttonWidth, buttonHeight, "Back to Menu"));
@@ -62,29 +62,49 @@ void CreditsMenuRenderer::renderTitle() {
 }
 
 void CreditsMenuRenderer::renderCreditsContent() {
-    // Draw credits content
-    float contentY = 200.0f;
-    float lineSpacing = 30.0f;
+    // Calculate column positions
+    float leftColumnX = HUMANGL_CREDITS_LEFT_MARGIN;
+    float rightColumnX = static_cast<float>(windowWidth) / 2.0f + HUMANGL_CREDITS_LEFT_MARGIN;
+    float contentY = HUMANGL_CREDITS_CONTENT_START_Y;
+    float lineSpacing = HUMANGL_CREDITS_LINE_SPACING;
 
-    textRenderer.drawText(50.0f, contentY, "HumanGL - Skeletal Animation Demo", 1.0f, 1.0f, 0.8f);
-    contentY += lineSpacing * 1.5f;
+    // Left Column - Technologies Used
+    float leftY = contentY;
+    textRenderer.drawText(leftColumnX, leftY, "Developed with:", 0.9f, 0.9f, 0.9f);
+    leftY += lineSpacing;
+    textRenderer.drawText(leftColumnX + HUMANGL_CREDITS_INDENT, leftY, "- OpenGL for 3D graphics", 0.8f, 0.8f, 0.8f);
+    leftY += lineSpacing;
+    textRenderer.drawText(leftColumnX + HUMANGL_CREDITS_INDENT, leftY, "- SDL2 for window management", 0.8f, 0.8f, 0.8f);
+    leftY += lineSpacing;
+    textRenderer.drawText(leftColumnX + HUMANGL_CREDITS_INDENT, leftY, "- C++14 for core implementation", 0.8f, 0.8f, 0.8f);
+    leftY += lineSpacing * 1.5f;
 
-    textRenderer.drawText(50.0f, contentY, "Developed with:", 0.9f, 0.9f, 0.9f);
-    contentY += lineSpacing;
-    textRenderer.drawText(70.0f, contentY, "- OpenGL for 3D graphics", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(70.0f, contentY, "- SDL2 for window management", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(70.0f, contentY, "- C++ for core implementation", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing * 1.5f;
+    textRenderer.drawText(leftColumnX, leftY, "Architecture:", 0.9f, 0.9f, 0.9f);
+    leftY += lineSpacing;
+    textRenderer.drawText(leftColumnX + HUMANGL_CREDITS_INDENT, leftY, "- Modular design pattern", 0.8f, 0.8f, 0.8f);
+    leftY += lineSpacing;
+    textRenderer.drawText(leftColumnX + HUMANGL_CREDITS_INDENT, leftY, "- Object-oriented structure", 0.8f, 0.8f, 0.8f);
+    leftY += lineSpacing;
+    textRenderer.drawText(leftColumnX + HUMANGL_CREDITS_INDENT, leftY, "- Event-driven system", 0.8f, 0.8f, 0.8f);
 
-    textRenderer.drawText(50.0f, contentY, "Features:", 0.9f, 0.9f, 0.9f);
-    contentY += lineSpacing;
-    textRenderer.drawText(70.0f, contentY, "- Hierarchical skeletal animation", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(70.0f, contentY, "- Interactive joint control", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(70.0f, contentY, "- Multiple animation modes", 0.8f, 0.8f, 0.8f);
-    contentY += lineSpacing;
-    textRenderer.drawText(70.0f, contentY, "- Modular menu system", 0.8f, 0.8f, 0.8f);
+    // Right Column - Features
+    float rightY = contentY;
+    textRenderer.drawText(rightColumnX, rightY, "Core features:", 0.9f, 0.9f, 0.9f);
+    rightY += lineSpacing;
+    textRenderer.drawText(rightColumnX + HUMANGL_CREDITS_INDENT, rightY, "- Hierarchical skeletal animation", 0.8f, 0.8f, 0.8f);
+    rightY += lineSpacing;
+    textRenderer.drawText(rightColumnX + HUMANGL_CREDITS_INDENT, rightY, "- Walking, Jumping and Model", 0.8f, 0.8f, 0.8f);
+    rightY += lineSpacing * 1.5f;
+
+    textRenderer.drawText(rightColumnX, rightY, "Bonus features:", 0.9f, 0.9f, 0.9f);
+    rightY += lineSpacing;
+    textRenderer.drawText(rightColumnX + HUMANGL_CREDITS_INDENT, rightY, "- Multiple Animations(dance, kung fu)", 0.8f, 0.8f, 0.8f);
+    rightY += lineSpacing;
+    textRenderer.drawText(rightColumnX + HUMANGL_CREDITS_INDENT, rightY, "- Input handling(keyboard and mouse)", 0.8f, 0.8f, 0.8f);
+    rightY += lineSpacing;
+    textRenderer.drawText(rightColumnX + HUMANGL_CREDITS_INDENT, rightY, "- Menu system with multiple pages", 0.8f, 0.8f, 0.8f);
+    rightY += lineSpacing;
+    textRenderer.drawText(rightColumnX + HUMANGL_CREDITS_INDENT, rightY, "- Extra bodyparts(neck,eyes, shoulders)", 0.8f, 0.8f, 0.8f);
+    rightY += lineSpacing;
+    textRenderer.drawText(rightColumnX + HUMANGL_CREDITS_INDENT, rightY, "- Settings for all bodyparts and custumization", 0.8f, 0.8f, 0.8f);
 }

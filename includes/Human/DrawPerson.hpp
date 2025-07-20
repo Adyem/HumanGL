@@ -1,10 +1,17 @@
 #pragma once
 
 #include "../humangl.hpp"
+#include "../Matrix/MatrixStack.hpp"
+#include "Torso.hpp"
+#include "Neck.hpp"
 #include "Head.hpp"
-#include "Shoulder.hpp"
-#include "Arm.hpp"
-#include "Leg.hpp"
+#include "Eyes.hpp"
+#include "LeftShoulder.hpp"
+#include "RightShoulder.hpp"
+#include "LeftArm.hpp"
+#include "RightArm.hpp"
+#include "LeftLeg.hpp"
+#include "RightLeg.hpp"
 
 class DrawPerson {
 private:
@@ -28,7 +35,7 @@ public:
     DrawPerson();
     ~DrawPerson() = default;
 
-    // Main render method
+    // Main render method (100% PDF compliant - uses custom MatrixStack only)
     void render(MatrixStack& matrixStack);
 
     // Global transformation methods
@@ -49,4 +56,9 @@ public:
     void getRightArmRotation(float& upperX, float& upperZ, float& forearmX) const;
     void getLeftLegRotation(float& thighX, float& lowerLegX) const;
     void getRightLegRotation(float& thighX, float& lowerLegX) const;
+
+    // Body part customization methods
+    void setBodyPartColor(BodyPart part, float r, float g, float b);
+    void setBodyPartScale(BodyPart part, float scaleX, float scaleY, float scaleZ);
+    void applyBodyPartSettings(const std::map<BodyPart, BodyPartSettings>& settings);
 };

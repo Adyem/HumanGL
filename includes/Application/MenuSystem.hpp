@@ -8,10 +8,8 @@
 #include "../Menus/CreditsMenuRenderer.hpp"
 #include "../Menus/InstructionsMenuRenderer.hpp"
 #include "../Input/MouseHandler.hpp"
-#include "../Input/MenuInput.hpp"
 #include "BaseMenu.hpp"
 #include "MainMenu.hpp"
-#include "SettingsMenu.hpp"
 #include "CreditsMenu.hpp"
 #include "InstructionsMenu.hpp"
 
@@ -24,11 +22,19 @@ private:
     CreditsMenuRenderer creditsMenuRenderer;
     InstructionsMenuRenderer instructionsMenuRenderer;
     MouseHandler mouseHandler;
-    MenuInput menuInput;
+
+    // Temporary stub for MenuInput (functionality moved to EventHandler)
+    class MenuInputStub : public MenuInputInterface {
+    public:
+        bool isEscapePressed() const override { return false; }
+        bool isMKeyPressed() const override { return false; }
+        void resetKeyStates() override {}
+        void handleKeyEvent(const SDL_Event&) override {}
+        void update() override {}
+    } menuInputStub;
 
     // Menu instances
     MainMenu mainMenu;
-    SettingsMenu settingsMenu;
     CreditsMenu creditsMenu;
     InstructionsMenu instructionsMenu;
     
@@ -59,7 +65,19 @@ public:
     
     // Update menu system (call each frame)
     MenuAction update();
-    
+
+    // Get settings renderer for color access
+    SettingsMenuRenderer& getSettingsMenuRenderer() { return settingsMenuRenderer; }
+
     // Render current menu
     void render();
+
+private:
+    // Settings-specific event handling (follows BaseMenu pattern)
+    MenuAction handleSettingsEvent(const SDL_Event& event);
+    void updateSettingsButtonHover();
+    int checkSettingsButtonClick();
+    MenuAction updateSettings();
+
+
 };

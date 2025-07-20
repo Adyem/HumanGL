@@ -1,12 +1,12 @@
 #include "../../includes/Application/Application.hpp"
 
-Application::Application() 
+Application::Application()
     : window(nullptr), glContext(nullptr), running(false),
-      windowWidth(800), windowHeight(600),
+      windowWidth(HUMANGL_DEFAULT_WINDOW_WIDTH), windowHeight(HUMANGL_DEFAULT_WINDOW_HEIGHT),
       currentState(MAIN_MENU),
       keyboardHandler(drawPerson),
       animationManager(drawPerson),
-      simulationRenderer(matrixStack, drawPerson, keyboardHandler, windowWidth, windowHeight),
+      simulationRenderer(drawPerson, keyboardHandler, windowWidth, windowHeight),
       eventHandler(animationManager, keyboardHandler, menuSystem, simulationRenderer, 
                    &currentState, windowWidth, windowHeight),
       currentAnimation(NONE), animationTime(0.0f), jumpHeight(0.0f),
@@ -27,13 +27,13 @@ bool Application::initialize() {
     }
 
     // Set OpenGL attributes
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, HUMANGL_OPENGL_MAJOR_VERSION);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, HUMANGL_OPENGL_MINOR_VERSION);
     SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, HUMANGL_DEPTH_BUFFER_SIZE);
 
     // Create window
-    window = SDL_CreateWindow("HumanGL - Skeletal Animation",
+    window = SDL_CreateWindow(HUMANGL_WINDOW_TITLE,
                              SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
                              windowWidth, windowHeight,
                              SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE);
@@ -57,7 +57,7 @@ bool Application::initialize() {
 
     // Initialize OpenGL
     glEnable(GL_DEPTH_TEST);
-    glClearColor(0.2f, 0.3f, 0.4f, 1.0f);  // Nice blue-gray background for menus
+    glClearColor(HUMANGL_BACKGROUND_COLOR_R, HUMANGL_BACKGROUND_COLOR_G, HUMANGL_BACKGROUND_COLOR_B, HUMANGL_BACKGROUND_COLOR_A);  // Nice blue-gray background for menus
     glViewport(0, 0, windowWidth, windowHeight);
 
     keyboardState = SDL_GetKeyboardState(nullptr);
@@ -67,6 +67,12 @@ bool Application::initialize() {
         std::cerr << "Failed to initialize menu system" << std::endl;
         return false;
     }
+
+    // Connect simulation renderer to settings for background colors
+    simulationRenderer.setSettingsRenderer(&menuSystem.getSettingsMenuRenderer());
+
+    // Apply initial body part colors
+    simulationRenderer.applyBodyPartCustomizations();
 
     running = true;
     return true;
@@ -90,7 +96,7 @@ void Application::run() {
         render();
 
         // Small delay to prevent excessive CPU usage
-        SDL_Delay(16); // ~60 FPS
+        SDL_Delay(HUMANGL_FRAME_DELAY); // ~60 FPS
     }
 
     cleanup();

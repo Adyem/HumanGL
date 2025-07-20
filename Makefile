@@ -86,16 +86,21 @@ SUBDIRS = $(APPLICATION_SUBDIRS) $(HUMAN_SUBDIRS) $(INPUT_SUBDIRS) $(MATRIX_SUBD
 # PUT IN ALPHABETICAL ORDER
 # Header Files (without paths)
 APPLICATION_HEADERS = Application.hpp BaseMenu.hpp CreditsMenu.hpp InstructionsMenu.hpp \
-					  MainMenu.hpp MenuSystem.hpp SettingsMenu.hpp
+					  MainMenu.hpp MenuSystem.hpp  \
+					  SettingsMainMenu.hpp BodyPartSelectorMenu.hpp BodyPartEditorMenu.hpp GraphicsMenu.hpp \
+					  SettingsMenu.hpp
 
-HUMAN_HEADERS = Arm.hpp BodyPart.hpp DrawPerson.hpp Head.hpp Leg.hpp Shoulder.hpp
+HUMAN_HEADERS = Arm.hpp BodyPart.hpp DrawPerson.hpp Head.hpp Leg.hpp Shoulder.hpp \
+				Torso.hpp Neck.hpp Eyes.hpp LeftArm.hpp RightArm.hpp LeftLeg.hpp RightLeg.hpp \
+				LeftShoulder.hpp RightShoulder.hpp
 
-INPUT_HEADERS = KeyboardHandler.hpp MenuInput.hpp MouseHandler.hpp
+INPUT_HEADERS = KeyboardHandler.hpp MouseHandler.hpp
 
 MATRIX_HEADERS = Matrix4.hpp MatrixStack.hpp
 
 MENUS_HEADERS = CreditsMenuRenderer.hpp InstructionsMenuRenderer.hpp MainMenuRenderer.hpp \
-				MenuRenderer.hpp SettingsMenuRenderer.hpp TextRenderer.hpp
+				MenuRenderer.hpp SettingsMenuRenderer.hpp TextRenderer.hpp \
+				SettingsMainMenuRender.hpp BodyPartSelectorMenuRender.hpp BodyPartEditorMenuRender.hpp GraphicsMenuRender.hpp
 
 SIMULATION_HEADERS = AnimationManager.hpp EventHandler.hpp SimulationRenderer.hpp
 
@@ -103,7 +108,7 @@ SIMULATION_HEADERS = AnimationManager.hpp EventHandler.hpp SimulationRenderer.hp
 HEADERS = $(APPLICATION_HEADERS) $(HUMAN_HEADERS) $(INPUT_HEADERS) $(MATRIX_HEADERS) \
 		  $(MENUS_HEADERS) $(SIMULATION_HEADERS)
 
-CSTYLE_HEADERS = humangl.hpp CStyle/defines.hpp CStyle/enums.hpp CStyle/libs.hpp CStyle/structs.hpp
+CSTYLE_HEADERS = humangl.hpp CStyle/defines.hpp CStyle/enums.hpp CStyle/libs.hpp CStyle/structs.hpp Application/MenuInputInterface.hpp
 
 # Generate Source Files by replacing .hpp with .cpp
 SUBDIR_SRCS = $(patsubst %.hpp,%.cpp,$(HEADERS))

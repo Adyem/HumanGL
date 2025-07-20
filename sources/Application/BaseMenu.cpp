@@ -1,7 +1,8 @@
 #include "../../includes/Application/BaseMenu.hpp"
 
-BaseMenu::BaseMenu(MouseHandler& mouseHandler, MenuInput& menuInput, int winWidth, int winHeight)
-    : mouseHandler(mouseHandler), menuInput(menuInput), windowWidth(winWidth), windowHeight(winHeight) {
+BaseMenu::BaseMenu(MouseHandler& mouseHandler, MenuInputInterface& menuInput, int winWidth, int winHeight)
+    : mouseHandler(mouseHandler), menuInput(menuInput), windowWidth(winWidth), windowHeight(winHeight),
+      keyboardState(SDL_GetKeyboardState(nullptr)), escapePressed(false), prevEscapeState(false) {
 }
 
 void BaseMenu::updateWindowSize(int width, int height) {
@@ -52,24 +53,38 @@ MenuAction BaseMenu::handleEvent(const SDL_Event& event) {
 
 MenuAction BaseMenu::update() {
     MenuAction action = MENU_ACTION_NONE;
-    
+
     // Update input system
     menuInput.update();
-    
+    updateInput();
+
     // Check for menu navigation keys
-    if (menuInput.isEscapePressed()) {
+    if (isEscapePressed()) {
         action = MENU_ACTION_EXIT;
     }
-    
+
     // Reset input states
     menuInput.resetKeyStates();
     mouseHandler.resetMouseState();
-    
+
     return action;
 }
 
 void BaseMenu::updateButtonHover() {
     mouseHandler.updateButtonHover(buttons);
+}
+
+void BaseMenu::updateInput() {
+    if (!keyboardState) return;
+
+    // Update keyboard state
+    keyboardState = SDL_GetKeyboardState(nullptr);
+
+    // Check for ESC key press (single press detection)
+    bool currentEscapeState = keyboardState[SDL_SCANCODE_ESCAPE] != 0;
+
+    escapePressed = currentEscapeState && !prevEscapeState;
+    prevEscapeState = currentEscapeState;
 }
 
 int BaseMenu::checkButtonClick() {

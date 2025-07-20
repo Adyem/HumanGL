@@ -1,50 +1,37 @@
 #include "../../includes/Human/Leg.hpp"
 
 Leg::Leg(float x, float y, float z)
-    : BodyPartRenderer(0.8f, 0.6f, 0.4f), positionX(x), positionY(y), positionZ(z),
-      thighX(0.0f), lowerLegX(0.0f) {
-    // Skin color for legs (will be overridden for thighs with pants color)
+    : BodyPartRenderer(HUMANGL_DEFAULT_SKIN_R, HUMANGL_DEFAULT_SKIN_G, HUMANGL_DEFAULT_SKIN_B), positionX(x), positionY(y), positionZ(z),
+      thighX(HUMANGL_OPENGL_AXIS_NONE), lowerLegX(HUMANGL_OPENGL_AXIS_NONE),
+      thighR(HUMANGL_PANTS_COLOR_R), thighG(HUMANGL_PANTS_COLOR_G), thighB(HUMANGL_PANTS_COLOR_B),
+      lowerLegR(HUMANGL_DEFAULT_SKIN_R), lowerLegG(HUMANGL_DEFAULT_SKIN_G), lowerLegB(HUMANGL_DEFAULT_SKIN_B) {
+    // Thighs use pants color (blue), lower legs use skin color
 }
 
 void Leg::render(MatrixStack& matrixStack) {
-    // Draw the entire leg as a connected hierarchy
+    // Use custom matrix stack for transformations (100% PDF compliant - NO OpenGL matrix calls)
     matrixStack.pushMatrix();
-
     matrixStack.translate(positionX, positionY, positionZ);
-
-    // Debug marker to visualize the hip joint position
-    matrixStack.pushMatrix();
-    matrixStack.scale(0.05f, 0.05f, 0.05f);
-    matrixStack.applyToOpenGL();
-    drawColoredCube(1.0f, 0.0f, 0.0f); // bright red cube
-    matrixStack.popMatrix();
-
     matrixStack.rotateX(thighX);
 
-    // Debug marker to visualize the hip joint position after rotation
+    // Draw thigh (with individual thigh color)
     matrixStack.pushMatrix();
-    matrixStack.scale(0.05f, 0.05f, 0.05f);
-    matrixStack.applyToOpenGL();
-    drawColoredCube(1.0f, 0.0f, 0.0f); // bright red cube
-    matrixStack.popMatrix();
+    matrixStack.translate(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_THIGH_Y_OFFSET, HUMANGL_OPENGL_AXIS_NONE);
+    matrixStack.scale(HUMANGL_THIGH_SCALE_X * scaleX, HUMANGL_THIGH_SCALE_Y * scaleY, HUMANGL_THIGH_SCALE_Z * scaleZ);
 
-    // Draw thigh (with pants color)
-    matrixStack.pushMatrix();
-    // Offset the thigh so the hip joint remains at the top before scaling.
-    matrixStack.translate(0.0f, -0.4f, 0.0f);
-    matrixStack.scale(0.3f, 0.8f, 0.3f);
-    matrixStack.applyToOpenGL();
-    drawColoredCube(0.1f, 0.2f, 0.6f);  // Dark blue pants color for thighs
+    // Draw cube with custom matrix transformations - NO OpenGL matrix functions!
+    drawColoredCubeWithMatrix(thighR, thighG, thighB, matrixStack);  // Individual thigh color
+
     matrixStack.popMatrix();
 
     // Draw lower leg (connected to thigh)
-    matrixStack.translate(0.0f, -0.8f, 0.0f);
+    matrixStack.translate(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_LOWER_LEG_Y_OFFSET, HUMANGL_OPENGL_AXIS_NONE);
     matrixStack.rotateX(lowerLegX);
-    // Translate to align the knee joint before scaling the lower leg.
-    matrixStack.translate(0.0f, -0.4f, 0.0f);
-    matrixStack.scale(0.25f, 0.8f, 0.25f);
-    matrixStack.applyToOpenGL();
-    drawColoredCube(colorR, colorG, colorB);  // Skin color for lower legs
+    matrixStack.translate(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_LOWER_LEG_Y_POSITION, HUMANGL_OPENGL_AXIS_NONE);
+    matrixStack.scale(HUMANGL_LOWER_LEG_SCALE_X * scaleX, HUMANGL_LOWER_LEG_SCALE_Y * scaleY, HUMANGL_LOWER_LEG_SCALE_Z * scaleZ);
+
+    // Draw cube with custom matrix transformations - NO OpenGL matrix functions!
+    drawColoredCubeWithMatrix(lowerLegR, lowerLegG, lowerLegB, matrixStack);  // Individual lower leg color
 
     matrixStack.popMatrix();
 }
@@ -65,8 +52,16 @@ void Leg::getLowerLegRotation(float& x) const {
     x = lowerLegX;
 }
 
-LeftLeg::LeftLeg() : Leg(-0.4f, -1.2f, 0.0f) {
+void Leg::setThighColor(float r, float g, float b) {
+    thighR = r;
+    thighG = g;
+    thighB = b;
 }
 
-RightLeg::RightLeg() : Leg(0.4f, -1.2f, 0.0f) {
+void Leg::setLowerLegColor(float r, float g, float b) {
+    lowerLegR = r;
+    lowerLegG = g;
+    lowerLegB = b;
 }
+
+

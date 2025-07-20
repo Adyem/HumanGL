@@ -22,7 +22,10 @@ enum MenuAction {
     MENU_ACTION_INSTRUCTIONS,
     MENU_ACTION_EXIT,
     MENU_ACTION_BACK_TO_MENU,
-    MENU_ACTION_RETURN_TO_MENU
+    MENU_ACTION_RETURN_TO_MENU,
+    MENU_ACTION_BODY_CUSTOMIZATION,
+    MENU_ACTION_BACKGROUND_CUSTOMIZATION,
+    MENU_ACTION_BODY_PART_DETAIL
 };
 
 // ============================================================================
@@ -42,19 +45,12 @@ enum AnimationMode {
 // MENU SYSTEM ENUMS
 // ============================================================================
 
-// Menu state enumeration (for menu system internal use)
-enum MenuState {
-    MAIN_MENU_STATE,
-    SETTINGS_STATE,
-    CREDITS_STATE,
-    INSTRUCTIONS_STATE,
-    SIMULATION_STATE
-};
-
 // Settings page enumeration (from MenuSystem)
 enum SettingsPage {
     SETTINGS_MAIN,
     BODY_CUSTOMIZATION,
+    BODY_PART_DETAIL,
+    BACKGROUND_CUSTOMIZATION,
     RESOLUTION_SETTINGS
 };
 
@@ -85,47 +81,6 @@ enum BodyPart {
     BODY_PART_COUNT  // Keep this last for counting
 };
 
-// ============================================================================
-// INPUT AND INTERACTION ENUMS
-// ============================================================================
 
-// Input key enumeration (for keyboard handling)
-enum InputKey {
-    INPUT_KEY_NONE,
-    INPUT_KEY_ESCAPE,
-    INPUT_KEY_SPACE,
-    INPUT_KEY_RETURN,
-    INPUT_KEY_W, INPUT_KEY_A, INPUT_KEY_S, INPUT_KEY_D,
-    INPUT_KEY_Q, INPUT_KEY_E,
-    INPUT_KEY_P, INPUT_KEY_J, INPUT_KEY_K, INPUT_KEY_M,
-    INPUT_KEY_1, INPUT_KEY_2, INPUT_KEY_3,
-    INPUT_KEY_4, INPUT_KEY_5, INPUT_KEY_6,
-    INPUT_KEY_7, INPUT_KEY_8, INPUT_KEY_9, INPUT_KEY_0
-};
 
-// Mouse button enumeration
-enum MouseButton {
-    MOUSE_BUTTON_NONE,
-    MOUSE_BUTTON_LEFT,
-    MOUSE_BUTTON_RIGHT,
-    MOUSE_BUTTON_MIDDLE
-};
 
-// ============================================================================
-// RENDERING AND GRAPHICS ENUMS
-// ============================================================================
-
-// Rendering mode enumeration (for future expansion)
-enum RenderMode {
-    RENDER_MODE_WIREFRAME,
-    RENDER_MODE_SOLID,
-    RENDER_MODE_TEXTURED
-};
-
-// Quality settings enumeration
-enum QualityLevel {
-    QUALITY_LOW,
-    QUALITY_MEDIUM,
-    QUALITY_HIGH,
-    QUALITY_ULTRA
-};

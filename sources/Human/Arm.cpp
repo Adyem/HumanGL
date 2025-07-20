@@ -1,52 +1,38 @@
 #include "../../includes/Human/Arm.hpp"
 
 Arm::Arm(float x, float y, float z)
-    : BodyPartRenderer(0.8f, 0.6f, 0.4f), positionX(x), positionY(y), positionZ(z),
-      upperArmX(0.0f), upperArmZ(0.0f), forearmX(0.0f) {
-    // Skin color for arms
+    : BodyPartRenderer(HUMANGL_DEFAULT_SKIN_R, HUMANGL_DEFAULT_SKIN_G, HUMANGL_DEFAULT_SKIN_B), positionX(x), positionY(y), positionZ(z),
+      upperArmX(HUMANGL_OPENGL_AXIS_NONE), upperArmZ(HUMANGL_OPENGL_AXIS_NONE), forearmX(HUMANGL_OPENGL_AXIS_NONE),
+      upperArmR(HUMANGL_DEFAULT_CLOTHING_R), upperArmG(HUMANGL_DEFAULT_CLOTHING_G), upperArmB(HUMANGL_DEFAULT_CLOTHING_B),
+      forearmR(HUMANGL_DEFAULT_SKIN_R), forearmG(HUMANGL_DEFAULT_SKIN_G), forearmB(HUMANGL_DEFAULT_SKIN_B) {
+    // Upper arms use clothing color (blue), forearms use skin color
 }
 
 void Arm::render(MatrixStack& matrixStack) {
-    // Draw the entire arm as a connected hierarchy
+    // Use custom matrix stack for transformations (100% PDF compliant - NO OpenGL matrix calls)
     matrixStack.pushMatrix();
-
     matrixStack.translate(positionX, positionY, positionZ);
-
-    // Debug marker to visualize the shoulder joint position
-    matrixStack.pushMatrix();
-    matrixStack.scale(0.05f, 0.05f, 0.05f);
-    matrixStack.applyToOpenGL();
-    drawColoredCube(1.0f, 0.0f, 0.0f); // bright red cube
-    matrixStack.popMatrix();
-
     matrixStack.rotateX(upperArmX);
     matrixStack.rotateZ(upperArmZ);
 
-    // Debug marker to visualize the shoulder joint position after rotation
-    matrixStack.pushMatrix();
-    matrixStack.scale(0.05f, 0.05f, 0.05f);
-    matrixStack.applyToOpenGL();
-    drawColoredCube(1.0f, 0.0f, 0.0f); // bright red cube
-    matrixStack.popMatrix();
-
     // Draw upper arm
     matrixStack.pushMatrix();
-    // Translate the cube so the shoulder joint lines up before scaling so the
-    // distance is not affected by the scale factor.
-    matrixStack.translate(0.0f, -0.4f, 0.0f);
-    matrixStack.scale(0.3f, 0.8f, 0.3f);
-    matrixStack.applyToOpenGL();
-    drawColoredCube(colorR, colorG, colorB);  // Skin color for upper arms
+    matrixStack.translate(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_UPPER_ARM_Y_OFFSET, HUMANGL_OPENGL_AXIS_NONE);
+    matrixStack.scale(HUMANGL_UPPER_ARM_SCALE_X * scaleX, HUMANGL_UPPER_ARM_SCALE_Y * scaleY, HUMANGL_UPPER_ARM_SCALE_Z * scaleZ);
+
+    // Draw cube with custom matrix transformations - NO OpenGL matrix functions!
+    drawColoredCubeWithMatrix(upperArmR, upperArmG, upperArmB, matrixStack);  // Individual upper arm color
+
     matrixStack.popMatrix();
 
     // Draw forearm (connected to upper arm)
-    matrixStack.translate(0.0f, -0.8f, 0.0f);
+    matrixStack.translate(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_FOREARM_Y_OFFSET, HUMANGL_OPENGL_AXIS_NONE);
     matrixStack.rotateX(forearmX);
-    // Offset the forearm before scaling so the elbow distance remains constant.
-    matrixStack.translate(0.0f, -0.4f, 0.0f);
-    matrixStack.scale(0.25f, 0.8f, 0.25f);
-    matrixStack.applyToOpenGL();
-    drawColoredCube(colorR, colorG, colorB);  // Skin color for forearms
+    matrixStack.translate(HUMANGL_OPENGL_AXIS_NONE, HUMANGL_FOREARM_Y_POSITION, HUMANGL_OPENGL_AXIS_NONE);
+    matrixStack.scale(HUMANGL_FOREARM_SCALE_X * scaleX, HUMANGL_FOREARM_SCALE_Y * scaleY, HUMANGL_FOREARM_SCALE_Z * scaleZ);
+
+    // Draw cube with custom matrix transformations - NO OpenGL matrix functions!
+    drawColoredCubeWithMatrix(forearmR, forearmG, forearmB, matrixStack);  // Individual forearm color
 
     matrixStack.popMatrix();
 }
@@ -69,10 +55,16 @@ void Arm::getForearmRotation(float& x) const {
     x = forearmX;
 }
 
-/* Left and Right Arm */
-
-LeftArm::LeftArm() : Arm(-0.6f, 1.2f, 0.0f) {
+void Arm::setUpperArmColor(float r, float g, float b) {
+    upperArmR = r;
+    upperArmG = g;
+    upperArmB = b;
 }
 
-RightArm::RightArm() : Arm(0.6f, 1.2f, 0.0f) {
+void Arm::setForearmColor(float r, float g, float b) {
+    forearmR = r;
+    forearmG = g;
+    forearmB = b;
 }
+
+

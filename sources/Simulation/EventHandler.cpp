@@ -4,7 +4,9 @@ EventHandler::EventHandler(AnimationManager& animMgr, KeyboardHandler& kbHandler
                           SimulationRenderer& simRenderer, AppState* appState, int& winWidth, int& winHeight)
     : animationManager(animMgr), keyboardHandler(kbHandler), menuSystem(menuSys),
       simulationRenderer(simRenderer), running(true), currentState(appState),
-      windowWidth(winWidth), windowHeight(winHeight) {
+      windowWidth(winWidth), windowHeight(winHeight),
+      keyboardState(SDL_GetKeyboardState(nullptr)), escapePressed(false), mKeyPressed(false),
+      prevEscapeState(false), prevMKeyState(false) {
 }
 
 bool EventHandler::handleEvents() {
@@ -193,4 +195,37 @@ void EventHandler::processMenuAction(MenuAction action) {
         default:
             break;
     }
+}
+
+// Menu input methods (moved from MenuInput)
+void EventHandler::updateMenuInput() {
+    if (!keyboardState) {
+        return;
+    }
+
+    // Update keyboard state
+    keyboardState = SDL_GetKeyboardState(nullptr);
+
+    // Check for single-press events (key was not pressed before, but is pressed now)
+    bool currentEscapeState = keyboardState[SDL_SCANCODE_ESCAPE] != 0;
+    bool currentMKeyState = keyboardState[SDL_SCANCODE_M] != 0;
+
+    escapePressed = currentEscapeState && !prevEscapeState;
+    mKeyPressed = currentMKeyState && !prevMKeyState;
+
+    // Update previous states
+    prevEscapeState = currentEscapeState;
+    prevMKeyState = currentMKeyState;
+}
+
+void EventHandler::resetMenuKeyStates() {
+    escapePressed = false;
+    mKeyPressed = false;
+}
+
+bool EventHandler::isKeyDown(SDL_Scancode key) const {
+    if (!keyboardState) {
+        return false;
+    }
+    return keyboardState[key] != 0;
 }

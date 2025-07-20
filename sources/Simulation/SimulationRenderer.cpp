@@ -1,8 +1,9 @@
 #include "../../includes/Simulation/SimulationRenderer.hpp"
+#include "../../includes/Menus/SettingsMenuRenderer.hpp"
 
-SimulationRenderer::SimulationRenderer(MatrixStack& stack, DrawPerson& person, KeyboardHandler& kbHandler, int winWidth, int winHeight)
-    : matrixStack(stack), drawPerson(person), keyboardHandler(kbHandler),
-      nearPlane(1.0f), farPlane(100.0f), fov(45.0f),
+SimulationRenderer::SimulationRenderer(DrawPerson& person, KeyboardHandler& kbHandler, int winWidth, int winHeight)
+    : drawPerson(person), keyboardHandler(kbHandler), settingsRenderer(nullptr),
+      nearPlane(HUMANGL_SIMULATION_NEAR_PLANE), farPlane(HUMANGL_SIMULATION_FAR_PLANE), fov(HUMANGL_SIMULATION_FOV),
       windowWidth(winWidth), windowHeight(winHeight) {
 }
 
@@ -15,12 +16,13 @@ void SimulationRenderer::render() {
     setupLighting();
     setupScene();
     
-    // Build view matrix from camera parameters
-    Matrix4 view = keyboardHandler.getViewMatrix();
-    matrixStack.setViewMatrix(view);
-    matrixStack.loadIdentity();
+    // Apply camera transformations
+    keyboardHandler.applyCameraTransform();
 
-    // Render the person
+    // Apply body part customizations before rendering
+    applyBodyPartCustomizations();
+
+    // Render the person using custom matrix stack
     drawPerson.render(matrixStack);
 }
 
@@ -33,7 +35,7 @@ void SimulationRenderer::setupPerspective() {
     float aspectRatio = static_cast<float>(windowWidth) / static_cast<float>(windowHeight);
     
     // Manual perspective calculation to avoid gluPerspective
-    float top = nearPlane * tanf(fov * static_cast<float>(M_PI) / 360.0f);
+    float top = nearPlane * tanf(DEGREES_TO_RADIANS(fov) / 2.0f);
     float bottom = -top;
     float right = top * aspectRatio;
     float left = -right;
@@ -59,13 +61,19 @@ void SimulationRenderer::setupScene() {
     // Enable depth testing
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    
-    // Set background color (dark blue)
-    glClearColor(0.1f, 0.1f, 0.3f, 1.0f);
-    
+
+    // Set background color from settings or use default
+    if (settingsRenderer) {
+        const Color& simBgColor = settingsRenderer->getSimulationBackgroundColor();
+        glClearColor(simBgColor.r, simBgColor.g, simBgColor.b, simBgColor.a);
+    } else {
+        // Fallback to default
+        glClearColor(HUMANGL_SIMULATION_BACKGROUND_R, HUMANGL_SIMULATION_BACKGROUND_G, HUMANGL_SIMULATION_BACKGROUND_B, HUMANGL_SIMULATION_BACKGROUND_A);
+    }
+
     // Enable smooth shading
     glShadeModel(GL_SMOOTH);
-    
+
     // Set viewport
     glViewport(0, 0, windowWidth, windowHeight);
 }
@@ -73,7 +81,18 @@ void SimulationRenderer::setupScene() {
 void SimulationRenderer::updateWindowSize(int width, int height) {
     windowWidth = width;
     windowHeight = height;
-    
+
     // Update viewport
     glViewport(0, 0, windowWidth, windowHeight);
+}
+
+void SimulationRenderer::setSettingsRenderer(SettingsMenuRenderer* renderer) {
+    settingsRenderer = renderer;
+}
+
+void SimulationRenderer::applyBodyPartCustomizations() {
+    if (settingsRenderer) {
+        const std::map<BodyPart, BodyPartSettings>& settings = settingsRenderer->getAllBodyPartSettings();
+        drawPerson.applyBodyPartSettings(settings);
+    }
 }

@@ -1,16 +1,20 @@
 #pragma once
 
 #include "../humangl.hpp"
+#include "../Matrix/MatrixStack.hpp"
 #include "../Human/DrawPerson.hpp"
 #include "../Input/KeyboardHandler.hpp"
-#include "../Matrix/MatrixStack.hpp"
+
+// Forward declaration
+class SettingsMenuRenderer;
 
 class SimulationRenderer {
 private:
-    MatrixStack& matrixStack;
+    MatrixStack matrixStack;
     DrawPerson& drawPerson;
     KeyboardHandler& keyboardHandler;
-    
+    SettingsMenuRenderer* settingsRenderer;
+
     // Rendering settings
     float nearPlane;
     float farPlane;
@@ -19,7 +23,7 @@ private:
     int windowHeight;
 
 public:
-    SimulationRenderer(MatrixStack& stack, DrawPerson& person, KeyboardHandler& kbHandler, int winWidth, int winHeight);
+    SimulationRenderer(DrawPerson& person, KeyboardHandler& kbHandler, int winWidth, int winHeight);
     ~SimulationRenderer() = default;
 
     // Main rendering method
@@ -32,10 +36,11 @@ public:
     
     // Update window dimensions
     void updateWindowSize(int width, int height);
-    
-    // Getters
-    float getNearPlane() const { return nearPlane; }
-    float getFarPlane() const { return farPlane; }
-    float getFOV() const { return fov; }
+
+    // Set settings renderer for color access
+    void setSettingsRenderer(SettingsMenuRenderer* renderer);
+
+    // Apply body part customizations
+    void applyBodyPartCustomizations();
 };
 

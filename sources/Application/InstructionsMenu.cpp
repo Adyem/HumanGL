@@ -1,15 +1,15 @@
 #include "../../includes/Application/InstructionsMenu.hpp"
 
-InstructionsMenu::InstructionsMenu(InstructionsMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInput& menuInput, int winWidth, int winHeight)
+InstructionsMenu::InstructionsMenu(InstructionsMenuRenderer& renderer, MouseHandler& mouseHandler, MenuInputInterface& menuInput, int winWidth, int winHeight)
     : BaseMenu(mouseHandler, menuInput, winWidth, winHeight), renderer(renderer) {
     initializeButtons();
 }
 
 void InstructionsMenu::initializeButtons() {
-    float buttonWidth = 200.0f;
-    float buttonHeight = 50.0f;
+    float buttonWidth = HUMANGL_MENU_BUTTON_WIDTH;
+    float buttonHeight = HUMANGL_MENU_BUTTON_HEIGHT;
     float centerX = (static_cast<float>(windowWidth) - buttonWidth) / 2.0f;
-    float startY = static_cast<float>(windowHeight) - 100.0f;
+    float startY = static_cast<float>(windowHeight) - HUMANGL_MENU_INSTRUCTIONS_OFFSET_Y;
 
     buttons.clear();
     buttons.push_back(MenuButton(centerX, startY, buttonWidth, buttonHeight, "Back to Menu"));
