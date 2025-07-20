@@ -19,8 +19,10 @@ Neck::Neck() : BodyPartRenderer(0.8f, 0.6f, 0.4f) {
 
 void Neck::render(MatrixStack& matrixStack) {
     matrixStack.pushMatrix();
-    matrixStack.scale(0.3f, 0.3f, 0.3f);
+    // Move the neck to its position on top of the torso first so any scaling
+    // does not alter the translation distance.
     matrixStack.translate(0.0f, 0.9f, 0.0f);
+    matrixStack.scale(0.3f, 0.3f, 0.3f);
     matrixStack.applyToOpenGL();
     drawColoredCube(colorR, colorG, colorB);
     matrixStack.popMatrix();
@@ -32,10 +34,12 @@ Head::Head() : BodyPartRenderer(0.8f, 0.6f, 0.4f), headRotationX(0.0f), headRota
 
 void Head::render(MatrixStack& matrixStack) {
     matrixStack.pushMatrix();
-    matrixStack.scale(0.6f, 0.6f, 0.6f);
+    // Position the head relative to the neck before applying rotations so that
+    // it pivots around the neck joint rather than the world origin.
+    matrixStack.translate(0.0f, 1.4f, 0.0f);
     matrixStack.rotateX(headRotationX);
     matrixStack.rotateY(headRotationY);
-    matrixStack.translate(0.0f, 1.4f, 0.0f);
+    matrixStack.scale(0.6f, 0.6f, 0.6f);
     matrixStack.applyToOpenGL();
     drawColoredCube(colorR, colorG, colorB);
     matrixStack.popMatrix();
@@ -57,9 +61,11 @@ Eyes::Eyes() : BodyPartRenderer(0.0f, 0.0f, 0.0f), headRotationX(0.0f), headRota
 
 void Eyes::render(MatrixStack& matrixStack) {
     matrixStack.pushMatrix();
+    // Translate to the head position before applying rotation so the eyes
+    // follow the head movement correctly.
+    matrixStack.translate(0.0f, 1.4f, 0.0f);
     matrixStack.rotateX(headRotationX);
     matrixStack.rotateY(headRotationY);
-    matrixStack.translate(0.0f, 1.4f, 0.0f);
 
     // Left eye
     matrixStack.pushMatrix();

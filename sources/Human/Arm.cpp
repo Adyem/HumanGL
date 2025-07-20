@@ -31,8 +31,10 @@ void Arm::render(MatrixStack& matrixStack) {
 
     // Draw upper arm
     matrixStack.pushMatrix();
-    matrixStack.scale(0.3f, 0.8f, 0.3f);
+    // Translate the cube so the shoulder joint lines up before scaling so the
+    // distance is not affected by the scale factor.
     matrixStack.translate(0.0f, -0.4f, 0.0f);
+    matrixStack.scale(0.3f, 0.8f, 0.3f);
     matrixStack.applyToOpenGL();
     drawColoredCube(colorR, colorG, colorB);  // Skin color for upper arms
     matrixStack.popMatrix();
@@ -40,8 +42,9 @@ void Arm::render(MatrixStack& matrixStack) {
     // Draw forearm (connected to upper arm)
     matrixStack.translate(0.0f, -0.8f, 0.0f);
     matrixStack.rotateX(forearmX);
-    matrixStack.scale(0.25f, 0.8f, 0.25f);
+    // Offset the forearm before scaling so the elbow distance remains constant.
     matrixStack.translate(0.0f, -0.4f, 0.0f);
+    matrixStack.scale(0.25f, 0.8f, 0.25f);
     matrixStack.applyToOpenGL();
     drawColoredCube(colorR, colorG, colorB);  // Skin color for forearms
 
