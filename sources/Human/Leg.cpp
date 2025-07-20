@@ -30,8 +30,9 @@ void Leg::render(MatrixStack& matrixStack) {
 
     // Draw thigh (with pants color)
     matrixStack.pushMatrix();
-    matrixStack.scale(0.3f, 0.8f, 0.3f);
+    // Offset the thigh so the hip joint remains at the top before scaling.
     matrixStack.translate(0.0f, -0.4f, 0.0f);
+    matrixStack.scale(0.3f, 0.8f, 0.3f);
     matrixStack.applyToOpenGL();
     drawColoredCube(0.1f, 0.2f, 0.6f);  // Dark blue pants color for thighs
     matrixStack.popMatrix();
@@ -39,8 +40,9 @@ void Leg::render(MatrixStack& matrixStack) {
     // Draw lower leg (connected to thigh)
     matrixStack.translate(0.0f, -0.8f, 0.0f);
     matrixStack.rotateX(lowerLegX);
-    matrixStack.scale(0.25f, 0.8f, 0.25f);
+    // Translate to align the knee joint before scaling the lower leg.
     matrixStack.translate(0.0f, -0.4f, 0.0f);
+    matrixStack.scale(0.25f, 0.8f, 0.25f);
     matrixStack.applyToOpenGL();
     drawColoredCube(colorR, colorG, colorB);  // Skin color for lower legs
 
